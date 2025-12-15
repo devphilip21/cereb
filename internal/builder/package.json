@@ -1,0 +1,20 @@
+{
+  "name": "@gesturejs/builder",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "builder": "./dist/cmd.js"
+  },
+  "scripts": {
+    "compile": "tsc"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "typescript": "^5.2.2",
+    "vite": "^7.2"
+  }
+}

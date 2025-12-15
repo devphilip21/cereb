@@ -1,0 +1,17 @@
+{
+  "name": "@gesturejs/stream",
+  "description": "A module for handling large data flows as streams within the gesturejs library.",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./operators": "./dist/operators.js"
+  },
+  "scripts": {
+    "build": "builder build"
+  },
+  "dependencies": {
+    "@gesturejs/builder": "workspace:*"
+  }
+}
