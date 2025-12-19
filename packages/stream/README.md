@@ -1,6 +1,6 @@
 # @gesturejs/stream
 
-A module for handling large data flows as streams within the gesturejs library.
+A module for handling data flows as streams, designed to work seamlessly with the gesturejs library.
 
 ## Installation
 

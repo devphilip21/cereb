@@ -8,8 +8,11 @@ export default ({ dirname }: { dirname: string }): UserConfig => ({
         index: resolve(dirname, 'src/index.ts'),
         operators: resolve(dirname, 'src/operators/index.ts'),
       },
-      formats: ['es'],
-      fileName: (_, entryName) => `${entryName}.js`,
+      formats: ['es', 'cjs'],
+      fileName: (format, entryName) => {
+        const ext = format === 'es' ? 'js' : 'cjs';
+        return `${entryName}.${ext}`;
+      },
     },
   },
 });

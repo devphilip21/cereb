@@ -4,14 +4,25 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./operators": "./dist/operators.js"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./operators": {
+      "import": "./dist/operators.js",
+      "require": "./dist/operators.cjs"
+    }
   },
   "scripts": {
     "build": "builder build"
   },
   "dependencies": {
     "@gesturejs/builder": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "*"
   }
 }
