@@ -5,8 +5,7 @@ export default ({ dirname }: { dirname: string }): UserConfig => ({
   build: {
     lib: {
       entry: {
-        index: resolve(dirname, 'src/index.ts'),
-        'core/index': resolve(dirname, 'src/core/index.ts'),
+        index: resolve(dirname, 'src/index.ts')
       },
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => {
