@@ -2,18 +2,9 @@ name: Release
 run-name: "Release packages @${{ github.sha }}"
 
 on:
-  workflow_dispatch:
-    inputs:
-      dry-run:
-        description: 'Dry-run mode (no publish)'
-        required: false
-        default: 'false'
-        type: boolean
-      first-release:
-        description: 'First release (no git tags exist yet)'
-        required: false
-        default: 'false'
-        type: boolean
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -56,27 +47,26 @@ jobs:
       - name: Build packages
         run: npx nx run-many -t build --projects=packages/*
 
-      - name: Set release flags
-        id: flags
+      - name: Check if first release
+        id: check
         run: |
-          FLAGS=""
-          if [ "${{ inputs.first-release }}" == "true" ]; then
-            FLAGS="$FLAGS --first-release"
+          if git tag | grep -q "@gesturejs/"; then
+            echo "first_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "first_release=true" >> $GITHUB_OUTPUT
           fi
-          echo "flags=$FLAGS" >> $GITHUB_OUTPUT
-
-      - name: Release (dry-run)
-        if: ${{ inputs.dry-run == 'true' }}
-        run: npx nx release --skip-publish --dry-run ${{ steps.flags.outputs.flags }}
 
       - name: Release
-        if: ${{ inputs.dry-run != 'true' }}
-        run: npx nx release ${{ steps.flags.outputs.flags }}
+        run: |
+          if [ "${{ steps.check.outputs.first_release }}" == "true" ]; then
+            npx nx release --first-release
+          else
+            npx nx release
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
       - name: Push changes and tags
-        if: ${{ inputs.dry-run != 'true' }}
         run: git push --follow-tags
