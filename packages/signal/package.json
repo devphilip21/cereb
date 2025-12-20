@@ -19,10 +19,10 @@
       "import": "./dist/core/index.js",
       "require": "./dist/core/index.cjs"
     },
-    "./pointer-signal": {
-      "types": "./dist/pointer-signal/index.d.ts",
-      "import": "./dist/pointer-signal/index.js",
-      "require": "./dist/pointer-signal/index.cjs"
+    "./single-pointer": {
+      "types": "./dist/single-pointer/index.d.ts",
+      "import": "./dist/single-pointer/index.js",
+      "require": "./dist/single-pointer/index.cjs"
     }
   },
   "files": [
@@ -38,6 +38,10 @@
     "@gesturejs/stream": "^0.1.0"
   },
   "devDependencies": {
-    "@gesturejs/builder": "workspace:*"
+    "@gesturejs/builder": "workspace:*",
+    "@vitest/coverage-v8": "*",
+    "jsdom": "*",
+    "vite": "*",
+    "vitest": "*"
   }
 }

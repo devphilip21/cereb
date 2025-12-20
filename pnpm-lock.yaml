@@ -8,6 +8,12 @@ importers:
 
   .:
     devDependencies:
+      '@vitest/coverage-v8':
+        specifier: ^2.0.0
+        version: 2.1.9(vitest@2.1.9(@types/node@24.10.4)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.0
+        version: 25.0.1
       nx:
         specifier: ^22.2
         version: 22.2.3
@@ -17,6 +23,9 @@ importers:
       vite:
         specifier: ^7.3
         version: 7.3.0(@types/node@24.10.4)(yaml@2.8.2)
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@24.10.4)(jsdom@25.0.1)
 
   internal/builder:
     dependencies:
@@ -46,6 +55,18 @@ importers:
       '@gesturejs/builder':
         specifier: workspace:*
         version: link:../../internal/builder
+      '@vitest/coverage-v8':
+        specifier: '*'
+        version: 2.1.9(vitest@2.1.9(@types/node@24.10.4)(jsdom@25.0.1))
+      jsdom:
+        specifier: '*'
+        version: 25.0.1
+      vite:
+        specifier: '*'
+        version: 7.3.0(@types/node@24.10.4)(yaml@2.8.2)
+      vitest:
+        specifier: '*'
+        version: 2.1.9(@types/node@24.10.4)(jsdom@25.0.1)
 
   packages/stream:
     devDependencies:
@@ -53,16 +74,16 @@ importers:
         specifier: workspace:*
         version: link:../../internal/builder
       '@vitest/coverage-v8':
-        specifier: ^2.0.0
+        specifier: '*'
         version: 2.1.9(vitest@2.1.9(@types/node@24.10.4)(jsdom@25.0.1))
       jsdom:
-        specifier: ^25.0.0
+        specifier: '*'
         version: 25.0.1
       vite:
         specifier: '*'
         version: 7.3.0(@types/node@24.10.4)(yaml@2.8.2)
       vitest:
-        specifier: ^2.0.0
+        specifier: '*'
         version: 2.1.9(@types/node@24.10.4)(jsdom@25.0.1)
 
 packages:

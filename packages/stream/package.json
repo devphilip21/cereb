@@ -53,9 +53,9 @@
   },
   "devDependencies": {
     "@gesturejs/builder": "workspace:*",
+    "@vitest/coverage-v8": "*",
+    "jsdom": "*",
     "vite": "*",
-    "vitest": "^2.0.0",
-    "jsdom": "^25.0.0",
-    "@vitest/coverage-v8": "^2.0.0"
+    "vitest": "*"
   }
 }
