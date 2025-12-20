@@ -1,4 +1,6 @@
-export interface ObjectPool<T> {
+import type { Signal } from "./signal.js";
+
+export interface SignalPool<T extends Signal> {
   acquire(): T;
   release(obj: T): void;
   clear(): void;
@@ -6,13 +8,13 @@ export interface ObjectPool<T> {
   readonly active: number;
 }
 
-/** Pre-allocates and reuses objects to reduce GC pressure. */
-export function createObjectPool<T>(
+/** Pre-allocates and reuses Signal objects to reduce GC pressure. */
+export function createSignalPool<T extends Signal>(
   factory: () => T,
   reset: (obj: T) => void,
   initialSize = 20,
   maxSize = 100
-): ObjectPool<T> {
+): SignalPool<T> {
   const pool: T[] = [];
   let activeCount = 0;
 

@@ -52,7 +52,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@gesturejs/builder": "workspace:*",
+    "@gesturejs/builder": "workspace:^",
     "@vitest/coverage-v8": "*",
     "jsdom": "*",
     "vite": "*",

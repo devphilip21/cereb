@@ -1,4 +1,4 @@
-import type { Signal } from "../core/signal.js";
+import type { Signal } from "@gesturejs/signal";
 import type { PointerType, PointerPhase, PointerButton } from "./types.js";
 
 export interface SinglePointer extends Signal<"pointer"> {

@@ -2,75 +2,50 @@
 
 **Signal** is a higher-level abstraction over events that merges and refines disparate inputs into a single, composable stream.
 
-## Why @gesturejs/signal?
-
-- **Unified Interface** - Subscribe to diverse event sources through one consistent API by normalizing them into a unified signal stream.
-- **GC Optimized** - Built-in object pooling prevents garbage collection pauses during high-frequency input (60+ events/sec)
-- **Observable-Based** - Works seamlessly with reactive patterns via `@gesturejs/stream`.
-
 ## Installation
 
 ```bash
-npm install @gesturejs/signal
+npm install --save @gesturejs/signal
 ```
 
-## Quick Start
+## Core Concepts
 
-### Single Pointer
+### Signal
+
+A `Signal` is the base interface for all normalized event data:
 
 ```typescript
-import { singlePointer } from "@gesturejs/signal";
-
-const stream = singlePointer(canvasElement);
-const unsub = stream.subscribe((pointer) => {
-  console.log(pointer.x, pointer.y);
-  console.log(pointer.phase); // start, move, end, cancel
-});
+interface Signal<T extends string = string> {
+  type: T;
+  timestamp: number;
+  deviceId: string;
+}
 ```
 
-## Recipes
+### SignalPool
 
-### Use Other Events
+Built-in object pooling for Signal types to prevent garbage collection pauses during high-frequency input (60+ events/sec):
 
 ```typescript
-import { touchEventsToSinglePointer } from "@gesturejs/signal";
-import { fromEvent, merge, pipe, filter } from "@gesturejs/stream";
+import { createSignalPool, type Signal } from "@gesturejs/signal";
 
-/**
- * The `singlePointer()` factory is primarily designed for PointerEvents.
- * If you're working with TouchEvents, you can convert a TouchEvent stream via
- * `touchEventsToSinglePointer()` and keep using the same SinglePointer pipeline.
- */
-const stream = pipe(
-  merge(
-    fromEvent(el, "touchstart"),
-    fromEvent(el, "touchmove"),
-    fromEvent(el, "touchend"),
-    fromEvent(el, "touchcancel")
-  ),
-  touchEventsToSinglePointer(),
-  filter((p) => p.phase === "move")
+interface MySignal extends Signal<"custom"> {
+  type: "custom";
+  x: number;
+  y: number;
+}
+
+const pool = createSignalPool<MySignal>(
+  () => ({ type: "custom", timestamp: 0, deviceId: "", x: 0, y: 0 }),
+  (obj) => { obj.timestamp = 0; obj.deviceId = ""; obj.x = 0; obj.y = 0; },
+  20,   // initial size
+  100   // max size
 );
-const unsub = stream.subscribe((pointer) => {
-  draw(pointer.x, pointer.y);
-});
+
+const signal = pool.acquire();
+// use signal...
+pool.release(signal);
 ```
-
-### Object Pooling
-
-```typescript
-/**
- * Pooling reduces allocations/GC pressure for high-frequency input
- * - but emitted objects are reused (mutated/reset). Don't keep references.
- * - If you need to persist data, copy the fields you need.
- */
-const spStream = singlePointer(canvasElement, { pooling: true });
-```
-
-## Documentation
-
-- [API Reference](./docs/api.md)
-- [Signal Structure](./docs/signal.md)
 
 ## License
 

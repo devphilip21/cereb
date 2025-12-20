@@ -1,0 +1,82 @@
+name: Release
+run-name: "Release packages @${{ github.sha }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Dry-run mode (no publish)'
+        required: false
+        default: 'false'
+        type: boolean
+      first-release:
+        description: 'First release (no git tags exist yet)'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run tests
+        run: npx nx run-many -t test --projects=packages/*
+
+      - name: Build packages
+        run: npx nx run-many -t build --projects=packages/*
+
+      - name: Set release flags
+        id: flags
+        run: |
+          FLAGS=""
+          if [ "${{ inputs.first-release }}" == "true" ]; then
+            FLAGS="$FLAGS --first-release"
+          fi
+          echo "flags=$FLAGS" >> $GITHUB_OUTPUT
+
+      - name: Release (dry-run)
+        if: ${{ inputs.dry-run == 'true' }}
+        run: npx nx release --skip-publish --dry-run ${{ steps.flags.outputs.flags }}
+
+      - name: Release
+        if: ${{ inputs.dry-run != 'true' }}
+        run: npx nx release ${{ steps.flags.outputs.flags }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+
+      - name: Push changes and tags
+        if: ${{ inputs.dry-run != 'true' }}
+        run: git push --follow-tags

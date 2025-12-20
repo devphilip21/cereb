@@ -6,7 +6,6 @@ export default ({ dirname }: { dirname: string }): UserConfig => ({
     lib: {
       entry: {
         index: resolve(dirname, 'src/index.ts'),
-        'core/index': resolve(dirname, 'src/core/index.ts'),
       },
       formats: ['es', 'cjs'],
       fileName: (format, entryName) => {
@@ -15,7 +14,7 @@ export default ({ dirname }: { dirname: string }): UserConfig => ({
       },
     },
     rollupOptions: {
-      external: ['@gesturejs/stream'],
+      external: ['@gesturejs/signal', '@gesturejs/stream'],
     },
   },
 });

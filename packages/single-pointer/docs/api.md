@@ -3,7 +3,7 @@
 ## Factory
 
 ```typescript
-import { singlePointer } from "@gesturejs/signal";
+import { singlePointer } from "@gesturejs/single-pointer";
 
 const pointer$ = singlePointer(element, options?);
 ```
@@ -22,13 +22,13 @@ interface SinglePointerOptions {
 
 ```typescript
 // PointerEvent-based (default)
-import { singlePointer } from "@gesturejs/signal";
+import { singlePointer } from "@gesturejs/single-pointer";
 
 // TouchEvent-based
-import { touchSinglePointer } from "@gesturejs/signal";
+import { touchSinglePointer } from "@gesturejs/single-pointer";
 
 // MouseEvent-based
-import { mouseSinglePointer } from "@gesturejs/signal";
+import { mouseSinglePointer } from "@gesturejs/single-pointer";
 ```
 
 ---
@@ -38,13 +38,13 @@ import { mouseSinglePointer } from "@gesturejs/signal";
 For custom pipelines.
 
 ```typescript
-import { pointerEventsToSinglePointer } from "@gesturejs/signal";
-import { touchEventsToSinglePointer } from "@gesturejs/signal";
-import { mouseEventsToSinglePointer } from "@gesturejs/signal";
+import { pointerEventsToSinglePointer } from "@gesturejs/single-pointer";
+import { touchEventsToSinglePointer } from "@gesturejs/single-pointer";
+import { mouseEventsToSinglePointer } from "@gesturejs/single-pointer";
 ```
 
 ```typescript
-import { pointerEventsToSinglePointer } from "@gesturejs/signal";
+import { pointerEventsToSinglePointer } from "@gesturejs/single-pointer";
 import { fromEvent, merge, pipe, filter } from "@gesturejs/stream";
 
 const pointer$ = pipe(
@@ -66,13 +66,13 @@ const pointer$ = pipe(
 For manual event handling.
 
 ```typescript
-import { createPointerEmitter } from "@gesturejs/signal";
-import { createTouchEmitter } from "@gesturejs/signal";
-import { createMouseEmitter } from "@gesturejs/signal";
+import { createPointerEmitter } from "@gesturejs/single-pointer";
+import { createTouchEmitter } from "@gesturejs/single-pointer";
+import { createMouseEmitter } from "@gesturejs/single-pointer";
 ```
 
 ```typescript
-import { createPointerEmitter } from "@gesturejs/signal";
+import { createPointerEmitter } from "@gesturejs/single-pointer";
 
 const emitter = createPointerEmitter({ pooling: true });
 

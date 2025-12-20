@@ -1,11 +1,11 @@
-import { createObjectPool } from "../core/pool.js";
+import { createSignalPool } from "@gesturejs/signal";
 import {
   createDefaultSinglePointer,
   resetSinglePointer,
   type SinglePointer,
 } from "./signal.js";
 
-export const singlePointerPool = createObjectPool<SinglePointer>(
+export const singlePointerPool = createSignalPool<SinglePointer>(
   createDefaultSinglePointer,
   resetSinglePointer,
   20,

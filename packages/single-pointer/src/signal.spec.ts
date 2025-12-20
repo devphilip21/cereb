@@ -4,7 +4,7 @@ import {
   resetSinglePointer,
   isSinglePointer,
 } from "./signal.js";
-import type { Signal } from "../core/signal.js";
+import type { Signal } from "@gesturejs/signal";
 
 describe("createDefaultSinglePointer", () => {
   it("should create pointer with default values", () => {

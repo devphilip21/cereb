@@ -1,15 +1,15 @@
 {
-  "name": "@gesturejs/signal",
-  "description": "A higher-level abstraction over events that merges and refines disparate inputs into a single, composable stream",
-  "version": "0.2.0",
+  "name": "@gesturejs/single-pointer",
+  "description": "Single-pointer signal stream for unified pointer, touch, and mouse input handling",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "devphilip21 <philip21.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/devphilip21/gesturejs.git",
-    "directory": "packages/signal"
+    "directory": "packages/single-pointer"
   },
-  "homepage": "https://github.com/devphilip21/gesturejs/tree/main/packages/signal",
+  "homepage": "https://github.com/devphilip21/gesturejs/tree/main/packages/single-pointer",
   "bugs": {
     "url": "https://github.com/devphilip21/gesturejs/issues"
   },
@@ -49,6 +49,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@gesturejs/signal": "workspace:^",
     "@gesturejs/stream": "workspace:^"
   },
   "devDependencies": {
