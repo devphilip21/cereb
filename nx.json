@@ -12,7 +12,7 @@
     }
   },
   "release": {
-    "projects": ["packages/*"],
+    "projects": ["packages/core/*", "packages/signal/*", "packages/gesture/*"],
     "projectsRelationship": "independent",
     "releaseTagPattern": "{projectName}@{version}",
     "changelog": false,

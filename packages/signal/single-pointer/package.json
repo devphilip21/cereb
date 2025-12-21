@@ -1,35 +1,32 @@
 {
-  "name": "@gesturejs/stream",
-  "description": "Lightweight, zero-dependency reactive stream library with RxJS-like pipe operators for gesturejs",
+  "name": "@gesturejs/single-pointer",
+  "description": "Single-pointer signal stream for unified pointer, touch, and mouse input handling",
   "version": "0.1.0",
   "license": "MIT",
   "author": "devphilip21 <philip21.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/devphilip21/gesturejs.git",
-    "directory": "packages/stream"
+    "directory": "packages/signal/single-pointer"
   },
-  "homepage": "https://github.com/devphilip21/gesturejs/tree/main/packages/stream",
+  "homepage": "https://github.com/devphilip21/gesturejs/tree/main/packages/signal/single-pointer",
   "bugs": {
     "url": "https://github.com/devphilip21/gesturejs/issues"
   },
   "keywords": [
-    "stream",
-    "reactive",
-    "observable",
-    "rxjs",
-    "pipe",
-    "functional-reactive",
-    "event-stream",
-    "operators",
+    "pointer",
+    "touch",
+    "mouse",
+    "gesture",
+    "input",
+    "signal",
+    "event",
+    "object-pool",
+    "high-performance",
     "gesturejs"
   ],
   "type": "module",
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
+  "sideEffects": false,
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -38,18 +35,22 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./operators": {
-      "types": "./dist/operators.d.ts",
-      "import": "./dist/operators.js",
-      "require": "./dist/operators.cjs"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "builder build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@gesturejs/signal": "workspace:^",
+    "@gesturejs/stream": "workspace:^"
   },
   "devDependencies": {
     "@gesturejs/builder": "workspace:^",

@@ -42,10 +42,10 @@ jobs:
         run: pnpm install
 
       - name: Run tests
-        run: npx nx run-many -t test --projects=packages/*
+        run: npx nx run-many -t test --projects=packages/core/*,packages/signal/*,packages/gesture/*
 
       - name: Build packages
-        run: npx nx run-many -t build --projects=packages/*
+        run: npx nx run-many -t build --projects=packages/core/*,packages/signal/*,packages/gesture/*
 
       - name: Publish packages (dependency order, skip published)
         run: |

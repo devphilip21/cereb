@@ -5,7 +5,7 @@
 ```typescript
 import { singlePointer } from "@gesturejs/single-pointer";
 
-const pointer$ = singlePointer(element, options?);
+const stream = singlePointer(element, options?);
 ```
 
 ### Options
@@ -17,21 +17,6 @@ interface SinglePointerOptions {
   listenerOptions?: AddEventListenerOptions;
 }
 ```
-
-### Variants
-
-```typescript
-// PointerEvent-based (default)
-import { singlePointer } from "@gesturejs/single-pointer";
-
-// TouchEvent-based
-import { touchSinglePointer } from "@gesturejs/single-pointer";
-
-// MouseEvent-based
-import { mouseSinglePointer } from "@gesturejs/single-pointer";
-```
-
----
 
 ## Operator
 
@@ -47,7 +32,7 @@ import { mouseEventsToSinglePointer } from "@gesturejs/single-pointer";
 import { pointerEventsToSinglePointer } from "@gesturejs/single-pointer";
 import { fromEvent, merge, pipe, filter } from "@gesturejs/stream";
 
-const pointer$ = pipe(
+const stream = pipe(
   merge(
     fromEvent(el, "pointerdown"),
     fromEvent(el, "pointermove"),

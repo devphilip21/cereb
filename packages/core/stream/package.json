@@ -1,32 +1,35 @@
 {
-  "name": "@gesturejs/signal",
-  "description": "A higher-level abstraction over events that merges and refines disparate inputs into a single, composable stream",
-  "version": "0.2.0",
+  "name": "@gesturejs/stream",
+  "description": "Lightweight, zero-dependency reactive stream library with RxJS-like pipe operators for gesturejs",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "devphilip21 <philip21.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/devphilip21/gesturejs.git",
-    "directory": "packages/signal"
+    "directory": "packages/core/stream"
   },
-  "homepage": "https://github.com/devphilip21/gesturejs/tree/main/packages/signal",
+  "homepage": "https://github.com/devphilip21/gesturejs/tree/main/packages/core/stream",
   "bugs": {
     "url": "https://github.com/devphilip21/gesturejs/issues"
   },
   "keywords": [
-    "pointer",
-    "touch",
-    "mouse",
-    "gesture",
-    "input",
-    "signal",
-    "event",
-    "object-pool",
-    "high-performance",
+    "stream",
+    "reactive",
+    "observable",
+    "rxjs",
+    "pipe",
+    "functional-reactive",
+    "event-stream",
+    "operators",
     "gesturejs"
   ],
   "type": "module",
-  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -35,21 +38,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./operators": {
+      "types": "./dist/operators.d.ts",
+      "import": "./dist/operators.js",
+      "require": "./dist/operators.cjs"
     }
   },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
   "scripts": {
     "build": "builder build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
-  },
-  "dependencies": {
-    "@gesturejs/stream": "workspace:^"
   },
   "devDependencies": {
     "@gesturejs/builder": "workspace:^",
