@@ -26,6 +26,9 @@ export { pipe, compose } from "./pipe.js";
 // Factory
 export {
   fromEvent,
+  fromPointerEvents,
+  fromTouchEvents,
+  fromMouseEvents,
   fromPromise,
   from,
   of,
