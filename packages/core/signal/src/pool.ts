@@ -13,7 +13,7 @@ export function createSignalPool<T extends Signal>(
   factory: () => T,
   reset: (obj: T) => void,
   initialSize = 20,
-  maxSize = 100
+  maxSize = 100,
 ): SignalPool<T> {
   const pool: T[] = [];
   let activeCount = 0;

@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { pipe, compose } from "./pipe.js";
+import { describe, expect, it } from "vitest";
 import { from } from "./factory.js";
-import { map, filter } from "./operators/index.js";
+import { filter, map } from "./operators/index.js";
+import { compose, pipe } from "./pipe.js";
 
 describe("pipe", () => {
   it("should apply operators in order", () => {
@@ -10,7 +10,7 @@ describe("pipe", () => {
     pipe(
       from([1, 2, 3, 4, 5]),
       filter((x: number) => x % 2 === 1),
-      map((x: number) => x * 10)
+      map((x: number) => x * 10),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([10, 30, 50]);
@@ -22,7 +22,7 @@ describe("pipe", () => {
     pipe(
       from([1, 2, 3]),
       map((x: number) => String(x)),
-      map((x: string) => x + "!")
+      map((x: string) => `${x}!`),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual(["1!", "2!", "3!"]);
@@ -33,7 +33,7 @@ describe("compose", () => {
   it("should compose operators for reuse", () => {
     const tripleOdd = compose(
       filter((x: number) => x % 2 === 1),
-      map((x: number) => x * 3)
+      map((x: number) => x * 3),
     );
 
     const values1: number[] = [];

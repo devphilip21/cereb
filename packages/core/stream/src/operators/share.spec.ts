@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { share, shareReplay } from "./share.js";
+import { describe, expect, it, vi } from "vitest";
+import { createObservable } from "../observable.js";
 import { pipe } from "../pipe.js";
 import { createSubject } from "../subject.js";
-import { createObservable } from "../observable.js";
+import { share, shareReplay } from "./share.js";
 
 describe("share", () => {
   it("should share single subscription among multiple subscribers", () => {

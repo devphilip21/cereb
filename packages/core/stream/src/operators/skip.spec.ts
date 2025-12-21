@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { skip, skipWhile, skipUntil } from "./skip.js";
-import { from, never } from "../factory.js";
+import { describe, expect, it } from "vitest";
+import { from } from "../factory.js";
 import { pipe } from "../pipe.js";
 import { createSubject } from "../subject.js";
+import { skip, skipUntil, skipWhile } from "./skip.js";
 
 describe("skip", () => {
   it("should skip first N values", () => {
@@ -20,7 +20,7 @@ describe("skipWhile", () => {
 
     pipe(
       from([1, 2, 3, 4, 5]),
-      skipWhile((x) => x < 3)
+      skipWhile((x) => x < 3),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([3, 4, 5]);
@@ -31,7 +31,7 @@ describe("skipWhile", () => {
 
     pipe(
       from([1, 2, 5, 1, 2]),
-      skipWhile((x) => x < 3)
+      skipWhile((x) => x < 3),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([5, 1, 2]);

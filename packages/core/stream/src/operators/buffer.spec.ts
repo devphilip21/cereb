@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { buffer, bufferTime, bufferWhen } from "./buffer.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { from } from "../factory.js";
 import { pipe } from "../pipe.js";
 import { createSubject } from "../subject.js";
+import { buffer, bufferTime, bufferWhen } from "./buffer.js";
 
 describe("buffer", () => {
   it("should buffer values by count", () => {

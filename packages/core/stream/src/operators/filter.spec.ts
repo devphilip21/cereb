@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
-import { filter } from "./filter.js";
+import { describe, expect, it, vi } from "vitest";
 import { from, of } from "../factory.js";
 import { pipe } from "../pipe.js";
+import { filter } from "./filter.js";
 
 describe("filter", () => {
   it("should filter values based on predicate", () => {
@@ -9,7 +9,7 @@ describe("filter", () => {
 
     pipe(
       from([1, 2, 3, 4, 5]),
-      filter((x) => x % 2 === 0)
+      filter((x) => x % 2 === 0),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([2, 4]);
@@ -24,7 +24,7 @@ describe("filter", () => {
         { name: "Bob", age: 17 },
         { name: "Charlie", age: 30 },
       ]),
-      filter((user) => user.age >= 18)
+      filter((user) => user.age >= 18),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([
@@ -41,7 +41,7 @@ describe("filter", () => {
       of(1),
       filter(() => {
         throw error;
-      })
+      }),
     ).subscribe({ next: vi.fn(), error: errorFn });
 
     expect(errorFn).toHaveBeenCalledWith(error);

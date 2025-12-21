@@ -1,9 +1,7 @@
 import type { Observable, Operator } from "../observable.js";
 import { createObservable } from "../observable.js";
 
-export function mergeWith<T, R>(
-  other: Observable<R>
-): Operator<T, T | R> {
+export function mergeWith<T, R>(other: Observable<R>): Operator<T, T | R> {
   return (source) =>
     createObservable((observer) => {
       let completedCount = 0;
@@ -34,9 +32,7 @@ export function mergeWith<T, R>(
     });
 }
 
-export function merge<T>(
-  ...sources: Observable<T>[]
-): Observable<T> {
+export function merge<T>(...sources: Observable<T>[]): Observable<T> {
   return createObservable((observer) => {
     let completedCount = 0;
 
@@ -50,7 +46,7 @@ export function merge<T>(
             observer.complete?.();
           }
         },
-      })
+      }),
     );
 
     return () => {

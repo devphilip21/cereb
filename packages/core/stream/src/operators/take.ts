@@ -26,9 +26,7 @@ export function take<T>(count: number): Operator<T, T> {
     });
 }
 
-export function takeWhile<T>(
-  predicate: (value: T) => boolean
-): Operator<T, T> {
+export function takeWhile<T>(predicate: (value: T) => boolean): Operator<T, T> {
   return (source) =>
     createObservable((observer) => {
       let unsub: (() => void) | undefined;
@@ -50,9 +48,7 @@ export function takeWhile<T>(
     });
 }
 
-export function takeUntil<T>(
-  notifier: Observable<unknown>
-): Operator<T, T> {
+export function takeUntil<T>(notifier: Observable<unknown>): Operator<T, T> {
   return (source) =>
     createObservable((observer) => {
       let completed = false;

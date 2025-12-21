@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { createSubject, createBehaviorSubject } from "./subject.js";
+import { describe, expect, it, vi } from "vitest";
+import { createBehaviorSubject, createSubject } from "./subject.js";
 
 describe("createSubject", () => {
   it("should multicast to multiple subscribers", () => {

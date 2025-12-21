@@ -1,15 +1,15 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  defer,
+  empty,
+  from,
   fromEvent,
   fromPromise,
-  from,
-  of,
-  empty,
-  never,
   interval,
-  timer,
+  never,
+  of,
   throwError,
-  defer,
+  timer,
 } from "./factory.js";
 
 describe("fromEvent", () => {

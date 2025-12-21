@@ -1,4 +1,4 @@
-import type { PointerPhase, PointerButton } from "./types.js";
+import type { PointerButton, PointerPhase } from "./types.js";
 import { toPointerButton } from "./types.js";
 
 export function eventTypeToPhase(eventType: string): PointerPhase {
@@ -23,9 +23,7 @@ export function eventTypeToPhase(eventType: string): PointerPhase {
   }
 }
 
-export function normalizePointerType(
-  type: string
-): "touch" | "mouse" | "pen" | "unknown" {
+export function normalizePointerType(type: string): "touch" | "mouse" | "pen" | "unknown" {
   switch (type) {
     case "mouse":
       return "mouse";
@@ -45,9 +43,7 @@ export function getButton(event: PointerEvent | MouseEvent): PointerButton {
   return toPointerButton(event.button);
 }
 
-export function getDeviceId(
-  event: PointerEvent | TouchEvent | MouseEvent
-): string {
+export function getDeviceId(event: PointerEvent | TouchEvent | MouseEvent): string {
   if ("pointerType" in event) {
     return `${event.pointerType}-${event.pointerId}`;
   }
@@ -56,4 +52,3 @@ export function getDeviceId(
   }
   return "mouse-device";
 }
-

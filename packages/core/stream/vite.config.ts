@@ -1,16 +1,16 @@
-import { resolve } from 'node:path';
-import type { UserConfig } from 'vite';
+import { resolve } from "node:path";
+import type { UserConfig } from "vite";
 
 export default ({ dirname }: { dirname: string }): UserConfig => ({
   build: {
     lib: {
       entry: {
-        index: resolve(dirname, 'src/index.ts'),
-        operators: resolve(dirname, 'src/operators/index.ts'),
+        index: resolve(dirname, "src/index.ts"),
+        operators: resolve(dirname, "src/operators/index.ts"),
       },
-      formats: ['es', 'cjs'],
+      formats: ["es", "cjs"],
       fileName: (format, entryName) => {
-        const ext = format === 'es' ? 'js' : 'cjs';
+        const ext = format === "es" ? "js" : "cjs";
         return `${entryName}.${ext}`;
       },
     },

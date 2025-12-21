@@ -2,13 +2,7 @@ export type PointerType = "touch" | "mouse" | "pen" | "unknown";
 
 export type PointerPhase = "start" | "move" | "end" | "cancel";
 
-export type PointerButton =
-  | "none"
-  | "primary"
-  | "secondary"
-  | "auxiliary"
-  | "back"
-  | "forward";
+export type PointerButton = "none" | "primary" | "secondary" | "auxiliary" | "back" | "forward";
 
 export function toPointerButton(button: number): PointerButton {
   switch (button) {

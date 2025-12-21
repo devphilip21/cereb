@@ -20,9 +20,7 @@ export function skip<T>(count: number): Operator<T, T> {
     });
 }
 
-export function skipWhile<T>(
-  predicate: (value: T) => boolean
-): Operator<T, T> {
+export function skipWhile<T>(predicate: (value: T) => boolean): Operator<T, T> {
   return (source) =>
     createObservable((observer) => {
       let skipping = true;
@@ -42,9 +40,7 @@ export function skipWhile<T>(
     });
 }
 
-export function skipUntil<T>(
-  notifier: Observable<unknown>
-): Operator<T, T> {
+export function skipUntil<T>(notifier: Observable<unknown>): Operator<T, T> {
   return (source) =>
     createObservable((observer) => {
       let skipping = true;

@@ -1,10 +1,5 @@
-import { describe, it, expect } from "vitest";
-import {
-  eventTypeToPhase,
-  normalizePointerType,
-  getButton,
-  getDeviceId,
-} from "./utils.js";
+import { describe, expect, it } from "vitest";
+import { eventTypeToPhase, getButton, getDeviceId, normalizePointerType } from "./utils.js";
 
 describe("eventTypeToPhase", () => {
   it("should map start events to 'start'", () => {
@@ -56,12 +51,8 @@ describe("getButton", () => {
   });
 
   it("should return button type for non-move events", () => {
-    expect(getButton({ type: "pointerdown", button: 0 } as PointerEvent)).toBe(
-      "primary"
-    );
-    expect(getButton({ type: "pointerdown", button: 2 } as PointerEvent)).toBe(
-      "secondary"
-    );
+    expect(getButton({ type: "pointerdown", button: 0 } as PointerEvent)).toBe("primary");
+    expect(getButton({ type: "pointerdown", button: 2 } as PointerEvent)).toBe("secondary");
   });
 });
 

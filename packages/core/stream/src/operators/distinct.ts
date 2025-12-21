@@ -1,9 +1,7 @@
 import type { Operator } from "../observable.js";
 import { createObservable } from "../observable.js";
 
-export function distinctUntilChanged<T>(
-  compare?: (prev: T, curr: T) => boolean
-): Operator<T, T> {
+export function distinctUntilChanged<T>(compare?: (prev: T, curr: T) => boolean): Operator<T, T> {
   const isEqual = compare ?? ((a: T, b: T) => a === b);
 
   return (source) =>
@@ -27,7 +25,7 @@ export function distinctUntilChanged<T>(
 
 export function distinctUntilKeyChanged<T, K>(
   keySelector: (value: T) => K,
-  compare?: (prev: K, curr: K) => boolean
+  compare?: (prev: K, curr: K) => boolean,
 ): Operator<T, T> {
   const isEqual = compare ?? ((a: K, b: K) => a === b);
 

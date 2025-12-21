@@ -6,6 +6,22 @@
  * @packageDocumentation
  */
 
+// Factory
+export {
+  defer,
+  empty,
+  from,
+  fromEvent,
+  fromMouseEvents,
+  fromPointerEvents,
+  fromPromise,
+  fromTouchEvents,
+  interval,
+  never,
+  of,
+  throwError,
+  timer,
+} from "./factory.js";
 // Core types
 export type {
   Observable,
@@ -13,35 +29,15 @@ export type {
   Operator,
   Unsubscribe,
 } from "./observable.js";
-
 export { createObservable, toObserver } from "./observable.js";
-
-// Subject
-export type { Subject, BehaviorSubject } from "./subject.js";
-export { createSubject, createBehaviorSubject } from "./subject.js";
-
-// Pipe
-export { pipe, compose } from "./pipe.js";
-
-// Factory
-export {
-  fromEvent,
-  fromPointerEvents,
-  fromTouchEvents,
-  fromMouseEvents,
-  fromPromise,
-  from,
-  of,
-  empty,
-  never,
-  interval,
-  timer,
-  throwError,
-  defer,
-} from "./factory.js";
-
 // Operators
 export * from "./operators/index.js";
+
+// Pipe
+export { compose, pipe } from "./pipe.js";
+// Subject
+export type { BehaviorSubject, Subject } from "./subject.js";
+export { createBehaviorSubject, createSubject } from "./subject.js";
 
 // Version
 export const VERSION = "0.1.0";

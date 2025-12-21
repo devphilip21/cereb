@@ -1,13 +1,8 @@
 import type { Observable, Operator } from "@gesturejs/stream";
 import { createObservable, fromPointerEvents, pipe } from "@gesturejs/stream";
-import type { SinglePointer } from "./signal.js";
 import { singlePointerPool } from "./pool.js";
-import {
-  eventTypeToPhase,
-  normalizePointerType,
-  getButton,
-  getDeviceId,
-} from "./utils.js";
+import type { SinglePointer } from "./signal.js";
+import { eventTypeToPhase, getButton, getDeviceId, normalizePointerType } from "./utils.js";
 
 export interface PointerEmitterOptions {
   deviceId?: string;
@@ -21,9 +16,7 @@ export interface PointerEmitter {
   dispose(): void;
 }
 
-export function createPointerEmitter(
-  options: PointerEmitterOptions = {}
-): PointerEmitter {
+export function createPointerEmitter(options: PointerEmitterOptions = {}): PointerEmitter {
   const { deviceId: customDeviceId, pooling = false } = options;
   let current: SinglePointer | null = null;
   let resolvedDeviceId = customDeviceId ?? "";
@@ -62,8 +55,7 @@ export function createPointerEmitter(
       const pointer = acquirePointer();
 
       pointer.timestamp = performance.now();
-      pointer.deviceId =
-        resolvedDeviceId || (resolvedDeviceId = getDeviceId(event));
+      pointer.deviceId = resolvedDeviceId || (resolvedDeviceId = getDeviceId(event));
       pointer.phase = phase;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
@@ -94,7 +86,7 @@ export function createPointerEmitter(
 export type ToSinglePointerOptions = PointerEmitterOptions;
 
 export function pointerEventsToSinglePointer(
-  options: ToSinglePointerOptions = {}
+  options: ToSinglePointerOptions = {},
 ): Operator<PointerEvent, SinglePointer> {
   return (source) =>
     createObservable((observer) => {
@@ -128,12 +120,12 @@ export interface SinglePointerOptions extends PointerEmitterOptions {
 
 export function singlePointer(
   target: EventTarget,
-  options: SinglePointerOptions = {}
+  options: SinglePointerOptions = {},
 ): Observable<SinglePointer> {
   const { listenerOptions, ...emitterOptions } = options;
 
   return pipe(
     fromPointerEvents(target, listenerOptions),
-    pointerEventsToSinglePointer(emitterOptions)
+    pointerEventsToSinglePointer(emitterOptions),
   );
 }

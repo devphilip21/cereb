@@ -12,9 +12,7 @@ export interface Observable<T> {
 
 export type Operator<T, R> = (source: Observable<T>) => Observable<R>;
 
-export function toObserver<T>(
-  observerOrNext: Observer<T> | ((value: T) => void)
-): Observer<T> {
+export function toObserver<T>(observerOrNext: Observer<T> | ((value: T) => void)): Observer<T> {
   if (typeof observerOrNext === "function") {
     return { next: observerOrNext };
   }
@@ -22,7 +20,7 @@ export function toObserver<T>(
 }
 
 export function createObservable<T>(
-  subscribeFn: (observer: Observer<T>) => Unsubscribe | void
+  subscribeFn: (observer: Observer<T>) => Unsubscribe | void,
 ): Observable<T> {
   return {
     subscribe(observerOrNext) {

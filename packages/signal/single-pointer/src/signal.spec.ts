@@ -1,10 +1,6 @@
-import { describe, it, expect } from "vitest";
-import {
-  createDefaultSinglePointer,
-  resetSinglePointer,
-  isSinglePointer,
-} from "./signal.js";
 import type { Signal } from "@gesturejs/signal";
+import { describe, expect, it } from "vitest";
+import { createDefaultSinglePointer, isSinglePointer, resetSinglePointer } from "./signal.js";
 
 describe("createDefaultSinglePointer", () => {
   it("should create pointer with default values", () => {

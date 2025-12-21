@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { throttle, throttleLast } from "./throttle.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { pipe } from "../pipe.js";
 import { createSubject } from "../subject.js";
+import { throttle, throttleLast } from "./throttle.js";
 
 describe("throttle", () => {
   let mockTime = 0;

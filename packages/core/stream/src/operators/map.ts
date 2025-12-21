@@ -1,9 +1,7 @@
 import type { Operator } from "../observable.js";
 import { createObservable } from "../observable.js";
 
-export function map<T, R>(
-  transform: (value: T) => R
-): Operator<T, R> {
+export function map<T, R>(transform: (value: T) => R): Operator<T, R> {
   return (source) =>
     createObservable((observer) => {
       return source.subscribe({

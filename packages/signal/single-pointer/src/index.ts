@@ -1,20 +1,17 @@
-export type { PointerType, PointerPhase, PointerButton } from "./types.js";
-export { toPointerButton } from "./types.js";
-
-export type { SinglePointer } from "./signal.js";
-export {
-  createDefaultSinglePointer,
-  resetSinglePointer,
-  isSinglePointer,
-} from "./signal.js";
-
-export { singlePointerPool, releaseSinglePointer } from "./pool.js";
-
 export type {
-  PointerEmitterOptions,
+  MouseEmitter,
+  MouseEmitterOptions,
+  MouseEventsToSinglePointerOptions,
+} from "./mouse.js";
+export {
+  createMouseEmitter,
+  mouseEventsToSinglePointer,
+} from "./mouse.js";
+export type {
   PointerEmitter,
-  ToSinglePointerOptions,
+  PointerEmitterOptions,
   SinglePointerOptions,
+  ToSinglePointerOptions,
 } from "./pointer.js";
 export {
   createPointerEmitter,
@@ -22,9 +19,17 @@ export {
   singlePointer,
 } from "./pointer.js";
 
+export { releaseSinglePointer, singlePointerPool } from "./pool.js";
+export type { SinglePointer } from "./signal.js";
+export {
+  createDefaultSinglePointer,
+  isSinglePointer,
+  resetSinglePointer,
+} from "./signal.js";
+
 export type {
-  TouchEmitterOptions,
   TouchEmitter,
+  TouchEmitterOptions,
   TouchEventsToSinglePointerOptions,
   TouchSinglePointerOptions,
 } from "./touch.js";
@@ -32,20 +37,12 @@ export {
   createTouchEmitter,
   touchEventsToSinglePointer,
 } from "./touch.js";
-
-export type {
-  MouseEmitterOptions,
-  MouseEmitter,
-  MouseEventsToSinglePointerOptions,
-} from "./mouse.js";
-export {
-  createMouseEmitter,
-  mouseEventsToSinglePointer,
-} from "./mouse.js";
+export type { PointerButton, PointerPhase, PointerType } from "./types.js";
+export { toPointerButton } from "./types.js";
 
 export {
   eventTypeToPhase,
-  normalizePointerType,
   getButton,
   getDeviceId,
+  normalizePointerType,
 } from "./utils.js";

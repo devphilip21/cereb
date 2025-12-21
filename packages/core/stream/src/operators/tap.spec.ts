@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
-import { tap } from "./tap.js";
+import { describe, expect, it, vi } from "vitest";
 import { from, of } from "../factory.js";
 import { pipe } from "../pipe.js";
+import { tap } from "./tap.js";
 
 describe("tap", () => {
   it("should execute side effect without changing values", () => {
@@ -10,7 +10,7 @@ describe("tap", () => {
 
     pipe(
       from([1, 2, 3]),
-      tap((x) => sideEffects.push(x * 10))
+      tap((x) => sideEffects.push(x * 10)),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([1, 2, 3]);
@@ -25,7 +25,7 @@ describe("tap", () => {
       of(1),
       tap(() => {
         throw error;
-      })
+      }),
     ).subscribe({ next: vi.fn(), error: errorFn });
 
     expect(errorFn).toHaveBeenCalledWith(error);

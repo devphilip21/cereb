@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { merge, mergeWith } from "./merge.js";
+import { describe, expect, it, vi } from "vitest";
 import { from } from "../factory.js";
 import { pipe } from "../pipe.js";
 import { createSubject } from "../subject.js";
+import { merge, mergeWith } from "./merge.js";
 
 describe("merge", () => {
   it("should merge multiple observables", () => {

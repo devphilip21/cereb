@@ -1,7 +1,7 @@
 import type { Operator } from "@gesturejs/stream";
 import { createObservable } from "@gesturejs/stream";
-import type { SinglePointer } from "./signal.js";
 import { singlePointerPool } from "./pool.js";
+import type { SinglePointer } from "./signal.js";
 import { eventTypeToPhase, getDeviceId } from "./utils.js";
 
 export interface TouchEmitterOptions {
@@ -16,9 +16,7 @@ export interface TouchEmitter {
   dispose(): void;
 }
 
-export function createTouchEmitter(
-  options: TouchEmitterOptions = {}
-): TouchEmitter {
+export function createTouchEmitter(options: TouchEmitterOptions = {}): TouchEmitter {
   const { deviceId: customDeviceId, pooling = false } = options;
   let current: SinglePointer | null = null;
   let resolvedDeviceId = customDeviceId ?? "";
@@ -59,8 +57,7 @@ export function createTouchEmitter(
       const pointer = acquirePointer();
 
       pointer.timestamp = performance.now();
-      pointer.deviceId =
-        resolvedDeviceId || (resolvedDeviceId = getDeviceId(event));
+      pointer.deviceId = resolvedDeviceId || (resolvedDeviceId = getDeviceId(event));
       pointer.phase = phase;
       pointer.x = touch.clientX;
       pointer.y = touch.clientY;
@@ -91,7 +88,7 @@ export function createTouchEmitter(
 export type TouchEventsToSinglePointerOptions = TouchEmitterOptions;
 
 export function touchEventsToSinglePointer(
-  options: TouchEventsToSinglePointerOptions = {}
+  options: TouchEventsToSinglePointerOptions = {},
 ): Operator<TouchEvent, SinglePointer> {
   return (source) =>
     createObservable((observer) => {

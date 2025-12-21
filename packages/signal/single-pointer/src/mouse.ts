@@ -1,7 +1,7 @@
 import type { Operator } from "@gesturejs/stream";
 import { createObservable } from "@gesturejs/stream";
-import type { SinglePointer } from "./signal.js";
 import { singlePointerPool } from "./pool.js";
+import type { SinglePointer } from "./signal.js";
 import { eventTypeToPhase, getButton, getDeviceId } from "./utils.js";
 
 export interface MouseEmitterOptions {
@@ -16,9 +16,7 @@ export interface MouseEmitter {
   dispose(): void;
 }
 
-export function createMouseEmitter(
-  options: MouseEmitterOptions = {}
-): MouseEmitter {
+export function createMouseEmitter(options: MouseEmitterOptions = {}): MouseEmitter {
   const { deviceId: customDeviceId, pooling = false } = options;
   let current: SinglePointer | null = null;
   let resolvedDeviceId = customDeviceId ?? "";
@@ -53,8 +51,7 @@ export function createMouseEmitter(
       const pointer = acquirePointer();
 
       pointer.timestamp = performance.now();
-      pointer.deviceId =
-        resolvedDeviceId || (resolvedDeviceId = getDeviceId(event));
+      pointer.deviceId = resolvedDeviceId || (resolvedDeviceId = getDeviceId(event));
       pointer.phase = phase;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
@@ -85,7 +82,7 @@ export function createMouseEmitter(
 export type MouseEventsToSinglePointerOptions = MouseEmitterOptions;
 
 export function mouseEventsToSinglePointer(
-  options: MouseEventsToSinglePointerOptions = {}
+  options: MouseEventsToSinglePointerOptions = {},
 ): Operator<MouseEvent, SinglePointer> {
   return (source) =>
     createObservable((observer) => {

@@ -1,15 +1,13 @@
-import { describe, it, expect } from "vitest";
-import { distinctUntilChanged, distinctUntilKeyChanged } from "./distinct.js";
+import { describe, expect, it } from "vitest";
 import { from } from "../factory.js";
 import { pipe } from "../pipe.js";
+import { distinctUntilChanged, distinctUntilKeyChanged } from "./distinct.js";
 
 describe("distinctUntilChanged", () => {
   it("should emit only distinct consecutive values", () => {
     const values: number[] = [];
 
-    pipe(from([1, 1, 2, 2, 2, 3, 1, 1]), distinctUntilChanged()).subscribe((v) =>
-      values.push(v)
-    );
+    pipe(from([1, 1, 2, 2, 2, 3, 1, 1]), distinctUntilChanged()).subscribe((v) => values.push(v));
 
     expect(values).toEqual([1, 2, 3, 1]);
   });
@@ -23,7 +21,7 @@ describe("distinctUntilChanged", () => {
         { x: 1, y: 2 },
         { x: 2, y: 1 },
       ]),
-      distinctUntilChanged((a, b) => a.x === b.x)
+      distinctUntilChanged((a, b) => a.x === b.x),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([
@@ -43,7 +41,7 @@ describe("distinctUntilKeyChanged", () => {
         { id: 1, name: "Bob" },
         { id: 2, name: "Charlie" },
       ]),
-      distinctUntilKeyChanged((x) => x.id)
+      distinctUntilKeyChanged((x) => x.id),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([

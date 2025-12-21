@@ -5,7 +5,7 @@ import { merge } from "./operators/merge.js";
 export function fromEvent<T extends Event>(
   target: EventTarget,
   eventName: string,
-  options?: AddEventListenerOptions
+  options?: AddEventListenerOptions,
 ): Observable<T> {
   return createObservable((observer) => {
     const handler = (event: Event) => {
@@ -120,56 +120,44 @@ export function throwError(error: unknown): Observable<never> {
   });
 }
 
-export function defer<T>(
-  factory: () => Observable<T>
-): Observable<T> {
+export function defer<T>(factory: () => Observable<T>): Observable<T> {
   return createObservable((observer) => {
     return factory().subscribe(observer);
   });
 }
 
-const POINTER_EVENTS = [
-  "pointerdown",
-  "pointermove",
-  "pointerup",
-  "pointercancel",
-] as const;
+const POINTER_EVENTS = ["pointerdown", "pointermove", "pointerup", "pointercancel"] as const;
 
-const TOUCH_EVENTS = [
-  "touchstart",
-  "touchmove",
-  "touchend",
-  "touchcancel",
-] as const;
+const TOUCH_EVENTS = ["touchstart", "touchmove", "touchend", "touchcancel"] as const;
 
 const MOUSE_EVENTS = ["mousedown", "mousemove", "mouseup"] as const;
 
 export function fromPointerEvents(
   target: EventTarget,
-  options?: AddEventListenerOptions
+  options?: AddEventListenerOptions,
 ): Observable<PointerEvent> {
   const sources = POINTER_EVENTS.map((eventName) =>
-    fromEvent<PointerEvent>(target, eventName, options)
+    fromEvent<PointerEvent>(target, eventName, options),
   );
   return merge(...sources);
 }
 
 export function fromTouchEvents(
   target: EventTarget,
-  options?: AddEventListenerOptions
+  options?: AddEventListenerOptions,
 ): Observable<TouchEvent> {
   const sources = TOUCH_EVENTS.map((eventName) =>
-    fromEvent<TouchEvent>(target, eventName, options)
+    fromEvent<TouchEvent>(target, eventName, options),
   );
   return merge(...sources);
 }
 
 export function fromMouseEvents(
   target: EventTarget,
-  options?: AddEventListenerOptions
+  options?: AddEventListenerOptions,
 ): Observable<MouseEvent> {
   const sources = MOUSE_EVENTS.map((eventName) =>
-    fromEvent<MouseEvent>(target, eventName, options)
+    fromEvent<MouseEvent>(target, eventName, options),
   );
   return merge(...sources);
 }

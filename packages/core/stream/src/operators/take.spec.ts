@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { take, takeWhile, takeUntil } from "./take.js";
-import { from, never } from "../factory.js";
+import { describe, expect, it, vi } from "vitest";
+import { from } from "../factory.js";
 import { pipe } from "../pipe.js";
 import { createSubject } from "../subject.js";
+import { take, takeUntil, takeWhile } from "./take.js";
 
 describe("take", () => {
   it("should take first N values and complete", () => {
@@ -25,7 +25,7 @@ describe("takeWhile", () => {
 
     pipe(
       from([1, 2, 3, 4, 5]),
-      takeWhile((x) => x < 4)
+      takeWhile((x) => x < 4),
     ).subscribe((v) => values.push(v));
 
     expect(values).toEqual([1, 2, 3]);

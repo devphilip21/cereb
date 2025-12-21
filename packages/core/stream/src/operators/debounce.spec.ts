@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { debounce } from "./debounce.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { pipe } from "../pipe.js";
 import { createSubject } from "../subject.js";
+import { debounce } from "./debounce.js";
 
 describe("debounce", () => {
   beforeEach(() => vi.useFakeTimers());

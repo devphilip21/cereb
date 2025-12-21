@@ -58,9 +58,7 @@ export function bufferTime<T>(ms: number): Operator<T, T[]> {
     });
 }
 
-export function bufferWhen<T>(
-  notifier: Observable<unknown>
-): Operator<T, T[]> {
+export function bufferWhen<T>(notifier: Observable<unknown>): Operator<T, T[]> {
   return (source) =>
     createObservable((observer) => {
       let buffer: T[] = [];

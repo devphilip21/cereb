@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
-import { combineLatest, forkJoin } from "./combine.js";
-import { from, empty } from "../factory.js";
+import { describe, expect, it, vi } from "vitest";
+import { empty, from } from "../factory.js";
 import { createSubject } from "../subject.js";
+import { combineLatest, forkJoin } from "./combine.js";
 
 describe("combineLatest", () => {
   it("should combine latest values from all sources", () => {
@@ -9,9 +9,7 @@ describe("combineLatest", () => {
     const source2 = createSubject<string>();
     const values: [number, string][] = [];
 
-    combineLatest(source1, source2).subscribe((v) =>
-      values.push(v as [number, string])
-    );
+    combineLatest(source1, source2).subscribe((v) => values.push(v as [number, string]));
 
     source1.next(1);
     expect(values).toEqual([]);
@@ -32,7 +30,7 @@ describe("forkJoin", () => {
     const values: [number, string][] = [];
 
     forkJoin(from([1, 2, 3]), from(["a", "b", "c"])).subscribe((v) =>
-      values.push(v as [number, string])
+      values.push(v as [number, string]),
     );
 
     expect(values).toEqual([[3, "c"]]);

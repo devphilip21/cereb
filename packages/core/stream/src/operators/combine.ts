@@ -26,7 +26,7 @@ export function combineLatest<T extends unknown[]>(
             observer.complete?.();
           }
         },
-      })
+      }),
     );
 
     return () => {
@@ -61,7 +61,7 @@ export function forkJoin<T extends unknown[]>(
             observer.complete?.();
           }
         },
-      })
+      }),
     );
 
     return () => {
