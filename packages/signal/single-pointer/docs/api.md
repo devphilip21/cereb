@@ -18,29 +18,25 @@ interface SinglePointerOptions {
 }
 ```
 
-## Operator
-
-For custom pipelines.
+## Use another events instead of pointer
 
 ```typescript
-import { pointerEventsToSinglePointer } from "@gesturejs/single-pointer";
 import { touchEventsToSinglePointer } from "@gesturejs/single-pointer";
-import { mouseEventsToSinglePointer } from "@gesturejs/single-pointer";
+import { fromTouchEvents, pipe } from "@gesturejs/stream";
+
+const stream = pipe(
+  fromTouchEvents(el),
+  touchEventsToSinglePointer()
+);
 ```
 
 ```typescript
-import { pointerEventsToSinglePointer } from "@gesturejs/single-pointer";
-import { fromEvent, merge, pipe, filter } from "@gesturejs/stream";
+import { mouseEventsToSinglePointer } from "@gesturejs/single-pointer";
+import { fromMouseEvents, pipe } from "@gesturejs/stream";
 
 const stream = pipe(
-  merge(
-    fromEvent(el, "pointerdown"),
-    fromEvent(el, "pointermove"),
-    fromEvent(el, "pointerup"),
-    fromEvent(el, "pointercancel")
-  ),
-  pointerEventsToSinglePointer({ pooling: true }),
-  filter((p) => p.phase === "move")
+  fromMouseEvents(el),
+  mouseEventsToSinglePointer()
 );
 ```
 
@@ -70,8 +66,6 @@ element.addEventListener("pointerdown", (e) => {
 
 emitter.dispose();
 ```
-
----
 
 ## Pooling
 

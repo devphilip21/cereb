@@ -1,5 +1,5 @@
 import type { Observable, Operator } from "@gesturejs/stream";
-import { createObservable, fromEvent, merge, pipe } from "@gesturejs/stream";
+import { createObservable, fromPointerEvents, pipe } from "@gesturejs/stream";
 import type { SinglePointer } from "./signal.js";
 import { singlePointerPool } from "./pool.js";
 import {
@@ -126,22 +126,14 @@ export interface SinglePointerOptions extends PointerEmitterOptions {
   listenerOptions?: AddEventListenerOptions;
 }
 
-const POINTER_EVENTS = [
-  "pointerdown",
-  "pointermove",
-  "pointerup",
-  "pointercancel",
-] as const;
-
 export function singlePointer(
   target: EventTarget,
   options: SinglePointerOptions = {}
 ): Observable<SinglePointer> {
   const { listenerOptions, ...emitterOptions } = options;
 
-  const sources = POINTER_EVENTS.map((eventName) =>
-    fromEvent<PointerEvent>(target, eventName, listenerOptions)
+  return pipe(
+    fromPointerEvents(target, listenerOptions),
+    pointerEventsToSinglePointer(emitterOptions)
   );
-
-  return pipe(merge(...sources), pointerEventsToSinglePointer(emitterOptions));
 }
