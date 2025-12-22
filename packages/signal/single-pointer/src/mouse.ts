@@ -32,6 +32,8 @@ export function createMouseEmitter(options: MouseEmitterOptions = {}): MouseEmit
       phase: "move",
       x: 0,
       y: 0,
+      pageX: 0,
+      pageY: 0,
       pointerType: "mouse",
       button: "none",
       pressure: 0.5,
@@ -55,6 +57,8 @@ export function createMouseEmitter(options: MouseEmitterOptions = {}): MouseEmit
       pointer.phase = phase;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
+      pointer.pageX = event.pageX;
+      pointer.pageY = event.pageY;
       pointer.pointerType = "mouse";
       pointer.button = getButton(event);
       pointer.pressure = phase === "move" && event.buttons === 0 ? 0 : 0.5;

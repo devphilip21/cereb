@@ -6,6 +6,8 @@ export interface SinglePointer extends Signal<"pointer"> {
   phase: PointerPhase;
   x: number;
   y: number;
+  pageX: number;
+  pageY: number;
   pointerType: PointerType;
   button: PointerButton;
   /** 0.0 ~ 1.0, default 0.5 if unsupported */
@@ -20,6 +22,8 @@ export function createDefaultSinglePointer(): SinglePointer {
     phase: "move",
     x: 0,
     y: 0,
+    pageX: 0,
+    pageY: 0,
     pointerType: "unknown",
     button: "none",
     pressure: 0.5,
@@ -32,6 +36,8 @@ export function resetSinglePointer(p: SinglePointer): void {
   p.phase = "move";
   p.x = 0;
   p.y = 0;
+  p.pageX = 0;
+  p.pageY = 0;
   p.pointerType = "unknown";
   p.button = "none";
   p.pressure = 0.5;

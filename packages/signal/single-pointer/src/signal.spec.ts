@@ -13,6 +13,8 @@ describe("createDefaultSinglePointer", () => {
       phase: "move",
       x: 0,
       y: 0,
+      pageX: 0,
+      pageY: 0,
       pointerType: "unknown",
       button: "none",
       pressure: 0.5,
@@ -28,6 +30,8 @@ describe("resetSinglePointer", () => {
     pointer.phase = "start";
     pointer.x = 150;
     pointer.y = 200;
+    pointer.pageX = 150;
+    pointer.pageY = 700;
     pointer.pointerType = "mouse";
     pointer.button = "primary";
     pointer.pressure = 1.0;
@@ -39,6 +43,8 @@ describe("resetSinglePointer", () => {
     expect(pointer.phase).toBe("move");
     expect(pointer.x).toBe(0);
     expect(pointer.y).toBe(0);
+    expect(pointer.pageX).toBe(0);
+    expect(pointer.pageY).toBe(0);
     expect(pointer.pointerType).toBe("unknown");
     expect(pointer.button).toBe("none");
     expect(pointer.pressure).toBe(0.5);

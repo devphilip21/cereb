@@ -32,6 +32,8 @@ export function createPointerEmitter(options: PointerEmitterOptions = {}): Point
       phase: "move",
       x: 0,
       y: 0,
+      pageX: 0,
+      pageY: 0,
       pointerType: "unknown",
       button: "none",
       pressure: 0.5,
@@ -59,6 +61,8 @@ export function createPointerEmitter(options: PointerEmitterOptions = {}): Point
       pointer.phase = phase;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
+      pointer.pageX = event.pageX;
+      pointer.pageY = event.pageY;
       pointer.pointerType = normalizePointerType(event.pointerType);
       pointer.button = getButton(event);
       pointer.pressure = event.pressure;

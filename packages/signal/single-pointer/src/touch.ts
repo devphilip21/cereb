@@ -32,6 +32,8 @@ export function createTouchEmitter(options: TouchEmitterOptions = {}): TouchEmit
       phase: "move",
       x: 0,
       y: 0,
+      pageX: 0,
+      pageY: 0,
       pointerType: "touch",
       button: "none",
       pressure: 0.5,
@@ -61,6 +63,8 @@ export function createTouchEmitter(options: TouchEmitterOptions = {}): TouchEmit
       pointer.phase = phase;
       pointer.x = touch.clientX;
       pointer.y = touch.clientY;
+      pointer.pageX = touch.pageX;
+      pointer.pageY = touch.pageY;
       pointer.pointerType = "touch";
       pointer.button = "none";
       pointer.pressure = touch.force || 0.5;
