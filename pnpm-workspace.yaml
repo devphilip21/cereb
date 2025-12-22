@@ -1,4 +1,5 @@
 packages:
   - 'packages/core/*'
   - 'packages/signal/*'
+  - 'packages/gesture/*'
   - 'internal/*'

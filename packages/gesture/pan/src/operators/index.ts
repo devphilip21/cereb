@@ -1,0 +1,3 @@
+export type { AxisLockOptions, LockedAxis } from "./axis-lock.js";
+export { axisLock } from "./axis-lock.js";
+export { withVelocity } from "./with-velocity.js";

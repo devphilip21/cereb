@@ -1,0 +1,61 @@
+{
+  "name": "@gesturejs/pan",
+  "description": "Pan gesture recognition - Observable-based, Extensible, Zero GC Jank",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "devphilip21 <philip21.dev@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devphilip21/gesturejs.git",
+    "directory": "packages/gesture/pan"
+  },
+  "homepage": "https://github.com/devphilip21/gesturejs/tree/main/packages/gesture/pan",
+  "bugs": {
+    "url": "https://github.com/devphilip21/gesturejs/issues"
+  },
+  "keywords": [
+    "pan",
+    "gesture",
+    "touch",
+    "pointer",
+    "drag",
+    "swipe",
+    "gesturejs"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "builder build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@gesturejs/gesture": "workspace:^",
+    "@gesturejs/signal": "workspace:^",
+    "@gesturejs/stream": "workspace:^",
+    "@gesturejs/single-pointer": "workspace:^"
+  },
+  "devDependencies": {
+    "@gesturejs/builder": "workspace:^",
+    "@vitest/coverage-v8": "*",
+    "jsdom": "*",
+    "vite": "*",
+    "vitest": "*"
+  }
+}
