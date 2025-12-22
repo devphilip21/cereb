@@ -58,6 +58,31 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@24.10.4)(rollup@4.53.3)(typescript@5.9.3)(vite@7.3.0(@types/node@24.10.4)(yaml@2.8.2))
 
+  packages/core/gesture:
+    dependencies:
+      '@gesturejs/signal':
+        specifier: workspace:^
+        version: link:../signal
+      '@gesturejs/stream':
+        specifier: workspace:^
+        version: link:../stream
+    devDependencies:
+      '@gesturejs/builder':
+        specifier: workspace:^
+        version: link:../../../internal/builder
+      '@vitest/coverage-v8':
+        specifier: '*'
+        version: 2.1.9(vitest@2.1.9(@types/node@24.10.4)(jsdom@25.0.1))
+      jsdom:
+        specifier: '*'
+        version: 25.0.1
+      vite:
+        specifier: '*'
+        version: 7.3.0(@types/node@24.10.4)(yaml@2.8.2)
+      vitest:
+        specifier: '*'
+        version: 2.1.9(@types/node@24.10.4)(jsdom@25.0.1)
+
   packages/core/signal:
     dependencies:
       '@gesturejs/stream':
