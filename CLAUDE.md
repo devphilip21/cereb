@@ -10,3 +10,16 @@
 ### Must Not Do
 - Do not leave comments just for section-dividing purposes
 - Do not write comments for things that can be understood from the code alone
+
+## Test Code Rules
+
+### File Structure
+- Test files use the `*.spec.ts` naming convention
+- Test files are placed at the same directory depth as the target `.ts` file
+
+### Test Coverage Strategy
+- Tests are based on user scenarios of the module
+- Initially include only core functionality tests
+- Variations that represent essential behavior of core features should be included
+- Do not include all edge case variations in the initial test suite
+- Edge case tests are added incrementally over time as needed
