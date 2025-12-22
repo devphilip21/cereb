@@ -33,5 +33,17 @@
   },
   "files": {
     "includes": ["**", "!**/dist", "!**/node_modules", "!**/.nx", "!**/coverage"]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.spec.ts", "**/*.test.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    }
+  ]
 }
