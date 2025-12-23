@@ -1,6 +1,10 @@
 {
   "private": true,
   "scripts": {
+    "docs": "nx dev @cereb/docs",
+    "docs:build": "nx build @cereb/docs",
+    "docs:preview": "nx preview @cereb/docs",
+    "website": "nx dev website",
     "postinstall": "[ -n \"$SKIP_POSTINSTALL\" ] || (npx nx build @cereb/builder && SKIP_POSTINSTALL=1 pnpm rebuild)",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

@@ -1,6 +1,6 @@
 # Cereb
 
-Composable, high-performance gesture recognition for JavaScript runtimes.
+ Composable, high-performance user interaction interpreter for JavaScript runtimes.
 
 ```typescript
 import { pan } from "@cereb/pan";

@@ -1,0 +1,88 @@
+---
+title: take
+description: Limit the number of emissions
+---
+
+Operators for limiting emissions.
+
+## take
+
+Emits only the first N values.
+
+```typescript
+function take<T>(count: number): Operator<T, T>
+```
+
+### Usage
+
+```typescript
+import { pipe, from } from "@cereb/stream";
+import { take } from "@cereb/stream/operators";
+
+const limited$ = pipe(
+  from([1, 2, 3, 4, 5]),
+  take(3)
+);
+
+limited$.subscribe(console.log);
+// Output: 1, 2, 3
+```
+
+## takeWhile
+
+Emits values while predicate returns true.
+
+```typescript
+function takeWhile<T>(predicate: (value: T) => boolean): Operator<T, T>
+```
+
+### Usage
+
+```typescript
+import { pipe, from } from "@cereb/stream";
+import { takeWhile } from "@cereb/stream/operators";
+
+const numbers$ = pipe(
+  from([1, 2, 3, 4, 3, 2, 1]),
+  takeWhile((x) => x < 4)
+);
+
+numbers$.subscribe(console.log);
+// Output: 1, 2, 3
+```
+
+## takeUntil
+
+Emits values until notifier emits.
+
+```typescript
+function takeUntil<T>(notifier: Observable<unknown>): Operator<T, T>
+```
+
+### Usage
+
+```typescript
+import { pipe, fromEvent } from "@cereb/stream";
+import { takeUntil } from "@cereb/stream/operators";
+
+const stop$ = fromEvent(stopButton, "click");
+
+const stream$ = pipe(
+  source$,
+  takeUntil(stop$)
+);
+```
+
+## Real-World Example
+
+```typescript
+import { singlePointer } from "@cereb/single-pointer";
+import { pipe } from "@cereb/stream";
+import { takeWhile } from "@cereb/stream/operators";
+
+// Stop tracking when pointer leaves the element
+const pointer$ = pipe(
+  singlePointer(element),
+  takeWhile((s) => s.phase !== "cancel")
+);
+```

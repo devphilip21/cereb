@@ -1,0 +1,74 @@
+:root,
+:root[data-theme="light"] {
+  --sl-color-accent-low: #3d3200;
+  --sl-color-accent: #fee500;
+  --sl-color-accent-high: #fff9c4;
+  --sl-color-white: #fafafa;
+  --sl-color-gray-1: #e5e5e5;
+  --sl-color-gray-2: #a3a3a3;
+  --sl-color-gray-3: #737373;
+  --sl-color-gray-4: #525252;
+  --sl-color-gray-5: #2a2a2a;
+  --sl-color-gray-6: #1a1a1a;
+  --sl-color-black: #0a0a0a;
+  --sl-color-bg: #0a0a0a;
+  --sl-color-bg-nav: #0a0a0a;
+  --sl-color-bg-sidebar: #0a0a0a;
+  --sl-color-text: #e5e5e5;
+  --sl-color-text-accent: #E8C547;
+}
+
+/* Hide theme toggle */
+starlight-theme-select {
+  display: none;
+}
+
+/* Code blocks */
+.expressive-code {
+  --ec-brdRad: 8px;
+}
+
+/* Outlined tables (opt-in via .table-outlined wrapper) */
+.table-outlined {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table-outlined :where(table) {
+  width: 100%;
+  min-width: 100%;
+  display: table;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table-outlined :where(th, td) {
+  border-right: 1px solid var(--sl-color-gray-5);
+  border-bottom: 1px solid var(--sl-color-gray-5);
+  padding: 0.65rem 0.85rem;
+  vertical-align: top;
+}
+
+.table-outlined :where(th:nth-child(1), td:nth-child(1)) {
+  width: 7.5rem;
+  white-space: nowrap;
+  padding: 0.5rem 0.75rem !important;
+  text-align: left;
+}
+
+.table-outlined :where(th) {
+  background: color-mix(in srgb, var(--sl-color-gray-6) 70%, transparent);
+  font-weight: 600;
+}
+
+.table-outlined :where(tr) :where(th, td):last-child {
+  border-right: 0;
+}
+
+.table-outlined :where(tbody tr:last-child td) {
+  border-bottom: 0;
+}

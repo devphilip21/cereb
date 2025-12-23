@@ -1,0 +1,42 @@
+---
+title: Quick Start
+description: How to use Cereb packages
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+## Install Packages You Need
+
+To keep the library lightweight, install only the packages you need.
+Internally reused chunks are shared and built efficiently.
+
+## Packages
+
+<div class="table-outlined">
+
+| Layer | Package | Description |
+|-------|---------|-------------|
+| Signal | [@cereb/single-pointer](/api/signal/single-pointer) | Unified pointer/touch/mouse input handling |
+| Gesture | [@cereb/pan](/api/gesture/pan) | Pan gesture recognition with momentum and constraints |
+
+</div>
+
+## Example: Installing Pan Gesture
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @cereb/pan
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @cereb/pan
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @cereb/pan
+    ```
+  </TabItem>
+</Tabs>

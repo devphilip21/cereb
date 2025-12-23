@@ -3,3 +3,5 @@ packages:
   - 'packages/signal/*'
   - 'packages/gesture/*'
   - 'internal/*'
+  - 'website'
+  - 'docs'
