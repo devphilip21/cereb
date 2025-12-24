@@ -1,5 +1,5 @@
-import type { Observer, Stream } from "../stream/stream.js";
-import { toObserver } from "../stream/stream.js";
+import type { Observer, Stream } from "../core/stream.js";
+import { toObserver } from "../core/stream.js";
 
 /**
  * Subject is a multicast Stream that allows pushing values to multiple observers.

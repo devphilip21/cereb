@@ -1,5 +1,5 @@
-import type { Observer, Operator, Stream, Unsubscribe } from "../stream/stream.js";
-import { toObserver } from "../stream/stream.js";
+import type { Observer, Operator, Stream, Unsubscribe } from "../core/stream.js";
+import { toObserver } from "../core/stream.js";
 
 export function share<T>(): Operator<T, T> {
   return (source): Stream<T> => {

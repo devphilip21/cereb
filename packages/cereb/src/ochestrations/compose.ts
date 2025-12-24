@@ -1,5 +1,5 @@
+import type { Operator } from "../core/stream.js";
 import { pipe } from "../index.js";
-import type { Operator } from "../stream/stream.js";
 
 export function compose<T, A>(op1: Operator<T, A>): Operator<T, A>;
 export function compose<T, A, B>(op1: Operator<T, A>, op2: Operator<A, B>): Operator<T, B>;

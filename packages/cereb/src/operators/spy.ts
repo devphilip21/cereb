@@ -1,5 +1,5 @@
-import type { Operator } from "../stream/stream.js";
-import { createStream } from "../stream/stream.js";
+import type { Operator } from "../core/stream.js";
+import { createStream } from "../core/stream.js";
 
 /**
  * Operator that passes values through unchanged while running a side-effect.

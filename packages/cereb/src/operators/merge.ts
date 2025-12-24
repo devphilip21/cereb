@@ -1,5 +1,5 @@
-import type { Operator, Stream } from "../stream/stream.js";
-import { createStream } from "../stream/stream.js";
+import type { Operator, Stream } from "../core/stream.js";
+import { createStream } from "../core/stream.js";
 
 export function mergeWith<T, R>(other: Stream<R>): Operator<T, T | R> {
   return (source) =>

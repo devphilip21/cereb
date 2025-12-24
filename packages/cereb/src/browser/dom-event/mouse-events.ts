@@ -1,4 +1,4 @@
-import { createStream, type Stream } from "../../stream/stream.js";
+import { createStream, type Stream } from "../../core/stream.js";
 
 const MOUSE_EVENTS = ["mousedown", "mousemove", "mouseup"] as const;
 

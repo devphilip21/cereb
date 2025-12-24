@@ -1,4 +1,4 @@
-import type { Operator, Stream } from "../stream/stream.js";
+import type { Operator, Stream } from "../core/stream.js";
 
 export function pipe<T>(source: Stream<T>): Stream<T>;
 export function pipe<T, A>(source: Stream<T>, op1: Operator<T, A>): Stream<A>;

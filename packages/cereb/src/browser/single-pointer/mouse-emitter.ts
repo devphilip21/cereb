@@ -1,5 +1,5 @@
-import type { Operator } from "../../stream/stream.js";
-import { createStream } from "../../stream/stream.js";
+import type { Operator } from "../../core/stream.js";
+import { createStream } from "../../core/stream.js";
 import { singlePointerPool } from "./pool.js";
 import type { SinglePointer } from "./single-pointer.js";
 import type { PointerButton, PointerPhase } from "./types.js";

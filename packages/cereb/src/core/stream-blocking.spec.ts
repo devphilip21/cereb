@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createStream } from "../stream/stream.js";
+import { createStream } from "./stream.js";
 
 describe("Stream blocking", () => {
   it("should emit values when not blocked", () => {

@@ -1,5 +1,5 @@
-import type { Operator, Stream } from "../stream/stream.js";
-import { createStream } from "../stream/stream.js";
+import type { Operator, Stream } from "../core/stream.js";
+import { createStream } from "../core/stream.js";
 
 /**
  * Operators for ending a subscription based on count, a predicate, or a notifier.

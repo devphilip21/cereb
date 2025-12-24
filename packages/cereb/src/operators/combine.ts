@@ -1,5 +1,5 @@
-import type { Stream } from "../stream/stream.js";
-import { createStream } from "../stream/stream.js";
+import type { Stream } from "../core/stream.js";
+import { createStream } from "../core/stream.js";
 
 export function combineLatest<T extends unknown[]>(
   ...sources: { [K in keyof T]: Stream<T[K]> }

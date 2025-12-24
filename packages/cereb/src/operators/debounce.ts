@@ -1,5 +1,5 @@
-import type { Operator } from "../stream/stream.js";
-import { createStream } from "../stream/stream.js";
+import type { Operator } from "../core/stream.js";
+import { createStream } from "../core/stream.js";
 
 export function debounce<T>(ms: number): Operator<T, T> {
   return (source) =>

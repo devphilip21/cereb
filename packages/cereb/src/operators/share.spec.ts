@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
+import { createStream } from "../core/stream.js";
 import { createSubject } from "../internal/subject.js";
 import { pipe } from "../ochestrations/pipe.js";
-import { createStream } from "../stream/stream.js";
 import { share, shareReplay } from "./share.js";
 
 describe("share", () => {

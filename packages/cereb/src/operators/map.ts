@@ -1,5 +1,5 @@
-import type { Operator } from "../stream/stream.js";
-import { createStream } from "../stream/stream.js";
+import type { Operator } from "../core/stream.js";
+import { createStream } from "../core/stream.js";
 
 export function map<T, R>(transform: (value: T) => R): Operator<T, R> {
   return (source) =>

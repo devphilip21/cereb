@@ -1,4 +1,4 @@
-import { createStream, type Stream } from "../stream/stream.js";
+import { createStream, type Stream } from "../core/stream.js";
 
 export function defer<T>(factory: () => Stream<T>): Stream<T> {
   return createStream((observer) => {
