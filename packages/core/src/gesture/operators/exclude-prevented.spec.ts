@@ -1,5 +1,5 @@
-import { from, pipe } from "@cereb/stream";
 import { describe, expect, it, vi } from "vitest";
+import { from, pipe } from "../../stream/index.js";
 import { type GestureEvent, type GesturePhase, PREVENTED } from "../event.js";
 import { excludePrevented } from "./exclude-prevented.js";
 

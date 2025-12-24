@@ -1,5 +1,5 @@
-import { type GestureEvent, PREVENTED } from "@cereb/gesture";
-import type { Signal } from "@cereb/signal";
+import type { Signal } from "@cereb/core";
+import { type GestureEvent, PREVENTED } from "@cereb/core";
 import type { PanDirection } from "./types.js";
 
 /**

@@ -1,5 +1,5 @@
-import type { Operator } from "@cereb/stream";
-import { createObservable } from "@cereb/stream";
+import type { Operator } from "@cereb/core";
+import { createObservable } from "@cereb/core";
 import type { PanEvent } from "../event.js";
 
 export type LockedAxis = "horizontal" | "vertical" | null;

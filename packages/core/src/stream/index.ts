@@ -6,6 +6,9 @@
  * @packageDocumentation
  */
 
+// Event Observable
+export type { EventObservable } from "./event-observable.js";
+export { asBlockable, createEventObservable } from "./event-observable.js";
 // Factory
 export {
   defer,

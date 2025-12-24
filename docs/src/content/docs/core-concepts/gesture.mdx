@@ -40,7 +40,7 @@ interface PanEvent extends GestureEvent {
 ```typescript
 import { singlePointer } from "@cereb/single-pointer";
 import { pan } from "@cereb/pan";
-import { pipe } from "@cereb/stream";
+import { pipe } from "@cereb/core";
 
 const element = document.getElementById("draggable")!;
 const pointer$ = singlePointer(element);
@@ -58,7 +58,7 @@ pan$.subscribe((event) => {
 Use `PREVENTED` to stop gesture propagation:
 
 ```typescript
-import { PREVENTED, isPrevented } from "@cereb/gesture";
+import { PREVENTED, isPrevented } from "@cereb/core";
 
 pan$.subscribe((event) => {
   if (someCondition) {

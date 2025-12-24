@@ -1,5 +1,5 @@
-import type { Operator } from "@cereb/stream";
-import { createObservable } from "@cereb/stream";
+import type { Operator } from "../../stream/observable.js";
+import { createObservable } from "../../stream/observable.js";
 import { type GestureEvent, isPrevented } from "../event.js";
 
 /**

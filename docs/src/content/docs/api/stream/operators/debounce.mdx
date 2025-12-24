@@ -20,8 +20,8 @@ function debounce<T>(ms: number): Operator<T, T>
 ## Usage
 
 ```typescript
-import { pipe, fromEvent } from "@cereb/stream";
-import { debounce, map } from "@cereb/stream/operators";
+import { pipe, fromEvent } from "@cereb/core";
+import { debounce, map } from "@cereb/core";
 
 const input = document.getElementById("search")!;
 const input$ = fromEvent(input, "input");
@@ -54,8 +54,8 @@ debounce(50): ------c--------e-----
 ## Real-World Example: Resize Handler
 
 ```typescript
-import { fromEvent, pipe } from "@cereb/stream";
-import { debounce } from "@cereb/stream/operators";
+import { fromEvent, pipe } from "@cereb/core";
+import { debounce } from "@cereb/core";
 
 const resize$ = pipe(
   fromEvent(window, "resize"),

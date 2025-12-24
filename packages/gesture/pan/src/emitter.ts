@@ -1,4 +1,4 @@
-import type { GesturePhase } from "@cereb/gesture";
+import type { GesturePhase } from "@cereb/core";
 import type { SinglePointer } from "@cereb/single-pointer";
 import type { PanEvent } from "./event.js";
 import { createDefaultPanEvent } from "./event.js";

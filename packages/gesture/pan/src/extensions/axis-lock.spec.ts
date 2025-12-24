@@ -1,4 +1,4 @@
-import { createObservable, type Observable, type Observer } from "@cereb/stream";
+import { createObservable, type Observable, type Observer } from "@cereb/core";
 import { describe, expect, it, vi } from "vitest";
 import type { PanEvent } from "../event.js";
 import type { PanDirection } from "../types.js";

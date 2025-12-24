@@ -14,7 +14,7 @@ export default ({ dirname }: { dirname: string }): UserConfig => ({
       },
     },
     rollupOptions: {
-      external: ["@cereb/signal", "@cereb/stream"],
+      external: [],
     },
   },
 });

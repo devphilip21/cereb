@@ -16,8 +16,8 @@ function take<T>(count: number): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe, from } from "@cereb/stream";
-import { take } from "@cereb/stream/operators";
+import { pipe, from } from "@cereb/core";
+import { take } from "@cereb/core";
 
 const limited$ = pipe(
   from([1, 2, 3, 4, 5]),
@@ -39,8 +39,8 @@ function takeWhile<T>(predicate: (value: T) => boolean): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe, from } from "@cereb/stream";
-import { takeWhile } from "@cereb/stream/operators";
+import { pipe, from } from "@cereb/core";
+import { takeWhile } from "@cereb/core";
 
 const numbers$ = pipe(
   from([1, 2, 3, 4, 3, 2, 1]),
@@ -62,8 +62,8 @@ function takeUntil<T>(notifier: Observable<unknown>): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe, fromEvent } from "@cereb/stream";
-import { takeUntil } from "@cereb/stream/operators";
+import { pipe, fromEvent } from "@cereb/core";
+import { takeUntil } from "@cereb/core";
 
 const stop$ = fromEvent(stopButton, "click");
 
@@ -77,8 +77,8 @@ const stream$ = pipe(
 
 ```typescript
 import { singlePointer } from "@cereb/single-pointer";
-import { pipe } from "@cereb/stream";
-import { takeWhile } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { takeWhile } from "@cereb/core";
 
 // Stop tracking when pointer leaves the element
 const pointer$ = pipe(

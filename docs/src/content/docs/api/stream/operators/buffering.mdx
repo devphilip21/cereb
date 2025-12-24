@@ -16,8 +16,8 @@ function buffer<T>(notifier: Observable<unknown>): Operator<T, T[]>
 ### Usage
 
 ```typescript
-import { pipe, fromEvent, interval } from "@cereb/stream";
-import { buffer } from "@cereb/stream/operators";
+import { pipe, fromEvent, interval } from "@cereb/core";
+import { buffer } from "@cereb/core";
 
 const click$ = fromEvent(document, "click");
 const tick$ = interval(1000);
@@ -44,8 +44,8 @@ function bufferTime<T>(ms: number): Operator<T, T[]>
 ### Usage
 
 ```typescript
-import { pipe } from "@cereb/stream";
-import { bufferTime } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { bufferTime } from "@cereb/core";
 
 // Collect all events in 500ms windows
 const batched$ = pipe(
@@ -69,8 +69,8 @@ function bufferWhen<T>(closingSelector: () => Observable<unknown>): Operator<T, 
 ### Usage
 
 ```typescript
-import { pipe, timer } from "@cereb/stream";
-import { bufferWhen } from "@cereb/stream/operators";
+import { pipe, timer } from "@cereb/core";
+import { bufferWhen } from "@cereb/core";
 
 // Buffer until random delay (1-3 seconds)
 const buffered$ = pipe(

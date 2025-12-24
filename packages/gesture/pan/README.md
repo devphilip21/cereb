@@ -30,7 +30,7 @@ const unsub = stream.subscribe((event) => {
 ```typescript
 import { pan } from "@cereb/pan";
 import { withVelocity } from "@cereb/pan/extensions";
-import { pipe } from "@cereb/stream";
+import { pipe } from "@cereb/core";
 
 const stream = pipe(
   pan(element, { threshold: 10 }),
@@ -52,7 +52,7 @@ For more control, use `singlePointerToPan` operator with your own pointer source
 import { singlePointer } from "@cereb/single-pointer";
 import { singlePointerToPan } from "@cereb/pan";
 import { withVelocity } from "@cereb/pan/extensions";
-import { pipe } from "@cereb/stream";
+import { pipe } from "@cereb/core";
 
 const stream = pipe(
   singlePointer(element),
@@ -83,7 +83,7 @@ const stream = pan(element, {
 ```typescript
 import { pan } from "@cereb/pan";
 import { axisLock } from "@cereb/pan/extensions";
-import { pipe } from "@cereb/stream";
+import { pipe } from "@cereb/core";
 
 /**
  * Lock gesture to the initially detected axis.

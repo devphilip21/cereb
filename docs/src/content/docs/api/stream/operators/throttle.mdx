@@ -26,8 +26,8 @@ function throttleLast<T>(ms: number): Operator<T, T>
 ## Usage
 
 ```typescript
-import { pipe, fromEvent } from "@cereb/stream";
-import { throttle } from "@cereb/stream/operators";
+import { pipe, fromEvent } from "@cereb/core";
+import { throttle } from "@cereb/core";
 
 const scroll$ = fromEvent(window, "scroll");
 
@@ -42,8 +42,8 @@ const throttled$ = pipe(
 
 ```typescript
 import { singlePointer } from "@cereb/single-pointer";
-import { pipe } from "@cereb/stream";
-import { throttle } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { throttle } from "@cereb/core";
 
 const pointer$ = singlePointer(element);
 
@@ -61,7 +61,7 @@ smooth$.subscribe((signal) => {
 ## throttleLast Example
 
 ```typescript
-import { throttleLast } from "@cereb/stream/operators";
+import { throttleLast } from "@cereb/core";
 
 // Get the last position in each 100ms window
 const lastPosition$ = pipe(

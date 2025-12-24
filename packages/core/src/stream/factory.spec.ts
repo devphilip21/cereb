@@ -26,6 +26,47 @@ describe("fromEvent", () => {
 
     expect(values).toHaveLength(2);
   });
+
+  it("should return EventObservable with block/unblock methods", () => {
+    const target = new EventTarget();
+    const observable = fromEvent(target, "click");
+
+    expect(typeof observable.block).toBe("function");
+    expect(typeof observable.unblock).toBe("function");
+    expect(observable.isBlocked).toBe(false);
+  });
+
+  it("should drop events when blocked", () => {
+    const target = new EventTarget();
+    const observable = fromEvent(target, "click");
+    const values: Event[] = [];
+
+    observable.subscribe((v) => values.push(v));
+
+    target.dispatchEvent(new Event("click"));
+    observable.block();
+    target.dispatchEvent(new Event("click"));
+    target.dispatchEvent(new Event("click"));
+
+    expect(values).toHaveLength(1);
+    expect(observable.isBlocked).toBe(true);
+  });
+
+  it("should resume emitting after unblock", () => {
+    const target = new EventTarget();
+    const observable = fromEvent(target, "click");
+    const values: Event[] = [];
+
+    observable.subscribe((v) => values.push(v));
+
+    target.dispatchEvent(new Event("click"));
+    observable.block();
+    target.dispatchEvent(new Event("click"));
+    observable.unblock();
+    target.dispatchEvent(new Event("click"));
+
+    expect(values).toHaveLength(2);
+  });
 });
 
 describe("fromPromise", () => {

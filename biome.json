@@ -21,7 +21,7 @@
       },
       "style": {
         "useConst": "error",
-        "noNonNullAssertion": "warn"
+        "noNonNullAssertion": "off"
       }
     }
   },
@@ -37,13 +37,7 @@
   "overrides": [
     {
       "includes": ["**/*.spec.ts", "**/*.test.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noNonNullAssertion": "off"
-          }
-        }
-      }
+      "linter": {}
     }
   ]
 }

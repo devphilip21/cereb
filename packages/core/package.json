@@ -1,23 +1,26 @@
 {
-  "name": "@cereb/gesture",
-  "description": "Core gesture event abstractions for cereb",
+  "name": "@cereb/core",
+  "description": "Core abstractions for cereb: stream, signal, and gesture",
   "version": "0.1.0",
   "license": "MIT",
   "author": "devphilip21 <philip21.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/devphilip21/cereb.git",
-    "directory": "packages/core/gesture"
+    "directory": "packages/core"
   },
-  "homepage": "https://github.com/devphilip21/cereb/tree/main/packages/core/gesture",
+  "homepage": "https://github.com/devphilip21/cereb/tree/main/packages/core",
   "bugs": {
     "url": "https://github.com/devphilip21/cereb/issues"
   },
   "keywords": [
+    "stream",
+    "reactive",
+    "observable",
+    "signal",
     "gesture",
-    "event",
-    "touch",
     "pointer",
+    "touch",
     "cereb"
   ],
   "type": "module",
@@ -42,10 +45,6 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
-  },
-  "dependencies": {
-    "@cereb/signal": "workspace:^",
-    "@cereb/stream": "workspace:^"
   },
   "devDependencies": {
     "@cereb/builder": "workspace:^",

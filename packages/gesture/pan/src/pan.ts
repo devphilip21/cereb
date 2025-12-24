@@ -1,7 +1,7 @@
+import type { Observable, Operator } from "@cereb/core";
+import { createObservable, pipe } from "@cereb/core";
 import type { SinglePointer, SinglePointerOptions } from "@cereb/single-pointer";
 import { singlePointer } from "@cereb/single-pointer";
-import type { Observable, Operator } from "@cereb/stream";
-import { createObservable, pipe } from "@cereb/stream";
 import { createPanEmitter } from "./emitter.js";
 import type { PanEvent } from "./event.js";
 import type { PanOptions } from "./types.js";

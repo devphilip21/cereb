@@ -20,8 +20,8 @@ function filter<T>(predicate: (value: T, index: number) => boolean): Operator<T,
 ## Usage
 
 ```typescript
-import { pipe, from } from "@cereb/stream";
-import { filter } from "@cereb/stream/operators";
+import { pipe, from } from "@cereb/core";
+import { filter } from "@cereb/core";
 
 const numbers$ = from([1, 2, 3, 4, 5]);
 
@@ -38,8 +38,8 @@ even$.subscribe(console.log);
 
 ```typescript
 import { singlePointer } from "@cereb/single-pointer";
-import { pipe } from "@cereb/stream";
-import { filter } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { filter } from "@cereb/core";
 
 const pointer$ = singlePointer(element);
 

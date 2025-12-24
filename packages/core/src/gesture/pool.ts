@@ -1,4 +1,4 @@
-import { createSignalPool, type SignalPool } from "@cereb/signal";
+import { createSignalPool, type SignalPool } from "../signal/pool.js";
 import type { GestureEvent } from "./event.js";
 
 /**

@@ -51,9 +51,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@cereb/gesture": "workspace:^",
-    "@cereb/signal": "workspace:^",
-    "@cereb/stream": "workspace:^",
+    "@cereb/core": "workspace:^",
     "@cereb/single-pointer": "workspace:^"
   },
   "devDependencies": {

@@ -22,7 +22,7 @@ interface SinglePointerOptions {
 
 ```typescript
 import { touchEventsToSinglePointer } from "@cereb/single-pointer";
-import { fromTouchEvents, pipe } from "@cereb/stream";
+import { fromTouchEvents, pipe } from "@cereb/core";
 
 const stream = pipe(
   fromTouchEvents(el),
@@ -32,7 +32,7 @@ const stream = pipe(
 
 ```typescript
 import { mouseEventsToSinglePointer } from "@cereb/single-pointer";
-import { fromMouseEvents, pipe } from "@cereb/stream";
+import { fromMouseEvents, pipe } from "@cereb/core";
 
 const stream = pipe(
   fromMouseEvents(el),

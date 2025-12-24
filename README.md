@@ -52,9 +52,7 @@ gestureStream.subscribe((event) => {
 |---------|-------------|
 | [@cereb/pan](./packages/gesture/pan) | Pan gesture recognition |
 | [@cereb/single-pointer](./packages/signal/single-pointer) | Unified pointer/touch/mouse input |
-| [@cereb/gesture](./packages/core/gesture) | Gesture event framework |
-| [@cereb/signal](./packages/core/signal) | Base signal abstraction |
-| [@cereb/stream](./packages/core/stream) | Lightweight reactive streams (zero dependencies) |
+| [@cereb/core](./packages/core) | Core abstractions: stream, signal, and gesture |
 
 ## License
 

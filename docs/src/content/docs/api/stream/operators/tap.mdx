@@ -20,8 +20,8 @@ function tap<T>(callback: (value: T) => void): Operator<T, T>
 ## Usage
 
 ```typescript
-import { pipe, from } from "@cereb/stream";
-import { tap, map } from "@cereb/stream/operators";
+import { pipe, from } from "@cereb/core";
+import { tap, map } from "@cereb/core";
 
 const result$ = pipe(
   from([1, 2, 3]),
@@ -44,8 +44,8 @@ result$.subscribe();
 
 ```typescript
 import { pan } from "@cereb/pan";
-import { pipe } from "@cereb/stream";
-import { tap } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { tap } from "@cereb/core";
 
 const pan$ = pipe(
   singlePointer(element),

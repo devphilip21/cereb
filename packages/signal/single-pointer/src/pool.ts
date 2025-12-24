@@ -1,4 +1,4 @@
-import { createSignalPool } from "@cereb/signal";
+import { createSignalPool } from "@cereb/core";
 import { createDefaultSinglePointer, resetSinglePointer, type SinglePointer } from "./signal.js";
 
 export const singlePointerPool = createSignalPool<SinglePointer>(

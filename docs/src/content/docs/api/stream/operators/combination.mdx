@@ -17,7 +17,7 @@ function mergeWith<T>(...sources: Observable<T>[]): Operator<T, T>
 ### Usage
 
 ```typescript
-import { merge, fromEvent } from "@cereb/stream";
+import { merge, fromEvent } from "@cereb/core";
 
 const click$ = fromEvent(document, "click");
 const touch$ = fromEvent(document, "touchstart");
@@ -29,8 +29,8 @@ const interaction$ = merge(click$, touch$);
 ### mergeWith (operator form)
 
 ```typescript
-import { pipe, fromEvent } from "@cereb/stream";
-import { mergeWith } from "@cereb/stream/operators";
+import { pipe, fromEvent } from "@cereb/core";
+import { mergeWith } from "@cereb/core";
 
 const combined$ = pipe(
   click$,
@@ -51,7 +51,7 @@ function combineLatest<T extends readonly Observable<unknown>[]>(
 ### Usage
 
 ```typescript
-import { combineLatest } from "@cereb/stream/operators";
+import { combineLatest } from "@cereb/core";
 
 const combined$ = combineLatest(width$, height$);
 
@@ -73,7 +73,7 @@ function forkJoin<T extends readonly Observable<unknown>[]>(
 ### Usage
 
 ```typescript
-import { forkJoin, fromPromise } from "@cereb/stream";
+import { forkJoin, fromPromise } from "@cereb/core";
 
 const results$ = forkJoin(
   fromPromise(fetchUser()),

@@ -13,7 +13,7 @@ Cereb handles three types of browser events:
 Modern unified API that works across mouse, touch, and stylus inputs.
 
 ```typescript
-import { fromPointerEvents } from "@cereb/stream";
+import { fromPointerEvents } from "@cereb/core";
 
 const pointer$ = fromPointerEvents(element);
 ```
@@ -22,7 +22,7 @@ const pointer$ = fromPointerEvents(element);
 Legacy API for multi-touch support on mobile devices.
 
 ```typescript
-import { fromTouchEvents } from "@cereb/stream";
+import { fromTouchEvents } from "@cereb/core";
 
 const touch$ = fromTouchEvents(element);
 ```
@@ -31,7 +31,7 @@ const touch$ = fromTouchEvents(element);
 Traditional mouse-only API for desktop interactions.
 
 ```typescript
-import { fromMouseEvents } from "@cereb/stream";
+import { fromMouseEvents } from "@cereb/core";
 
 const mouse$ = fromMouseEvents(element);
 ```

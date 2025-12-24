@@ -1,3 +1,5 @@
+import type { EventObservable } from "./event-observable.js";
+import { asBlockable, createEventObservable } from "./event-observable.js";
 import type { Observable } from "./observable.js";
 import { createObservable } from "./observable.js";
 import { merge } from "./operators/merge.js";
@@ -6,8 +8,8 @@ export function fromEvent<T extends Event>(
   target: EventTarget,
   eventName: string,
   options?: AddEventListenerOptions,
-): Observable<T> {
-  return createObservable((observer) => {
+): EventObservable<T> {
+  return createEventObservable((observer) => {
     const handler = (event: Event) => {
       observer.next(event as T);
     };
@@ -135,29 +137,29 @@ const MOUSE_EVENTS = ["mousedown", "mousemove", "mouseup"] as const;
 export function fromPointerEvents(
   target: EventTarget,
   options?: AddEventListenerOptions,
-): Observable<PointerEvent> {
+): EventObservable<PointerEvent> {
   const sources = POINTER_EVENTS.map((eventName) =>
     fromEvent<PointerEvent>(target, eventName, options),
   );
-  return merge(...sources);
+  return asBlockable(merge(...sources));
 }
 
 export function fromTouchEvents(
   target: EventTarget,
   options?: AddEventListenerOptions,
-): Observable<TouchEvent> {
+): EventObservable<TouchEvent> {
   const sources = TOUCH_EVENTS.map((eventName) =>
     fromEvent<TouchEvent>(target, eventName, options),
   );
-  return merge(...sources);
+  return asBlockable(merge(...sources));
 }
 
 export function fromMouseEvents(
   target: EventTarget,
   options?: AddEventListenerOptions,
-): Observable<MouseEvent> {
+): EventObservable<MouseEvent> {
   const sources = MOUSE_EVENTS.map((eventName) =>
     fromEvent<MouseEvent>(target, eventName, options),
   );
-  return merge(...sources);
+  return asBlockable(merge(...sources));
 }

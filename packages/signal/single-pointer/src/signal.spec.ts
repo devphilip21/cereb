@@ -1,4 +1,4 @@
-import type { Signal } from "@cereb/signal";
+import type { Signal } from "@cereb/core";
 import { describe, expect, it } from "vitest";
 import { createDefaultSinglePointer, isSinglePointer, resetSinglePointer } from "./signal.js";
 

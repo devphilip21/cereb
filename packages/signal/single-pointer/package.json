@@ -49,8 +49,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@cereb/signal": "workspace:^",
-    "@cereb/stream": "workspace:^"
+    "@cereb/core": "workspace:^"
   },
   "devDependencies": {
     "@cereb/builder": "workspace:^",

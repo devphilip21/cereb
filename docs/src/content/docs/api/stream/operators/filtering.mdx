@@ -16,8 +16,8 @@ function skip<T>(count: number): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe, from } from "@cereb/stream";
-import { skip } from "@cereb/stream/operators";
+import { pipe, from } from "@cereb/core";
+import { skip } from "@cereb/core";
 
 const skipped$ = pipe(
   from([1, 2, 3, 4, 5]),
@@ -39,8 +39,8 @@ function skipWhile<T>(predicate: (value: T) => boolean): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe, from } from "@cereb/stream";
-import { skipWhile } from "@cereb/stream/operators";
+import { pipe, from } from "@cereb/core";
+import { skipWhile } from "@cereb/core";
 
 const numbers$ = pipe(
   from([1, 2, 3, 4, 3, 2, 1]),
@@ -62,8 +62,8 @@ function skipUntil<T>(notifier: Observable<unknown>): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe, fromEvent } from "@cereb/stream";
-import { skipUntil } from "@cereb/stream/operators";
+import { pipe, fromEvent } from "@cereb/core";
+import { skipUntil } from "@cereb/core";
 
 const start$ = fromEvent(startButton, "click");
 
@@ -86,8 +86,8 @@ function distinctUntilChanged<T>(
 ### Usage
 
 ```typescript
-import { pipe, from } from "@cereb/stream";
-import { distinctUntilChanged } from "@cereb/stream/operators";
+import { pipe, from } from "@cereb/core";
+import { distinctUntilChanged } from "@cereb/core";
 
 const distinct$ = pipe(
   from([1, 1, 2, 2, 3, 1, 1]),
@@ -109,8 +109,8 @@ function distinctUntilKeyChanged<T, K extends keyof T>(key: K): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe } from "@cereb/stream";
-import { distinctUntilKeyChanged } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { distinctUntilKeyChanged } from "@cereb/core";
 
 const users$ = pipe(
   userUpdates$,

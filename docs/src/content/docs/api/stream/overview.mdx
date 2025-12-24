@@ -3,12 +3,12 @@ title: Stream Overview
 description: Stream API overview and core types
 ---
 
-`@cereb/stream` is a lightweight, tree-shakeable Observable implementation.
+`@cereb/core` provides a lightweight, tree-shakeable Observable implementation along with signal and gesture abstractions.
 
 ## Installation
 
 ```bash
-pnpm add @cereb/stream
+pnpm add @cereb/core
 ```
 
 ## Core Types
@@ -119,8 +119,8 @@ state.next(1); // logs: 1
 Use `pipe` to compose operators:
 
 ```typescript
-import { pipe } from "@cereb/stream";
-import { filter, map } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { filter, map } from "@cereb/core";
 
 const result$ = pipe(
   source$,

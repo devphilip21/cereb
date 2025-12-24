@@ -12,7 +12,7 @@ Stream is the foundation layer providing reactive programming primitives. It's a
 A lazy, push-based data source:
 
 ```typescript
-import { createObservable } from "@cereb/stream";
+import { createObservable } from "@cereb/core";
 
 const numbers$ = createObservable<number>((observer) => {
   observer.next(1);
@@ -43,7 +43,7 @@ numbers$.subscribe((value) => console.log(value));
 Both Observable and Observer - useful for multicasting:
 
 ```typescript
-import { createSubject } from "@cereb/stream";
+import { createSubject } from "@cereb/core";
 
 const subject = createSubject<string>();
 
@@ -58,8 +58,7 @@ subject.next("hello"); // Both subscribers receive this
 Transform streams using operators:
 
 ```typescript
-import { pipe } from "@cereb/stream";
-import { filter, map, throttle } from "@cereb/stream/operators";
+import { pipe, filter, map, throttle } from "@cereb/core";
 
 const result$ = pipe(
   source$,

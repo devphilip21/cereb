@@ -6,7 +6,7 @@ Single-pointer signal stream for unified pointer, touch, and mouse input handlin
 
 - **Unified Interface** - Subscribe to diverse event sources through one consistent API by normalizing them into a unified signal stream.
 - **GC Optimized** - Built-in object pooling prevents garbage collection pauses during high-frequency input (60+ events/sec)
-- **Observable-Based** - Works seamlessly with reactive patterns via `@cereb/stream`.
+- **Observable-Based** - Works seamlessly with reactive patterns via `@cereb/core`.
 
 ## Installation
 
@@ -32,7 +32,7 @@ const unsub = stream.subscribe((pointer) => {
 
 ```typescript
 import { touchEventsToSinglePointer } from "@cereb/single-pointer";
-import { fromEvent, merge, pipe, filter } from "@cereb/stream";
+import { fromEvent, merge, pipe, filter } from "@cereb/core";
 
 /**
  * The `singlePointer()` factory is primarily designed for PointerEvents.

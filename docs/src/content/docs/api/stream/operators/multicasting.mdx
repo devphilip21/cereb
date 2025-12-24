@@ -24,8 +24,8 @@ source$.subscribe(handlerB);
 With `share`, one subscription is shared:
 
 ```typescript
-import { pipe } from "@cereb/stream";
-import { share } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { share } from "@cereb/core";
 
 const shared$ = pipe(source$, share());
 
@@ -38,8 +38,8 @@ shared$.subscribe(handlerB);
 
 ```typescript
 import { singlePointer } from "@cereb/single-pointer";
-import { pipe } from "@cereb/stream";
-import { share, filter } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { share, filter } from "@cereb/core";
 
 const pointer$ = pipe(
   singlePointer(element),
@@ -62,8 +62,8 @@ function shareReplay<T>(bufferSize?: number): Operator<T, T>
 ### Usage
 
 ```typescript
-import { pipe } from "@cereb/stream";
-import { shareReplay } from "@cereb/stream/operators";
+import { pipe } from "@cereb/core";
+import { shareReplay } from "@cereb/core";
 
 const config$ = pipe(
   fetchConfig$,

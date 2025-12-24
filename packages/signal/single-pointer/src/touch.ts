@@ -1,5 +1,5 @@
-import type { Operator } from "@cereb/stream";
-import { createObservable } from "@cereb/stream";
+import type { Operator } from "@cereb/core";
+import { createObservable } from "@cereb/core";
 import { singlePointerPool } from "./pool.js";
 import type { SinglePointer } from "./signal.js";
 import { eventTypeToPhase, getDeviceId } from "./utils.js";
