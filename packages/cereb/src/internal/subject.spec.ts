@@ -76,7 +76,7 @@ describe("createBehaviorSubject", () => {
     subject.subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([10]);
-    expect(subject.getValue()).toBe(10);
+    expect(subject.getValue().value).toBe(10);
   });
 
   it("should emit current value to late subscriber", () => {
@@ -88,7 +88,7 @@ describe("createBehaviorSubject", () => {
     subject.subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([10]);
-    expect(subject.getValue()).toBe(10);
+    expect(subject.getValue().value).toBe(10);
   });
 
   it("should multicast with late subscriber getting current value", () => {
