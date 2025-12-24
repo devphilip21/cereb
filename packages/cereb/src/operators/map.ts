@@ -1,7 +1,10 @@
+import type { Signal } from "../core/signal.js";
 import type { Operator } from "../core/stream.js";
 import { createStream } from "../core/stream.js";
 
-export function map<T, R>(transform: (value: T) => R): Operator<T, R> {
+export function map<T extends Signal, R extends Signal>(
+  transform: (value: T) => R,
+): Operator<T, R> {
   return (source) =>
     createStream((observer) => {
       return source.subscribe({

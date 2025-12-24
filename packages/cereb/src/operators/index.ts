@@ -1,5 +1,4 @@
 export { buffer, bufferTime, bufferWhen } from "./buffer.js";
-export { combineLatest, forkJoin } from "./combine.js";
 export { debounce } from "./debounce.js";
 export { distinctUntilChanged, distinctUntilKeyChanged } from "./distinct.js";
 export { filter } from "./filter.js";

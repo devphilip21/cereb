@@ -1,7 +1,8 @@
+import type { Signal } from "../core/signal.js";
 import type { Operator } from "../core/stream.js";
 import { createStream } from "../core/stream.js";
 
-export function filter<T>(predicate: (value: T) => boolean): Operator<T, T> {
+export function filter<T extends Signal>(predicate: (value: T) => boolean): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       return source.subscribe({

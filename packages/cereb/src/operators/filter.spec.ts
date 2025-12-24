@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { from } from "../factory/from.js";
-import { of } from "../factory/of.js";
+import { fromArray, ofValue, type TestSignal } from "../internal/test-utils.js";
 import { pipe } from "../ochestrations/index.js";
 import { filter } from "./filter.js";
 
@@ -9,9 +8,9 @@ describe("filter", () => {
     const values: number[] = [];
 
     pipe(
-      from([1, 2, 3, 4, 5]),
-      filter((x) => x % 2 === 0),
-    ).subscribe((v) => values.push(v));
+      fromArray([1, 2, 3, 4, 5]),
+      filter((x: TestSignal<number>) => x.value % 2 === 0),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([2, 4]);
   });
@@ -20,13 +19,13 @@ describe("filter", () => {
     const values: { name: string; age: number }[] = [];
 
     pipe(
-      from([
+      fromArray([
         { name: "Alice", age: 25 },
         { name: "Bob", age: 17 },
         { name: "Charlie", age: 30 },
       ]),
-      filter((user) => user.age >= 18),
-    ).subscribe((v) => values.push(v));
+      filter((x: TestSignal<{ name: string; age: number }>) => x.value.age >= 18),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([
       { name: "Alice", age: 25 },
@@ -39,7 +38,7 @@ describe("filter", () => {
     const errorFn = vi.fn();
 
     pipe(
-      of(1),
+      ofValue(1),
       filter(() => {
         throw error;
       }),

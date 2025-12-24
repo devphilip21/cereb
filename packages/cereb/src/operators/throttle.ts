@@ -1,7 +1,8 @@
+import type { Signal } from "../core/signal.js";
 import type { Operator } from "../core/stream.js";
 import { createStream } from "../core/stream.js";
 
-export function throttle<T>(ms: number): Operator<T, T> {
+export function throttle<T extends Signal>(ms: number): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let lastTime: number | null = null;
@@ -20,7 +21,7 @@ export function throttle<T>(ms: number): Operator<T, T> {
     });
 }
 
-export function throttleLast<T>(ms: number): Operator<T, T> {
+export function throttleLast<T extends Signal>(ms: number): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let lastValue: T | undefined;

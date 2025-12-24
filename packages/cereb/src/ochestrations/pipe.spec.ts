@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { from } from "../factory/from.js";
+import { fromArray, type TestSignal } from "../internal/test-utils.js";
 import { filter, map } from "../operators/index.js";
 import { pipe } from "./pipe.js";
 
@@ -8,10 +8,10 @@ describe("pipe", () => {
     const values: number[] = [];
 
     pipe(
-      from([1, 2, 3, 4, 5]),
-      filter((x: number) => x % 2 === 1),
-      map((x: number) => x * 10),
-    ).subscribe((v) => values.push(v));
+      fromArray([1, 2, 3, 4, 5]),
+      filter((x: TestSignal<number>) => x.value % 2 === 1),
+      map((x: TestSignal<number>) => ({ ...x, value: x.value * 10 })),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([10, 30, 50]);
   });
@@ -20,10 +20,10 @@ describe("pipe", () => {
     const values: string[] = [];
 
     pipe(
-      from([1, 2, 3]),
-      map((x: number) => String(x)),
-      map((x: string) => `${x}!`),
-    ).subscribe((v) => values.push(v));
+      fromArray([1, 2, 3]),
+      map((x: TestSignal<number>) => ({ ...x, value: String(x.value) }) as TestSignal<string>),
+      map((x: TestSignal<string>) => ({ ...x, value: `${x.value}!` })),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual(["1!", "2!", "3!"]);
   });

@@ -1,10 +1,16 @@
-export type PointerType = "touch" | "mouse" | "pen" | "unknown";
+export type SinglePointerType = "touch" | "mouse" | "pen" | "unknown";
 
-export type PointerPhase = "start" | "move" | "end" | "cancel";
+export type SinglePointerPhase = "unknown" | "start" | "move" | "end" | "cancel";
 
-export type PointerButton = "none" | "primary" | "secondary" | "auxiliary" | "back" | "forward";
+export type SinglePointerButton =
+  | "none"
+  | "primary"
+  | "secondary"
+  | "auxiliary"
+  | "back"
+  | "forward";
 
-export function toPointerButton(button: number): PointerButton {
+export function toSinglePointerButton(button: number): SinglePointerButton {
   switch (button) {
     case -1:
       return "none";

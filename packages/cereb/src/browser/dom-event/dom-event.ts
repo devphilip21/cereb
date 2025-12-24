@@ -1,13 +1,14 @@
 import { createStream, type Stream } from "../../core/stream.js";
+import { createDomEventSignal, type DomEventSignal } from "./dom-event-signal.js";
 
-export function domEvent<T extends Event>(
+export function domEvent(
   target: EventTarget,
   eventName: string,
   options?: AddEventListenerOptions,
-): Stream<T> {
-  return createStream((observer) => {
-    const handler = (event: Event) => {
-      observer.next(event as T);
+): Stream<DomEventSignal<Event>> {
+  return createStream<DomEventSignal<Event>>((observer) => {
+    const handler = (e: Event) => {
+      observer.next(createDomEventSignal(e));
     };
 
     target.addEventListener(eventName, handler, options);

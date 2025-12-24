@@ -1,3 +1,4 @@
+import type { Signal } from "../core/signal.js";
 import type { Observer, Stream } from "../core/stream.js";
 import { toObserver } from "../core/stream.js";
 
@@ -5,14 +6,14 @@ import { toObserver } from "../core/stream.js";
  * Subject is a multicast Stream that allows pushing values to multiple observers.
  * Unlike regular Stream (single observer), Subject maintains a set of observers.
  */
-export interface Subject<T> extends Stream<T> {
+export interface Subject<T extends Signal> extends Stream<T> {
   next(value: T): void;
   error(err: unknown): void;
   complete(): void;
   readonly closed: boolean;
 }
 
-export function createSubject<T>(): Subject<T> {
+export function createSubject<T extends Signal>(): Subject<T> {
   const observers = new Set<Observer<T>>();
   let closed = false;
   let blocked = false;
@@ -76,11 +77,11 @@ export function createSubject<T>(): Subject<T> {
   };
 }
 
-export interface BehaviorSubject<T> extends Subject<T> {
+export interface BehaviorSubject<T extends Signal> extends Subject<T> {
   getValue(): T;
 }
 
-export function createBehaviorSubject<T>(initialValue: T): BehaviorSubject<T> {
+export function createBehaviorSubject<T extends Signal>(initialValue: T): BehaviorSubject<T> {
   let currentValue = initialValue;
   const observers = new Set<Observer<T>>();
   let closed = false;

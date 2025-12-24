@@ -1,7 +1,8 @@
+import type { Signal } from "../core/signal.js";
 import type { Operator, Stream } from "../core/stream.js";
 import { createStream } from "../core/stream.js";
 
-export function skip<T>(count: number): Operator<T, T> {
+export function skip<T extends Signal>(count: number): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let skipped = 0;
@@ -20,7 +21,7 @@ export function skip<T>(count: number): Operator<T, T> {
     });
 }
 
-export function skipWhile<T>(predicate: (value: T) => boolean): Operator<T, T> {
+export function skipWhile<T extends Signal>(predicate: (value: T) => boolean): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let skipping = true;
@@ -40,7 +41,7 @@ export function skipWhile<T>(predicate: (value: T) => boolean): Operator<T, T> {
     });
 }
 
-export function skipUntil<T>(notifier: Stream<unknown>): Operator<T, T> {
+export function skipUntil<T extends Signal>(notifier: Stream<Signal>): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let skipping = true;

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { from } from "../factory/index.js";
 import { createSubject } from "../internal/subject.js";
+import { fromArray, type TestSignal } from "../internal/test-utils.js";
 import { pipe } from "../ochestrations/pipe.js";
 import { merge, mergeWith } from "./merge.js";
 
@@ -8,14 +8,14 @@ describe("merge", () => {
   it("should merge multiple observables", () => {
     const values: number[] = [];
 
-    merge(from([1, 2]), from([3, 4])).subscribe((v) => values.push(v));
+    merge(fromArray([1, 2]), fromArray([3, 4])).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([1, 2, 3, 4]);
   });
 
   it("should complete when all sources complete", () => {
-    const subject1 = createSubject<number>();
-    const subject2 = createSubject<number>();
+    const subject1 = createSubject<TestSignal<number>>();
+    const subject2 = createSubject<TestSignal<number>>();
     const complete = vi.fn();
 
     merge(subject1, subject2).subscribe({ next: vi.fn(), complete });
@@ -32,7 +32,7 @@ describe("mergeWith", () => {
   it("should merge with another observable", () => {
     const values: number[] = [];
 
-    pipe(from([1, 2]), mergeWith(from([3, 4]))).subscribe((v) => values.push(v));
+    pipe(fromArray([1, 2]), mergeWith(fromArray([3, 4]))).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([1, 2, 3, 4]);
   });

@@ -1,110 +1,55 @@
 import type { Operator } from "../../core/stream.js";
 import { createStream } from "../../core/stream.js";
-import { singlePointerPool } from "./pool.js";
-import type { SinglePointer } from "./single-pointer.js";
-import type { PointerPhase } from "./types.js";
+import type { DomEventSignal } from "../dom-event/dom-event-signal.js";
+import {
+  createSinglePointerEmitter,
+  type SinglePointerEmitter,
+  type SinglePointerEmitterOptions,
+} from "./emitter.js";
+import type { SinglePointerSignal } from "./single-pointer-signal.js";
+import type { SinglePointerPhase } from "./types.js";
 
-export interface TouchEmitterOptions {
-  deviceId?: string;
-  pooling?: boolean;
-}
-
-export interface TouchEmitter {
-  process(event: TouchEvent): SinglePointer | null;
-  readonly isActive: boolean;
-  reset(): void;
-  dispose(): void;
-}
-
-export function createTouchEmitter(options: TouchEmitterOptions = {}): TouchEmitter {
-  const { deviceId: customDeviceId, pooling = false } = options;
-  let current: SinglePointer | null = null;
-  let resolvedDeviceId = customDeviceId ?? "";
-
-  function acquirePointer(): SinglePointer {
-    if (pooling) {
-      return singlePointerPool.acquire();
+export function createTouchEmitter(
+  options: SinglePointerEmitterOptions = {},
+): SinglePointerEmitter<DomEventSignal<TouchEvent>> {
+  function processer(event: DomEventSignal<TouchEvent>, signal: SinglePointerSignal): void {
+    const e = event.value;
+    const touch = e.touches[0] ?? e.changedTouches[0];
+    if (!touch) {
+      return;
     }
-    return {
-      phase: "move",
-      x: 0,
-      y: 0,
-      pageX: 0,
-      pageY: 0,
-      pointerType: "touch",
-      button: "none",
-      pressure: 0.5,
-      timestamp: 0,
-      deviceId: "",
-    };
+
+    let phase: SinglePointerPhase;
+    switch (e.type) {
+      case "touchstart":
+        phase = "start";
+        break;
+      case "touchend":
+        phase = "end";
+        break;
+      case "touchcancel":
+        phase = "cancel";
+        break;
+      default:
+        phase = "move";
+    }
+
+    signal.value.phase = phase;
+    signal.value.x = touch.clientX;
+    signal.value.y = touch.clientY;
+    signal.value.pageX = touch.pageX;
+    signal.value.pageY = touch.pageY;
+    signal.value.pointerType = "touch";
+    signal.value.button = "none";
+    signal.value.pressure = touch.force || 0.5;
   }
 
-  function releaseCurrentPointer(): void {
-    if (current && pooling) {
-      singlePointerPool.release(current);
-    }
-    current = null;
-  }
-
-  return {
-    process(event: TouchEvent): SinglePointer | null {
-      let phase: PointerPhase;
-      switch (event.type) {
-        case "touchstart":
-          phase = "start";
-          break;
-        case "touchend":
-          phase = "end";
-          break;
-        case "touchcancel":
-          phase = "cancel";
-          break;
-        default:
-          phase = "move";
-      }
-
-      const touch = event.touches[0] ?? event.changedTouches[0];
-
-      if (!touch) {
-        return current;
-      }
-
-      const pointer = acquirePointer();
-
-      pointer.timestamp = performance.now();
-      pointer.deviceId = resolvedDeviceId || (resolvedDeviceId = "touch-device");
-      pointer.phase = phase;
-      pointer.x = touch.clientX;
-      pointer.y = touch.clientY;
-      pointer.pageX = touch.pageX;
-      pointer.pageY = touch.pageY;
-      pointer.pointerType = "touch";
-      pointer.button = "none";
-      pointer.pressure = touch.force || 0.5;
-
-      releaseCurrentPointer();
-      current = pointer;
-      return pointer;
-    },
-
-    get isActive(): boolean {
-      return current !== null;
-    },
-
-    reset(): void {
-      releaseCurrentPointer();
-      resolvedDeviceId = customDeviceId ?? "";
-    },
-
-    dispose(): void {
-      this.reset();
-    },
-  };
+  return createSinglePointerEmitter(processer, options);
 }
 
-export function singlePointerEmitter(
-  options: TouchEmitterOptions = {},
-): Operator<TouchEvent, SinglePointer> {
+export function touchToSinglePointer(
+  options: SinglePointerEmitterOptions = {},
+): Operator<DomEventSignal<TouchEvent>, SinglePointerSignal> {
   return (source) =>
     createStream((observer) => {
       const emitter = createTouchEmitter(options);

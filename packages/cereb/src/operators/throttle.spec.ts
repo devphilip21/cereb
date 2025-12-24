@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createSubject } from "../internal/subject.js";
+import { createTestSignal, type TestSignal } from "../internal/test-utils.js";
 import { pipe } from "../ochestrations/pipe.js";
 import { throttle, throttleLast } from "./throttle.js";
 
@@ -18,16 +19,16 @@ describe("throttle", () => {
   };
 
   it("should emit first value immediately and throttle within time window", () => {
-    const source = createSubject<number>();
+    const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, throttle(100)).subscribe((v) => values.push(v));
+    pipe(source, throttle(100)).subscribe((v) => values.push(v.value));
 
-    source.next(1); // Emitted immediately (first value)
+    source.next(createTestSignal(1)); // Emitted immediately (first value)
     advanceTime(50);
-    source.next(2); // Throttled (within 100ms)
+    source.next(createTestSignal(2)); // Throttled (within 100ms)
     advanceTime(50);
-    source.next(3); // Emitted (100ms passed)
+    source.next(createTestSignal(3)); // Emitted (100ms passed)
 
     expect(values).toEqual([1, 3]);
   });
@@ -38,27 +39,27 @@ describe("throttleLast", () => {
   afterEach(() => vi.useRealTimers());
 
   it("should emit last value after time window", () => {
-    const source = createSubject<number>();
+    const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, throttleLast(100)).subscribe((v) => values.push(v));
+    pipe(source, throttleLast(100)).subscribe((v) => values.push(v.value));
 
-    source.next(1);
-    source.next(2);
-    source.next(3);
+    source.next(createTestSignal(1));
+    source.next(createTestSignal(2));
+    source.next(createTestSignal(3));
     vi.advanceTimersByTime(100);
 
     expect(values).toEqual([3]);
   });
 
   it("should emit last value on complete if pending", () => {
-    const source = createSubject<number>();
+    const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, throttleLast(100)).subscribe((v) => values.push(v));
+    pipe(source, throttleLast(100)).subscribe((v) => values.push(v.value));
 
-    source.next(1);
-    source.next(2);
+    source.next(createTestSignal(1));
+    source.next(createTestSignal(2));
     source.complete();
 
     expect(values).toEqual([2]);

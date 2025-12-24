@@ -1,3 +1,2 @@
-export type { MouseEmitter, MouseEmitterOptions } from "./mouse-emitter.js";
-export { createMouseEmitter, mouseToSinglePointer } from "./mouse-emitter.js";
-export type { SinglePointer } from "./single-pointer.js";
+export { createMouseEmitter, mouseToSinglePointer as singlePointer } from "./mouse-emitter.js";
+export type { SinglePointer } from "./single-pointer-signal.js";

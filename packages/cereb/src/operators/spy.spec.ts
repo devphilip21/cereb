@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { from, of } from "../factory/index.js";
+import { fromArray, ofValue, type TestSignal } from "../internal/test-utils.js";
 import { pipe } from "../ochestrations/pipe.js";
 import { spy } from "./spy.js";
 
@@ -9,9 +9,9 @@ describe("tap", () => {
     const values: number[] = [];
 
     pipe(
-      from([1, 2, 3]),
-      spy((x) => sideEffects.push(x * 10)),
-    ).subscribe((v) => values.push(v));
+      fromArray([1, 2, 3]),
+      spy((x: TestSignal<number>) => sideEffects.push(x.value * 10)),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([1, 2, 3]);
     expect(sideEffects).toEqual([10, 20, 30]);
@@ -22,7 +22,7 @@ describe("tap", () => {
     const errorFn = vi.fn();
 
     pipe(
-      of(1),
+      ofValue(1),
       spy(() => {
         throw error;
       }),

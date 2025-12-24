@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { from, of } from "../factory/index.js";
+import { fromArray, ofValue, type TestSignal } from "../internal/test-utils.js";
 import { pipe } from "../ochestrations/pipe.js";
 import { map } from "./map.js";
 
@@ -8,9 +8,9 @@ describe("map", () => {
     const values: number[] = [];
 
     pipe(
-      from([1, 2, 3]),
-      map((x) => x * 2),
-    ).subscribe((v) => values.push(v));
+      fromArray([1, 2, 3]),
+      map((x: TestSignal<number>) => ({ ...x, value: x.value * 2 })),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([2, 4, 6]);
   });
@@ -20,7 +20,7 @@ describe("map", () => {
     const errorFn = vi.fn();
 
     pipe(
-      of(1),
+      ofValue(1),
       map(() => {
         throw error;
       }),

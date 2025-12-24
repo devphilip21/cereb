@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { from } from "../factory/from.js";
+import { fromArray, type TestSignal } from "../internal/test-utils.js";
 import { pipe } from "../ochestrations/index.js";
 import { distinctUntilChanged, distinctUntilKeyChanged } from "./distinct.js";
 
@@ -7,7 +7,9 @@ describe("distinctUntilChanged", () => {
   it("should emit only distinct consecutive values", () => {
     const values: number[] = [];
 
-    pipe(from([1, 1, 2, 2, 2, 3, 1, 1]), distinctUntilChanged()).subscribe((v) => values.push(v));
+    pipe(fromArray([1, 1, 2, 2, 2, 3, 1, 1]), distinctUntilChanged()).subscribe((v) =>
+      values.push(v.value),
+    );
 
     expect(values).toEqual([1, 2, 3, 1]);
   });
@@ -16,13 +18,16 @@ describe("distinctUntilChanged", () => {
     const values: { x: number; y: number }[] = [];
 
     pipe(
-      from([
+      fromArray([
         { x: 1, y: 1 },
         { x: 1, y: 2 },
         { x: 2, y: 1 },
       ]),
-      distinctUntilChanged((a, b) => a.x === b.x),
-    ).subscribe((v) => values.push(v));
+      distinctUntilChanged(
+        (a: TestSignal<{ x: number; y: number }>, b: TestSignal<{ x: number; y: number }>) =>
+          a.value.x === b.value.x,
+      ),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([
       { x: 1, y: 1 },
@@ -36,13 +41,13 @@ describe("distinctUntilKeyChanged", () => {
     const values: { id: number; name: string }[] = [];
 
     pipe(
-      from([
+      fromArray([
         { id: 1, name: "Alice" },
         { id: 1, name: "Bob" },
         { id: 2, name: "Charlie" },
       ]),
-      distinctUntilKeyChanged((x) => x.id),
-    ).subscribe((v) => values.push(v));
+      distinctUntilKeyChanged((x: TestSignal<{ id: number; name: string }>) => x.value.id),
+    ).subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([
       { id: 1, name: "Alice" },

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createSubject } from "../internal/subject.js";
+import { createTestSignal, type TestSignal } from "../internal/test-utils.js";
 import { pipe } from "../ochestrations/index.js";
 import { debounce } from "./debounce.js";
 
@@ -8,12 +9,12 @@ describe("debounce", () => {
   afterEach(() => vi.useRealTimers());
 
   it("should emit value after silence period", () => {
-    const source = createSubject<number>();
+    const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, debounce(100)).subscribe((v) => values.push(v));
+    pipe(source, debounce(100)).subscribe((v) => values.push(v.value));
 
-    source.next(1);
+    source.next(createTestSignal(1));
     expect(values).toEqual([]);
 
     vi.advanceTimersByTime(100);
@@ -21,16 +22,16 @@ describe("debounce", () => {
   });
 
   it("should reset timer on new value", () => {
-    const source = createSubject<number>();
+    const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, debounce(100)).subscribe((v) => values.push(v));
+    pipe(source, debounce(100)).subscribe((v) => values.push(v.value));
 
-    source.next(1);
+    source.next(createTestSignal(1));
     vi.advanceTimersByTime(50);
-    source.next(2);
+    source.next(createTestSignal(2));
     vi.advanceTimersByTime(50);
-    source.next(3);
+    source.next(createTestSignal(3));
     vi.advanceTimersByTime(100);
 
     expect(values).toEqual([3]);

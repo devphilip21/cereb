@@ -1,7 +1,10 @@
+import type { Signal } from "../core/signal.js";
 import type { Operator, Stream } from "../core/stream.js";
 import { createStream } from "../core/stream.js";
 
-export function mergeWith<T, R>(other: Stream<R>): Operator<T, T | R> {
+export function mergeWith<T extends Signal, R extends Signal>(
+  other: Stream<R>,
+): Operator<T, T | R> {
   return (source) =>
     createStream((observer) => {
       let completedCount = 0;
@@ -32,7 +35,7 @@ export function mergeWith<T, R>(other: Stream<R>): Operator<T, T | R> {
     });
 }
 
-export function merge<T>(...sources: Stream<T>[]): Stream<T> {
+export function merge<T extends Signal>(...sources: Stream<T>[]): Stream<T> {
   return createStream((observer) => {
     let completedCount = 0;
 

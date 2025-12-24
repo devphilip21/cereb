@@ -1,106 +1,59 @@
 import type { Operator } from "../../core/stream.js";
 import { createStream } from "../../core/stream.js";
-import { singlePointerPool } from "./pool.js";
-import type { SinglePointer } from "./single-pointer.js";
-import type { PointerButton, PointerPhase } from "./types.js";
-import { toPointerButton } from "./types.js";
+import type { DomEventSignal } from "../dom-event/dom-event-signal.js";
+import {
+  createSinglePointerEmitter,
+  type SinglePointerEmitter,
+  type SinglePointerEmitterOptions,
+} from "./emitter.js";
+import type { SinglePointerSignal } from "./single-pointer-signal.js";
+import {
+  type SinglePointerButton,
+  type SinglePointerPhase,
+  toSinglePointerButton,
+} from "./types.js";
 
-export interface MouseEmitterOptions {
-  deviceId?: string;
-  pooling?: boolean;
-}
-
-export interface MouseEmitter {
-  process(event: MouseEvent): SinglePointer;
-  readonly isActive: boolean;
-  reset(): void;
-  dispose(): void;
-}
-
-export function createMouseEmitter(options: MouseEmitterOptions = {}): MouseEmitter {
-  const { deviceId: customDeviceId, pooling = false } = options;
-  let current: SinglePointer | null = null;
-  let resolvedDeviceId = customDeviceId ?? "";
-
-  function acquirePointer(): SinglePointer {
-    if (pooling) {
-      return singlePointerPool.acquire();
+export function createMouseEmitter(
+  options: SinglePointerEmitterOptions = {},
+): SinglePointerEmitter<DomEventSignal<MouseEvent>> {
+  function processer(
+    domEventSignal: DomEventSignal<MouseEvent>,
+    signal: SinglePointerSignal,
+  ): void {
+    const e = domEventSignal.value;
+    let phase: SinglePointerPhase;
+    let button: SinglePointerButton;
+    switch (e.type) {
+      case "mousedown":
+        phase = "start";
+        button = toSinglePointerButton(e.button);
+        break;
+      case "mouseup":
+        phase = "end";
+        button = toSinglePointerButton(e.button);
+        break;
+      default:
+        phase = "move";
+        button = "none";
     }
-    return {
-      phase: "move",
-      x: 0,
-      y: 0,
-      pageX: 0,
-      pageY: 0,
-      pointerType: "mouse",
-      button: "none",
-      pressure: 0.5,
-      timestamp: 0,
-      deviceId: "",
-    };
+
+    signal.value.id = "";
+    signal.value.phase = phase;
+    signal.value.x = e.clientX;
+    signal.value.y = e.clientY;
+    signal.value.pageX = e.pageX;
+    signal.value.pageY = e.pageY;
+    signal.value.pointerType = "mouse";
+    signal.value.button = button;
+    signal.value.pressure = phase === "move" && e.buttons === 0 ? 0 : 0.5;
   }
 
-  function releaseCurrentPointer(): void {
-    if (current && pooling) {
-      singlePointerPool.release(current);
-    }
-    current = null;
-  }
-
-  return {
-    process(event: MouseEvent): SinglePointer {
-      let phase: PointerPhase;
-      let button: PointerButton;
-      switch (event.type) {
-        case "mousedown":
-          phase = "start";
-          button = toPointerButton(event.button);
-          break;
-        case "mouseup":
-          phase = "end";
-          button = toPointerButton(event.button);
-          break;
-        default:
-          phase = "move";
-          button = "none";
-      }
-
-      const pointer = acquirePointer();
-
-      pointer.timestamp = performance.now();
-      pointer.deviceId = resolvedDeviceId || (resolvedDeviceId = "mouse-device");
-      pointer.phase = phase;
-      pointer.x = event.clientX;
-      pointer.y = event.clientY;
-      pointer.pageX = event.pageX;
-      pointer.pageY = event.pageY;
-      pointer.pointerType = "mouse";
-      pointer.button = button;
-      pointer.pressure = phase === "move" && event.buttons === 0 ? 0 : 0.5;
-
-      releaseCurrentPointer();
-      current = pointer;
-      return pointer;
-    },
-
-    get isActive(): boolean {
-      return current !== null;
-    },
-
-    reset(): void {
-      releaseCurrentPointer();
-      resolvedDeviceId = customDeviceId ?? "";
-    },
-
-    dispose(): void {
-      this.reset();
-    },
-  };
+  return createSinglePointerEmitter(processer, options);
 }
 
 export function mouseToSinglePointer(
-  options: MouseEmitterOptions = {},
-): Operator<MouseEvent, SinglePointer> {
+  options: SinglePointerEmitterOptions = {},
+): Operator<DomEventSignal<MouseEvent>, SinglePointerSignal> {
   return (source) =>
     createStream((observer) => {
       const emitter = createMouseEmitter(options);

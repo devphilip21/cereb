@@ -1,7 +1,8 @@
+import type { Signal } from "../core/signal.js";
 import type { Observer, Operator, Stream, Unsubscribe } from "../core/stream.js";
 import { toObserver } from "../core/stream.js";
 
-export function share<T>(): Operator<T, T> {
+export function share<T extends Signal>(): Operator<T, T> {
   return (source): Stream<T> => {
     const observers = new Set<Observer<T>>();
     let sourceUnsub: Unsubscribe | null = null;
@@ -59,7 +60,7 @@ export function share<T>(): Operator<T, T> {
   };
 }
 
-export function shareReplay<T>(bufferSize = 1): Operator<T, T> {
+export function shareReplay<T extends Signal>(bufferSize = 1): Operator<T, T> {
   return (source): Stream<T> => {
     const buffer: T[] = [];
     const observers = new Set<Observer<T>>();

@@ -1,22 +1,25 @@
 import { createStream, type Stream } from "../../core/stream.js";
+import { createDomEventSignal, type DomEventSignal } from "./dom-event-signal.js";
 
 const TOUCH_EVENTS = ["touchstart", "touchmove", "touchend", "touchcancel"] as const;
 
 export function touchEvents(
   target: EventTarget,
   options?: AddEventListenerOptions,
-): Stream<TouchEvent> {
+): Stream<DomEventSignal<TouchEvent>> {
   return createStream((observer) => {
     const handler = (event: Event) => {
-      observer.next(event as TouchEvent);
+      observer.next(createDomEventSignal(event as TouchEvent));
     };
 
-    for (const eventName of TOUCH_EVENTS) {
+    for (let i = 0; i < TOUCH_EVENTS.length; i++) {
+      const eventName = TOUCH_EVENTS[i];
       target.addEventListener(eventName, handler, options);
     }
 
     return () => {
-      for (const eventName of TOUCH_EVENTS) {
+      for (let i = 0; i < TOUCH_EVENTS.length; i++) {
+        const eventName = TOUCH_EVENTS[i];
         target.removeEventListener(eventName, handler, options);
       }
     };

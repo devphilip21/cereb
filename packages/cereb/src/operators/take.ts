@@ -1,3 +1,4 @@
+import type { Signal } from "../core/signal.js";
 import type { Operator, Stream } from "../core/stream.js";
 import { createStream } from "../core/stream.js";
 
@@ -12,7 +13,7 @@ import { createStream } from "../core/stream.js";
  * - While a condition holds: `takeWhile(predicate)`
  * - Until an explicit end signal: `takeUntil(end$)` (e.g. move until up/cancel)
  */
-export function take<T>(count: number): Operator<T, T> {
+export function take<T extends Signal>(count: number): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let taken = 0;
@@ -41,7 +42,7 @@ export function take<T>(count: number): Operator<T, T> {
  * Emits only the first `count` values, then completes and unsubscribes.
  * `take(1)` is especially useful for one-shot triggers.
  */
-export function takeWhile<T>(predicate: (value: T) => boolean): Operator<T, T> {
+export function takeWhile<T extends Signal>(predicate: (value: T) => boolean): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let unsub: (() => void) | undefined;
@@ -66,7 +67,7 @@ export function takeWhile<T>(predicate: (value: T) => boolean): Operator<T, T> {
 /**
  * Emits values while `predicate(value)` is true, then completes and unsubscribes.
  */
-export function takeUntil<T>(notifier: Stream<unknown>): Operator<T, T> {
+export function takeUntil<T extends Signal>(notifier: Stream<Signal>): Operator<T, T> {
   return (source) =>
     createStream((observer) => {
       let completed = false;
