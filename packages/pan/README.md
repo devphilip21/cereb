@@ -27,9 +27,9 @@ pan(element).subscribe((signal) => {
 ### With Extensions
 
 ```typescript
+import { pipe } from "cereb";
 import { pan } from "@cereb/pan";
 import { withVelocity } from "@cereb/pan/extensions";
-import { pipe } from "@cereb/core";
 
 const panCanvas$ = pipe(
   pan(canvas, { threshold: 10 }),
@@ -63,9 +63,9 @@ const pan$ = pan(element, {
 ### Axis Lock
 
 ```typescript
+import { pipe } from "cereb";
 import { pan } from "@cereb/pan";
 import { axisLock } from "@cereb/pan/extensions";
-import { pipe } from "@cereb/core";
 
 /**
  * Lock gesture to the initially detected axis.
