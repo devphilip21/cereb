@@ -3,6 +3,19 @@
 User input modeling and orchestration with a lightweight reactive stream library.
 
 ```typescript
+import { singlePointer } from "cereb";
+
+singlePointer(element).subscribe((signal) => {
+  // IMPORTANT: signal is a readonly object by the library's philosophy.
+  //   - reason: prevent side-effect, gc optimization.
+  //   - It is possible to extend the signal with new key/value pairs.
+  const { x, y, pageX, pageY } = signal.value
+});
+```
+
+Alternatively, you can build pipelines.
+
+```typescript
 import { pipe, singlePointer } from "cereb";
 import { offset, singlePointerSession } from "cereb/operators";
 
