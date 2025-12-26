@@ -1,6 +1,4 @@
-export interface SinglePointerOptions {
-  pooling?: boolean; // default: false
-}
+export type SinglePointerOptions = {};
 
 export type SinglePointerType = "touch" | "mouse" | "pen" | "unknown";
 

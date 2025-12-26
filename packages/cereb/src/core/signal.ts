@@ -1,11 +1,11 @@
 import { getCerebDeviceId } from "./meta.js";
 
 export interface Signal<K extends string = string, V = unknown> {
-  kind: K;
-  value: V;
-  deviceId: string;
-  createdAt: number;
-  updatedAt?: number;
+  readonly kind: K;
+  readonly value: V;
+  readonly deviceId: string;
+  readonly createdAt: number;
+  readonly updatedAt?: number;
 }
 
 /**

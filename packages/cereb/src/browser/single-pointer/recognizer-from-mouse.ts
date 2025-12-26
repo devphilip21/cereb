@@ -1,8 +1,9 @@
 import type { Operator } from "../../core/stream.js";
 import { createStream } from "../../core/stream.js";
+import type { DeepMutable } from "../../internal/types.js";
 import type { DomEventSignal } from "../dom-event/dom-event-signal.js";
 import { createSinglePointerRecognizer, type SinglePointerRecognizer } from "./recognizer.js";
-import type { SinglePointerSignal } from "./single-pointer-signal.js";
+import type { SinglePointer, SinglePointerSignal } from "./single-pointer-signal.js";
 import {
   type SinglePointerButton,
   type SinglePointerOptions,
@@ -34,15 +35,16 @@ export function createMouseRecognizer(
         button = "none";
     }
 
-    signal.value.id = "";
-    signal.value.phase = phase;
-    signal.value.x = e.clientX;
-    signal.value.y = e.clientY;
-    signal.value.pageX = e.pageX;
-    signal.value.pageY = e.pageY;
-    signal.value.pointerType = "mouse";
-    signal.value.button = button;
-    signal.value.pressure = phase === "move" && e.buttons === 0 ? 0 : 0.5;
+    const v = signal.value as DeepMutable<SinglePointer>;
+    v.id = "";
+    v.phase = phase;
+    v.x = e.clientX;
+    v.y = e.clientY;
+    v.pageX = e.pageX;
+    v.pageY = e.pageY;
+    v.pointerType = "mouse";
+    v.button = button;
+    v.pressure = phase === "move" && e.buttons === 0 ? 0 : 0.5;
   }
 
   return createSinglePointerRecognizer(processer, options);

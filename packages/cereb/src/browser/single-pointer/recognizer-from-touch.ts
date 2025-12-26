@@ -1,8 +1,9 @@
 import type { Operator } from "../../core/stream.js";
 import { createStream } from "../../core/stream.js";
+import type { DeepMutable } from "../../internal/types.js";
 import type { DomEventSignal } from "../dom-event/dom-event-signal.js";
 import { createSinglePointerRecognizer, type SinglePointerRecognizer } from "./recognizer.js";
-import type { SinglePointerSignal } from "./single-pointer-signal.js";
+import type { SinglePointer, SinglePointerSignal } from "./single-pointer-signal.js";
 import type { SinglePointerOptions, SinglePointerPhase } from "./types.js";
 
 export function createTouchRecognizer(
@@ -30,14 +31,15 @@ export function createTouchRecognizer(
         phase = "move";
     }
 
-    signal.value.phase = phase;
-    signal.value.x = touch.clientX;
-    signal.value.y = touch.clientY;
-    signal.value.pageX = touch.pageX;
-    signal.value.pageY = touch.pageY;
-    signal.value.pointerType = "touch";
-    signal.value.button = "none";
-    signal.value.pressure = touch.force || 0.5;
+    const v = signal.value as DeepMutable<SinglePointer>;
+    v.phase = phase;
+    v.x = touch.clientX;
+    v.y = touch.clientY;
+    v.pageX = touch.pageX;
+    v.pageY = touch.pageY;
+    v.pointerType = "touch";
+    v.button = "none";
+    v.pressure = touch.force || 0.5;
   }
 
   return createSinglePointerRecognizer(processer, options);

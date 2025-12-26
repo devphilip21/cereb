@@ -1,6 +1,7 @@
 import type { Signal } from "cereb";
 import { createSignal } from "../../cereb/src/core/signal.js";
-import type { PanDirection, PanPhase } from "./types.js";
+import type { DeepMutable } from "../../cereb/src/internal/types.js";
+import type { PanDirection, PanPhase } from "./pan-types.js";
 
 /**
  * Pan gesture event emitted during pan lifecycle (start, change, end, cancel).
@@ -40,10 +41,10 @@ export interface PanValue {
 
 export interface PanSignal<T = {}> extends Signal<"pan", PanValue & T> {}
 
-export const PAN_SIGNAL_KIND = "pan";
+export const PAN_SIGNAL_KIND = "pan" as const;
 
-export function createDefaultPanSignal(): PanSignal {
-  return createSignal(PAN_SIGNAL_KIND, {
+export function createDefaultPanValue(): PanValue {
+  return {
     phase: "unknown",
     deltaX: 0,
     deltaY: 0,
@@ -53,17 +54,22 @@ export function createDefaultPanSignal(): PanSignal {
     y: 0,
     pageX: 0,
     pageY: 0,
-  });
+  };
 }
 
-export function resetPanSignal(signal: PanSignal): void {
-  signal.value.phase = "unknown";
-  signal.value.deltaX = 0;
-  signal.value.deltaY = 0;
-  signal.value.distance = 0;
-  signal.value.direction = "none";
-  signal.value.x = 0;
-  signal.value.y = 0;
-  signal.value.pageX = 0;
-  signal.value.pageY = 0;
+export function createDefaultPanSignal(): PanSignal {
+  return createSignal(PAN_SIGNAL_KIND, createDefaultPanValue());
+}
+
+export function resetPanValue(value: PanValue): void {
+  const v = value as DeepMutable<PanValue>;
+  v.phase = "unknown";
+  v.deltaX = 0;
+  v.deltaY = 0;
+  v.distance = 0;
+  v.direction = "none";
+  v.x = 0;
+  v.y = 0;
+  v.pageX = 0;
+  v.pageY = 0;
 }

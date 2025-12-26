@@ -1,19 +1,27 @@
-import { createObjectPool } from "../../internal/object-pool.js";
+import { signalPool } from "../../core/signal-pool.js";
 import {
-  createDefaultSinglePointerSignal,
-  resetSinglePointerSignal,
+  createDefaultSinglePointerValue,
+  resetSinglePointerValue,
+  SINGLE_POINTER_SIGNAL_KIND,
   type SinglePointerSignal,
 } from "./single-pointer-signal.js";
 
-export const singlePointerPool = createObjectPool<SinglePointerSignal>(
-  createDefaultSinglePointerSignal,
-  resetSinglePointerSignal,
+signalPool.registerKind(
+  SINGLE_POINTER_SIGNAL_KIND,
+  {
+    createValue: createDefaultSinglePointerValue,
+    resetValue: resetSinglePointerValue,
+  },
   {
     initialSize: 20,
     maxSize: 100,
   },
 );
 
-export function releaseSinglePointer(signal: SinglePointerSignal): void {
-  singlePointerPool.release(signal);
+export function acquireSinglePointerSignal(): SinglePointerSignal {
+  return signalPool.acquire(SINGLE_POINTER_SIGNAL_KIND);
+}
+
+export function releaseSinglePointerSignal(signal: SinglePointerSignal): void {
+  signalPool.release(signal);
 }

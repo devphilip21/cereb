@@ -2,7 +2,7 @@ import type { Operator, SinglePointerSignal, Stream } from "cereb";
 import { createStream, pipe, singlePointer } from "cereb";
 import { createPanEmitter } from "./emitter.js";
 import type { PanSignal } from "./pan-signal.js";
-import type { PanOptions } from "./types.js";
+import type { PanOptions } from "./pan-types.js";
 
 /**
  * Operator that transforms SinglePointer events into PanEvent events.

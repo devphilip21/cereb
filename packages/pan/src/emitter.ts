@@ -1,14 +1,15 @@
 import type { SinglePointerSignal } from "cereb";
+import type { DeepMutable } from "../../cereb/src/internal/types.js";
 import { calculateDistance, getDirection } from "./geometry.js";
-import { createDefaultPanSignal, type PanSignal } from "./pan-signal.js";
-import { panEventPool } from "./pool.js";
+import type { PanSignal, PanValue } from "./pan-signal.js";
+import type { PanDirectionMode, PanOptions, PanPhase } from "./pan-types.js";
+import { acquirePanSignal, releasePanSignal } from "./pool.js";
 import { createInitialPanState, type PanState, resetPanState } from "./state.js";
-import type { PanDirectionMode, PanOptions, PanPhase } from "./types.js";
 
 const DEFAULT_THRESHOLD = 10;
 
 /**
- * Stateful processor that transforms SinglePointer events into PanEvent.
+ * Stateful processor that transforms SinglePointer events into PanSignal.
  * Can be used imperatively or integrated into custom pipelines.
  */
 export interface PanEmitter {
@@ -57,32 +58,39 @@ function isThresholdMet(
  * ```
  */
 export function createPanEmitter(options: PanOptions = {}): PanEmitter {
-  const { threshold = DEFAULT_THRESHOLD, direction = "all", pooling = false } = options;
+  const { threshold = DEFAULT_THRESHOLD, direction = "all" } = options;
   const state: PanState = createInitialPanState();
+  let current: PanSignal | null = null;
 
-  function acquireSignal(): PanSignal {
-    if (pooling) {
-      return panEventPool.acquire();
+  function releaseCurrentSignal(): void {
+    if (current) {
+      releasePanSignal(current);
     }
-    return createDefaultPanSignal();
+    current = null;
   }
 
-  function createPanSignal(pointerSignal: SinglePointerSignal, phase: PanPhase): PanSignal {
-    const signal = acquireSignal();
+  function createPanSignalFromPointer(
+    pointerSignal: SinglePointerSignal,
+    phase: PanPhase,
+  ): PanSignal {
+    releaseCurrentSignal();
+    const signal = acquirePanSignal();
 
     const deltaX = pointerSignal.value.x - state.startX;
     const deltaY = pointerSignal.value.y - state.startY;
 
-    signal.value.phase = phase;
-    signal.value.deltaX = deltaX;
-    signal.value.deltaY = deltaY;
-    signal.value.distance = state.totalDistance;
-    signal.value.direction = getDirection(deltaX, deltaY);
-    signal.value.x = pointerSignal.value.x;
-    signal.value.y = pointerSignal.value.y;
-    signal.value.pageX = pointerSignal.value.pageX;
-    signal.value.pageY = pointerSignal.value.pageY;
+    const v = signal.value as DeepMutable<PanValue>;
+    v.phase = phase;
+    v.deltaX = deltaX;
+    v.deltaY = deltaY;
+    v.distance = state.totalDistance;
+    v.direction = getDirection(deltaX, deltaY);
+    v.x = pointerSignal.value.x;
+    v.y = pointerSignal.value.y;
+    v.pageX = pointerSignal.value.pageX;
+    v.pageY = pointerSignal.value.pageY;
 
+    current = signal;
     return signal;
   }
 
@@ -119,10 +127,10 @@ export function createPanEmitter(options: PanOptions = {}): PanEmitter {
     if (!state.thresholdMet) {
       if (isThresholdMet(deltaX, deltaY, threshold, direction)) {
         state.thresholdMet = true;
-        result = createPanSignal(signal, "start");
+        result = createPanSignalFromPointer(signal, "start");
       }
     } else {
-      result = createPanSignal(signal, "move");
+      result = createPanSignalFromPointer(signal, "move");
     }
 
     state.prevX = signal.value.x;
@@ -138,7 +146,7 @@ export function createPanEmitter(options: PanOptions = {}): PanEmitter {
     let result: PanSignal | null = null;
 
     if (state.thresholdMet) {
-      result = createPanSignal(signal, "end");
+      result = createPanSignalFromPointer(signal, "end");
     }
 
     resetPanState(state);
@@ -150,7 +158,7 @@ export function createPanEmitter(options: PanOptions = {}): PanEmitter {
 
     let result: PanSignal | null = null;
     if (state.thresholdMet) {
-      result = createPanSignal(signal, "cancel");
+      result = createPanSignalFromPointer(signal, "cancel");
     }
 
     resetPanState(state);
@@ -182,10 +190,12 @@ export function createPanEmitter(options: PanOptions = {}): PanEmitter {
     },
 
     reset(): void {
+      releaseCurrentSignal();
       resetPanState(state);
     },
 
     dispose(): void {
+      releaseCurrentSignal();
       resetPanState(state);
     },
   };

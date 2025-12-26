@@ -1,8 +1,9 @@
 import type { Operator } from "../../core/stream.js";
 import { createStream } from "../../core/stream.js";
+import type { DeepMutable } from "../../internal/types.js";
 import type { DomEventSignal } from "../dom-event/dom-event-signal.js";
 import { createSinglePointerRecognizer, type SinglePointerRecognizer } from "./recognizer.js";
-import type { SinglePointerSignal } from "./single-pointer-signal.js";
+import type { SinglePointer, SinglePointerSignal } from "./single-pointer-signal.js";
 import {
   type SinglePointerButton,
   type SinglePointerOptions,
@@ -44,15 +45,16 @@ export function createPointerRecognizer(
         button = "none";
     }
 
-    signal.value.id = `${e.pointerType}-${e.pointerId}`;
-    signal.value.phase = phase;
-    signal.value.x = e.clientX;
-    signal.value.y = e.clientY;
-    signal.value.pageX = e.pageX;
-    signal.value.pageY = e.pageY;
-    signal.value.pointerType = normalizePointerType(e.pointerType);
-    signal.value.button = button;
-    signal.value.pressure = e.pressure;
+    const v = signal.value as DeepMutable<SinglePointer>;
+    v.id = `${e.pointerType}-${e.pointerId}`;
+    v.phase = phase;
+    v.x = e.clientX;
+    v.y = e.clientY;
+    v.pageX = e.pageX;
+    v.pageY = e.pageY;
+    v.pointerType = normalizePointerType(e.pointerType);
+    v.button = button;
+    v.pressure = e.pressure;
   }
 
   return createSinglePointerRecognizer(processer, options);

@@ -20,10 +20,4 @@ export interface PanOptions {
    * @default "all"
    */
   direction?: PanDirectionMode;
-
-  /**
-   * Enable object pooling for PanEvent objects.
-   * @default false
-   */
-  pooling?: boolean;
 }

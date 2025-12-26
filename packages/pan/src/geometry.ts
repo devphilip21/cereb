@@ -1,4 +1,4 @@
-import type { PanDirection } from "./types.js";
+import type { PanDirection } from "./pan-types.js";
 
 /**
  * Determine primary direction from delta values.
