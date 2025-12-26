@@ -43,6 +43,39 @@ singlePointer(canvas).subscribe((signal) => {
 
 ## Recipes
 
+### Session Filtering
+
+Filter events to only emit during active sessions (from pointer down to up/cancel). Events outside a session are ignored.
+
+```typescript
+import { pipe, singlePointer, singlePointerSession } from "cereb";
+
+// Only emits events from start → end/cancel
+const stream = pipe(
+  singlePointer(element),
+  singlePointerSession()
+);
+
+stream.subscribe((signal) => {
+  // Guaranteed to be within an active pointer session
+  const { phase, x, y } = signal.value;
+});
+```
+
+For custom session boundaries, use `session` directly:
+
+```typescript
+import { pipe, session } from "cereb";
+
+const stream = pipe(
+  someStream,
+  session({
+    start: (signal) => signal.value.phase === "start",
+    end: (signal) => signal.value.phase === "end",
+  })
+);
+```
+
 ### DOM Events
 
 Cereb includes factories to convert DOM events into streams, and to build higher-level streams by merging mouse/touch/pointer events.

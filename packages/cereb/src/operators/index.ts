@@ -5,6 +5,7 @@ export { filter } from "./filter.js";
 export { map } from "./map.js";
 export { merge, mergeWith } from "./merge.js";
 export { offset } from "./offset.js";
+export { session, singlePointerSession } from "./session.js";
 export { share, shareReplay } from "./share.js";
 export { skip, skipUntil, skipWhile } from "./skip.js";
 export { spy, tap } from "./spy.js";
