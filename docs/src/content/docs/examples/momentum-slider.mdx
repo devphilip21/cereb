@@ -1,0 +1,42 @@
+---
+title: Momentum Slider
+description: momentum slider example
+---
+
+import MomentumSlider from "../../../components/momentum-slider.astro";
+
+This demo uses `pan()` with `withVelocity()` extension to create a carousel with momentum scrolling. Drag the cards left or right and release to see the momentum effect.
+
+<MomentumSlider />
+
+## Code
+
+```ts
+import { pipe, singlePointer } from "cereb";
+import { panFromSinglePointer } from "@cereb/pan";
+import { withVelocity } from "@cereb/pan/extensions";
+
+const stream = pipe(
+  singlePointer(element),
+  panFromSinglePointer({ threshold: 5, direction: "horizontal" }),
+  withVelocity()
+);
+
+stream.subscribe({
+  next(event) {
+    const { phase, deltaX, velocityX } = event.value;
+
+    switch (phase) {
+      case "start":
+        stopMomentum();
+        break;
+      case "move":
+        updatePosition(deltaX);
+        break;
+      case "end":
+        startMomentum(velocityX);
+        break;
+    }
+  },
+});
+```

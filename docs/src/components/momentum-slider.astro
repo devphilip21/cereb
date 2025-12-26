@@ -1,0 +1,290 @@
+---
+/**
+ * Interactive demo component demonstrating pan gesture with momentum scrolling.
+ * Uses cereb's pan() and withVelocity() to create a smooth carousel experience.
+ */
+---
+
+<div class="momentum-slider-container">
+  <div class="slider-viewport" id="slider-viewport">
+    <div class="slider-track" id="slider-track">
+      <div class="slider-item" style="--item-hue: 200">1</div>
+      <div class="slider-item" style="--item-hue: 160">2</div>
+      <div class="slider-item" style="--item-hue: 280">3</div>
+      <div class="slider-item" style="--item-hue: 340">4</div>
+      <div class="slider-item" style="--item-hue: 40">5</div>
+      <div class="slider-item" style="--item-hue: 100">6</div>
+    </div>
+  </div>
+  <p class="slider-hint">Drag left or right</p>
+  <div class="slider-controls">
+    <button id="reset-slider" type="button">Reset</button>
+    <span id="slider-info" class="slider-info"></span>
+  </div>
+</div>
+
+<style>
+  .momentum-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .slider-viewport {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    border: 2px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    background: var(--sl-color-gray-6);
+    touch-action: pan-y;
+    cursor: grab;
+  }
+
+  .slider-viewport:active {
+    cursor: grabbing;
+  }
+
+  .slider-track {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    height: 100%;
+    will-change: transform;
+  }
+
+  .slider-item {
+    flex-shrink: 0;
+    width: 140px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    background: hsl(var(--item-hue), 60%, 50%);
+    border-radius: 12px;
+    user-select: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .slider-viewport:active .slider-item {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .slider-hint {
+    margin: 0;
+    text-align: center;
+    color: var(--sl-color-gray-3);
+    font-size: 0.875rem;
+    opacity: 0.7;
+  }
+
+  .slider-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .slider-controls button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 4px;
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-white);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+  }
+
+  .slider-controls button:hover {
+    background: var(--sl-color-gray-5);
+  }
+
+  .slider-info {
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-3);
+    font-family: var(--sl-font-mono);
+  }
+</style>
+
+<script>
+  import { pipe, singlePointer } from "cereb";
+  import { panFromSinglePointer, type PanSignal } from "@cereb/pan";
+  import { withVelocity, type VelocityExtension } from "@cereb/pan/extensions";
+
+  type PanWithVelocity = PanSignal & VelocityExtension;
+
+  const FRICTION = 0.95;
+  const MIN_VELOCITY = 0.01;
+
+  /**
+   * Manages the slider's position and momentum animation.
+   * Handles boundary constraints and smooth deceleration.
+   */
+  class SliderState {
+    private offset = 0;
+    private velocity = 0;
+    private baseOffset = 0;
+    private minOffset = 0;
+    private animationId: number | null = null;
+
+    constructor(
+      private track: HTMLElement,
+      private viewport: HTMLElement
+    ) {
+      this.calculateBounds();
+      window.addEventListener("resize", () => this.calculateBounds());
+    }
+
+    private calculateBounds() {
+      const trackWidth = this.track.scrollWidth;
+      const viewportWidth = this.viewport.clientWidth;
+      this.minOffset = Math.min(0, viewportWidth - trackWidth);
+    }
+
+    startDrag() {
+      this.stopMomentum();
+      this.baseOffset = this.offset;
+    }
+
+    updatePosition(deltaX: number): number {
+      let newOffset = this.baseOffset + deltaX;
+      newOffset = this.applyBoundsResistance(newOffset);
+      this.offset = newOffset;
+      this.applyTransform();
+      return this.offset;
+    }
+
+    private applyBoundsResistance(offset: number): number {
+      if (offset > 0) {
+        return offset * 0.3;
+      }
+      if (offset < this.minOffset) {
+        const overscroll = offset - this.minOffset;
+        return this.minOffset + overscroll * 0.3;
+      }
+      return offset;
+    }
+
+    startMomentum(velocityX: number) {
+      this.velocity = velocityX * 16;
+      this.animateMomentum();
+    }
+
+    private animateMomentum() {
+      this.animationId = requestAnimationFrame(() => {
+        this.offset += this.velocity;
+        this.velocity *= FRICTION;
+
+        if (this.offset > 0) {
+          this.offset *= 0.8;
+          this.velocity = 0;
+        } else if (this.offset < this.minOffset) {
+          this.offset = this.minOffset + (this.offset - this.minOffset) * 0.8;
+          this.velocity = 0;
+        }
+
+        this.applyTransform();
+
+        if (Math.abs(this.velocity) > MIN_VELOCITY) {
+          this.animateMomentum();
+        } else {
+          this.snapToBounds();
+        }
+      });
+    }
+
+    private snapToBounds() {
+      if (this.offset > 0) {
+        this.offset = 0;
+      } else if (this.offset < this.minOffset) {
+        this.offset = this.minOffset;
+      }
+      this.applyTransform();
+    }
+
+    stopMomentum() {
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+        this.animationId = null;
+      }
+      this.snapToBounds();
+    }
+
+    private applyTransform() {
+      this.track.style.transform = `translateX(${this.offset}px)`;
+    }
+
+    reset() {
+      this.stopMomentum();
+      this.offset = 0;
+      this.velocity = 0;
+      this.applyTransform();
+    }
+
+    getOffset(): number {
+      return Math.round(this.offset);
+    }
+
+    getVelocity(): number {
+      return this.velocity;
+    }
+  }
+
+  function initMomentumSlider() {
+    const viewport = document.getElementById("slider-viewport");
+    const track = document.getElementById("slider-track");
+    const resetBtn = document.getElementById("reset-slider");
+    const sliderInfo = document.getElementById("slider-info");
+
+    if (!viewport || !track || !resetBtn || !sliderInfo) return;
+
+    const sliderState = new SliderState(track, viewport);
+    let lastVelocityX = 0;
+
+    const stream = pipe(
+      singlePointer(viewport),
+      panFromSinglePointer({ threshold: 5, direction: "horizontal" }),
+      withVelocity()
+    );
+
+    stream.subscribe({
+      next(event: PanWithVelocity) {
+        const { phase, deltaX, velocityX } = event.value;
+
+        switch (phase) {
+          case "start":
+            sliderState.startDrag();
+            break;
+          case "move":
+            sliderState.updatePosition(deltaX);
+            lastVelocityX = velocityX;
+            break;
+          case "end":
+          case "cancel":
+            sliderState.startMomentum(lastVelocityX);
+            break;
+        }
+
+        sliderInfo.textContent =
+          `velocity: ${velocityX?.toFixed(2) ?? "0.00"} px/ms | offset: ${sliderState.getOffset()}px`;
+      },
+    });
+
+    resetBtn.addEventListener("click", () => {
+      sliderState.reset();
+      sliderInfo.textContent = "velocity: 0.00 px/ms | offset: 0px";
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMomentumSlider);
+  } else {
+    initMomentumSlider();
+  }
+</script>
