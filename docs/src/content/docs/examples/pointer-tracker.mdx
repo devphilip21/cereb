@@ -1,0 +1,25 @@
+---
+title: Pointer Tracker
+description: pointer tracker example
+---
+
+import PointerTracker from "../../../components/pointer-tracker.astro";
+
+This demo uses `singlePointer()` from cereb to track pointer movements and draw dots following the cursor.
+
+<PointerTracker />
+
+## Code
+
+```ts
+import { pipe, singlePointer } from "cereb";
+import { offset, singlePointerSession } from "cereb/operators";
+
+pipe(
+  singlePointer(box), // stream of "Single Pointer"
+  singlePointerSession(), // filter start~end phase
+  offset({ target: box }) // add offsetX, offsetY relative to target element
+).subscribe(signal => {
+  trackPointer(signal);
+});
+```

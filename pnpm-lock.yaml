@@ -44,9 +44,15 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.33.0
         version: 0.33.2(astro@5.16.6(@types/node@24.10.4)(rollup@4.54.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@cereb/pan':
+        specifier: workspace:^
+        version: link:../packages/pan
       astro:
         specifier: ^5.0.0
         version: 5.16.6(@types/node@24.10.4)(rollup@4.54.0)(typescript@5.9.3)(yaml@2.8.2)
+      cereb:
+        specifier: workspace:^
+        version: link:../packages/cereb
       sharp:
         specifier: ^0.33.0
         version: 0.33.5

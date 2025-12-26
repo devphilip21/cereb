@@ -1,0 +1,391 @@
+---
+/**
+ * Interactive demo component that draws dots following pointer movement.
+ * Uses cereb's singlePointer stream to track pointer events.
+ */
+---
+
+<div class="pointer-tracker-container">
+  <div class="pointer-tracker-main">
+    <div class="pointer-tracker-box" id="pointer-tracker-box">
+      <canvas id="pointer-tracker-canvas"></canvas>
+      <p class="pointer-tracker-hint">Click and drag to draw</p>
+    </div>
+    <div class="pointer-tracker-info-panel" id="pointer-info-panel">
+      <div class="info-item">
+        <span class="info-label">x</span>
+        <span class="info-value" id="info-x">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">y</span>
+        <span class="info-value" id="info-y">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">phase</span>
+        <span class="info-value" id="info-phase">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">type</span>
+        <span class="info-value" id="info-type">-</span>
+      </div>
+    </div>
+  </div>
+  <div class="pointer-tracker-controls">
+    <button id="clear-canvas" type="button">Clear</button>
+  </div>
+</div>
+
+<style>
+  .pointer-tracker-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .pointer-tracker-main {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .pointer-tracker-box {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    border: 2px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--sl-color-gray-6);
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  .pointer-tracker-box canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .pointer-tracker-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    color: var(--sl-color-gray-3);
+    font-size: 0.875rem;
+    pointer-events: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .pointer-tracker-box.active .pointer-tracker-hint {
+    opacity: 0;
+  }
+
+  .pointer-tracker-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pointer-tracker-controls button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 4px;
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-white);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+  }
+
+  .pointer-tracker-controls button:hover {
+    background: var(--sl-color-gray-5);
+  }
+
+  .pointer-tracker-info-panel {
+    width: 100px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0 !important;
+    padding: 0.75rem;
+    border: 2px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    background: var(--sl-color-gray-6);
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .info-label {
+    font-size: 0.625rem;
+    color: var(--sl-color-gray-4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .info-value {
+    font-size: 0.75rem;
+    color: var(--sl-color-white);
+    font-family: var(--sl-font-mono);
+    word-break: break-all;
+  }
+</style>
+
+<script>
+  import { pipe, singlePointer, type ExtendSignalValue, type SinglePointerSignal } from "cereb";
+  import { offset, singlePointerSession } from "cereb/operators";
+
+  type Point = { x: number; y: number };
+  type CanvasSignal = ExtendSignalValue<SinglePointerSignal, { offsetX: number, offsetY: number }>;
+
+  class CanvasManager {
+    private ctx: CanvasRenderingContext2D;
+    private bgColor: string;
+    private animationId: number | null = null;
+
+    constructor(
+      private canvas: HTMLCanvasElement,
+      private container: HTMLElement
+    ) {
+      this.ctx = canvas.getContext("2d")!;
+      this.bgColor = this.extractBackgroundColor();
+      this.setupCanvas();
+      this.startFadeAnimation();
+    }
+
+    private extractBackgroundColor(): string {
+      const computedStyle = getComputedStyle(this.container);
+      const boxBg = computedStyle.backgroundColor;
+      
+      if (boxBg && boxBg !== "transparent") {
+        const match = boxBg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (match) {
+          return `rgba(${match[1]}, ${match[2]}, ${match[3]}, 0.05)`;
+        }
+      }
+      return "rgba(38, 38, 38, 0.05)";
+    }
+
+    private setupCanvas() {
+      this.resize();
+      window.addEventListener("resize", () => this.resize());
+    }
+
+    private resize() {
+      const rect = this.container.getBoundingClientRect();
+      this.canvas.width = rect.width;
+      this.canvas.height = rect.height;
+    }
+
+    private startFadeAnimation() {
+      const fade = () => {
+        this.ctx.fillStyle = this.bgColor;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.animationId = requestAnimationFrame(fade);
+      };
+      fade();
+    }
+
+    drawSmoothCurve(points: Point[], hue: number) {
+      if (points.length >= 3) {
+        this.drawQuadraticCurve(points, hue);
+      } else if (points.length === 2) {
+        this.drawLine(points[0], points[1], hue);
+      }
+    }
+
+    private drawQuadraticCurve(points: Point[], hue: number) {
+      const [p0, p1, p2] = points;
+      const mid1 = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 };
+      const mid2 = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(mid1.x, mid1.y);
+      this.ctx.quadraticCurveTo(p1.x, p1.y, mid2.x, mid2.y);
+      this.applyStrokeStyle(hue);
+      this.ctx.stroke();
+    }
+
+    private drawLine(start: Point, end: Point, hue: number) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(start.x, start.y);
+      this.ctx.lineTo(end.x, end.y);
+      this.applyStrokeStyle(hue);
+      this.ctx.stroke();
+    }
+
+    private applyStrokeStyle(hue: number) {
+      this.ctx.strokeStyle = `hsl(${hue}, 70%, 60%)`;
+      this.ctx.lineWidth = 3;
+      this.ctx.lineCap = "round";
+      this.ctx.lineJoin = "round";
+    }
+
+    clear() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    destroy() {
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+      }
+    }
+  }
+
+  class DrawingState {
+    private points: Point[] = [];
+    private hue = 0;
+    private isDrawing = false;
+    private readonly MAX_POINTS = 3;
+    private readonly HUE_START_INCREMENT = 30;
+    private readonly HUE_MOVE_INCREMENT = 2;
+
+    startDrawing(point: Point) {
+      this.isDrawing = true;
+      this.points = [{ x: point.x, y: point.y }];
+      this.hue = (this.hue + this.HUE_START_INCREMENT) % 360;
+    }
+
+    addPoint(point: Point) {
+      if (!this.isDrawing) return;
+
+      this.points.push({ x: point.x, y: point.y });
+      if (this.points.length > this.MAX_POINTS) {
+        this.points.shift();
+      }
+      this.hue = (this.hue + this.HUE_MOVE_INCREMENT) % 360;
+    }
+
+    stopDrawing() {
+      this.isDrawing = false;
+      this.points = [];
+    }
+
+    reset() {
+      this.points = [];
+      this.isDrawing = false;
+    }
+
+    getPoints(): Point[] {
+      return this.points;
+    }
+
+    getHue(): number {
+      return this.hue;
+    }
+
+    isActive(): boolean {
+      return this.isDrawing;
+    }
+  }
+
+  class PointerEventHandler {
+    constructor(
+      private box: HTMLElement,
+      private canvasManager: CanvasManager,
+      private drawingState: DrawingState,
+      private infoElements: {
+        x: HTMLElement;
+        y: HTMLElement;
+        phase: HTMLElement;
+        type: HTMLElement;
+      }
+    ) {}
+
+    handlePointer(signal: CanvasSignal) {
+      this.updatePointerInfo(signal);
+
+      console.log(signal.value.phase);
+
+      switch (signal.value.phase) {
+        case "start":
+          this.handleStart(signal);
+          break;
+        case "move":
+          this.handleMove(signal);
+          break;
+        case "end":
+        case "cancel":
+          this.handleEnd();
+          break;
+      }
+    }
+
+    private updatePointerInfo(signal: CanvasSignal) {
+      const { x, y, phase, pointerType } = signal.value;
+      this.infoElements.x.textContent = String(Math.round(x));
+      this.infoElements.y.textContent = String(Math.round(y));
+      this.infoElements.phase.textContent = phase;
+      this.infoElements.type.textContent = pointerType;
+    }
+
+    private handleStart(signal: CanvasSignal) {
+      this.box.classList.add("active");
+      this.drawingState.startDrawing({ x: signal.value.offsetX, y: signal.value.offsetY });
+    }
+
+    private handleMove(signal: CanvasSignal) {
+      if (!this.drawingState.isActive()) return;
+
+      this.drawingState.addPoint({ x: signal.value.offsetX, y: signal.value.offsetY });
+      this.canvasManager.drawSmoothCurve(
+        this.drawingState.getPoints(),
+        this.drawingState.getHue()
+      );
+    }
+
+    private handleEnd() {
+      this.drawingState.stopDrawing();
+    }
+  }
+
+  function initPointerTracker() {
+    const box = document.getElementById("pointer-tracker-box");
+    const canvas = document.getElementById("pointer-tracker-canvas") as HTMLCanvasElement;
+    const clearBtn = document.getElementById("clear-canvas");
+    const infoX = document.getElementById("info-x");
+    const infoY = document.getElementById("info-y");
+    const infoPhase = document.getElementById("info-phase");
+    const infoType = document.getElementById("info-type");
+
+    if (!box || !canvas || !clearBtn || !infoX || !infoY || !infoPhase || !infoType) return;
+
+    const canvasManager = new CanvasManager(canvas, box);
+    const drawingState = new DrawingState();
+    const infoElements = { x: infoX, y: infoY, phase: infoPhase, type: infoType };
+    const eventHandler = new PointerEventHandler(box, canvasManager, drawingState, infoElements);
+
+    pipe(
+      singlePointer(box),
+      singlePointerSession(),
+      offset({ target: box })
+    ).subscribe(signal => {
+      eventHandler.handlePointer(signal);
+    });
+
+    clearBtn.addEventListener("click", () => {
+      canvasManager.clear();
+      drawingState.reset();
+      box.classList.remove("active");
+      infoX.textContent = "-";
+      infoY.textContent = "-";
+      infoPhase.textContent = "-";
+      infoType.textContent = "-";
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPointerTracker);
+  } else {
+    initPointerTracker();
+  }
+</script>
