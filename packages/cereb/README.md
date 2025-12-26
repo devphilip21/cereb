@@ -23,10 +23,12 @@ import { singlePointer } from "cereb";
  * - Keeps pointer handling clear and purpose-driven—no need to juggle multiple DOM event shapes.
  * - Lets you coordinate and control priority across multiple input streams.
  */
-singlePointer(canvas).subscribe((e) => {
-  switch (e.phase) {
+singlePointer(canvas).subscribe((signal) => {
+  const { phase, x, y } = signal.value;
+
+  switch (phase) {
     case "move":
-      point.style.setProperty("transform", `translateX(${e.x}, ${e.y})`);
+      point.style.setProperty("transform", `translateX(${x}, ${y})`);
       break;
   }
 });
@@ -63,7 +65,7 @@ const pointSomething$ = pipe(
   singlePointerEmitter(),
 );
 
-pointSomething$.subscribe((e) => console.log(e.x, e.y));
+pointSomething$.subscribe((signal) => { /* .. */ });
 ```
 
 ### Blocking Streams
@@ -80,7 +82,26 @@ stream$.block(); // Pause event processing
 stream$.unblock(); // Resume event processing
 ```
 
-## Operators
+## Cereb Operators
+
+| Operator | Description |
+|----------|-------------|
+| `offset` | Add element-relative `offsetX`, `offsetY` to pointer signals |
+
+```typescript
+import { pipe, singlePointer, offset } from "cereb";
+
+const stream = pipe(
+  singlePointer(element),
+  offset({ target: element }) // includes offsetX, offsetY relative to target element
+);
+
+stream.subscribe((signal) => {
+  const { x, y, offsetX, offsetY } = signal.value;
+});
+```
+
+## General Operators
 
 Core includes common stream operators:
 

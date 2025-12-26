@@ -1,5 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
+import { createSignal, type Signal } from "./signal.js";
 import { createStream, toObserver } from "./stream.js";
+
+type TestSignal = Signal<"test", number>;
+
+function testSignal(value: number): TestSignal {
+  return createSignal("test", value);
+}
 
 describe("toObserver", () => {
   it("should convert function to observer", () => {
@@ -20,11 +27,11 @@ describe("createStream", () => {
     const values: number[] = [];
     const complete = vi.fn();
 
-    createStream<number>((observer) => {
-      observer.next(1);
-      observer.next(2);
+    createStream<TestSignal>((observer) => {
+      observer.next(testSignal(1));
+      observer.next(testSignal(2));
       observer.complete?.();
-    }).subscribe({ next: (v) => values.push(v), complete });
+    }).subscribe({ next: (v) => values.push(v.value), complete });
 
     expect(values).toEqual([1, 2]);
     expect(complete).toHaveBeenCalled();
@@ -34,7 +41,7 @@ describe("createStream", () => {
     const error = vi.fn();
     const testError = new Error("test");
 
-    createStream<number>((observer) => {
+    createStream<TestSignal>((observer) => {
       observer.error?.(testError);
     }).subscribe({ next: vi.fn(), error });
 
@@ -44,8 +51,8 @@ describe("createStream", () => {
   it("should call cleanup on unsubscribe", () => {
     const cleanup = vi.fn();
 
-    const unsub = createStream<number>((observer) => {
-      observer.next(1);
+    const unsub = createStream<TestSignal>((observer) => {
+      observer.next(testSignal(1));
       return cleanup;
     }).subscribe(vi.fn());
 

@@ -1,17 +1,24 @@
 import { describe, expect, it, vi } from "vitest";
+import { createSignal, type Signal } from "./signal.js";
 import { createStream } from "./stream.js";
+
+type TestSignal = Signal<"test", number>;
+
+function testSignal(value: number): TestSignal {
+  return createSignal("test", value);
+}
 
 describe("Stream blocking", () => {
   it("should emit values when not blocked", () => {
     const values: number[] = [];
 
-    const source = createStream<number>((observer) => {
-      observer.next(1);
-      observer.next(2);
-      observer.next(3);
+    const source = createStream<TestSignal>((observer) => {
+      observer.next(testSignal(1));
+      observer.next(testSignal(2));
+      observer.next(testSignal(3));
     });
 
-    source.subscribe((v) => values.push(v));
+    source.subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([1, 2, 3]);
   });
@@ -20,11 +27,11 @@ describe("Stream blocking", () => {
     const values: number[] = [];
     let emit: (v: number) => void = () => {};
 
-    const source = createStream<number>((observer) => {
-      emit = (v) => observer.next(v);
+    const source = createStream<TestSignal>((observer) => {
+      emit = (v) => observer.next(testSignal(v));
     });
 
-    source.subscribe((v) => values.push(v));
+    source.subscribe((v) => values.push(v.value));
 
     emit(1);
     source.block();
@@ -39,11 +46,11 @@ describe("Stream blocking", () => {
     const values: number[] = [];
     let emit: (v: number) => void = () => {};
 
-    const source = createStream<number>((observer) => {
-      emit = (v) => observer.next(v);
+    const source = createStream<TestSignal>((observer) => {
+      emit = (v) => observer.next(testSignal(v));
     });
 
-    source.subscribe((v) => values.push(v));
+    source.subscribe((v) => values.push(v.value));
 
     emit(1);
     source.block();
@@ -59,7 +66,7 @@ describe("Stream blocking", () => {
     const error = vi.fn();
     const testError = new Error("test");
 
-    const source = createStream<number>((observer) => {
+    const source = createStream<TestSignal>((observer) => {
       observer.error?.(testError);
     });
 
@@ -72,7 +79,7 @@ describe("Stream blocking", () => {
   it("should not block complete signals", () => {
     const complete = vi.fn();
 
-    const source = createStream<number>((observer) => {
+    const source = createStream<TestSignal>((observer) => {
       observer.complete?.();
     });
 
@@ -85,8 +92,8 @@ describe("Stream blocking", () => {
   it("should call cleanup on unsubscribe", () => {
     const cleanup = vi.fn();
 
-    const unsub = createStream<number>((observer) => {
-      observer.next(1);
+    const unsub = createStream<TestSignal>((observer) => {
+      observer.next(testSignal(1));
       return cleanup;
     }).subscribe(vi.fn());
 
