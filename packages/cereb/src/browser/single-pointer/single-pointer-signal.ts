@@ -1,5 +1,4 @@
 import { createSignal, type Signal } from "../../core/signal.js";
-import type { DeepMutable } from "../../internal/types.js";
 import type { SinglePointerButton, SinglePointerPhase, SinglePointerType } from "./types.js";
 
 export interface SinglePointerSignal extends Signal<"single-pointer", SinglePointer> {}
@@ -39,30 +38,4 @@ export function createDefaultSinglePointerSignal(): SinglePointerSignal {
     button: "none",
     pressure: 0.5,
   });
-}
-
-export function resetSinglePointerValue(value: SinglePointer): void {
-  const v = value as DeepMutable<SinglePointer>;
-  v.phase = "move";
-  v.x = 0;
-  v.y = 0;
-  v.pageX = 0;
-  v.pageY = 0;
-  v.pointerType = "unknown";
-  v.button = "none";
-  v.pressure = 0.5;
-}
-
-export function createDefaultSinglePointerValue(): SinglePointer {
-  return {
-    id: "",
-    phase: "move",
-    x: 0,
-    y: 0,
-    pageX: 0,
-    pageY: 0,
-    pointerType: "unknown",
-    button: "none",
-    pressure: 0.5,
-  };
 }

@@ -70,7 +70,8 @@
     "build": "builder build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "benchmark:pool": "npx tsx --expose-gc benchmarks/signal-pool.bench.ts"
   },
   "devDependencies": {
     "@cereb/builder": "workspace:^",

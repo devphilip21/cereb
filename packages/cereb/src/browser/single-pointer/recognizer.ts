@@ -1,6 +1,8 @@
 import type { Signal } from "../../core/signal.js";
-import { acquireSinglePointerSignal, releaseSinglePointerSignal } from "./pool.js";
-import type { SinglePointerSignal } from "./single-pointer-signal.js";
+import {
+  createDefaultSinglePointerSignal,
+  type SinglePointerSignal,
+} from "./single-pointer-signal.js";
 import type { SinglePointerOptions } from "./types.js";
 
 export interface SinglePointerRecognizer<InputSignal extends Signal> {
@@ -16,18 +18,10 @@ export function createSinglePointerRecognizer<InputSignal extends Signal>(
 ): SinglePointerRecognizer<InputSignal> {
   let current: SinglePointerSignal | null = null;
 
-  function releaseCurrentPointer(): void {
-    if (current) {
-      releaseSinglePointerSignal(current);
-    }
-    current = null;
-  }
-
   return {
     process: (inputSignal) => {
-      const signal = acquireSinglePointerSignal();
+      const signal = createDefaultSinglePointerSignal();
       processor(inputSignal, signal);
-      releaseCurrentPointer();
       current = signal;
       return signal;
     },
@@ -35,7 +29,7 @@ export function createSinglePointerRecognizer<InputSignal extends Signal>(
       return current !== null;
     },
     reset(): void {
-      releaseCurrentPointer();
+      current = null;
     },
     dispose(): void {
       this.reset();
