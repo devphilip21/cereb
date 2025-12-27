@@ -18,9 +18,7 @@ import type { PanOptions } from "./pan-types.js";
  * ).subscribe(pan => console.log(pan.deltaX, pan.velocityX));
  * ```
  */
-export function panFromSinglePointer(
-  options: PanOptions = {},
-): Operator<SinglePointerSignal, PanSignal> {
+export function panRecognizer(options: PanOptions = {}): Operator<SinglePointerSignal, PanSignal> {
   return (source) =>
     createStream((observer) => {
       const emitter = createPanEmitter(options);
@@ -58,6 +56,6 @@ export function panFromSinglePointer(
  * ).subscribe(event => console.log(event.deltaX, event.velocityX));
  * ```
  */
-export function pan(target: EventTarget): Stream<PanSignal> {
-  return pipe(singlePointer(target), panFromSinglePointer());
+export function pan(target: EventTarget, options: PanOptions = {}): Stream<PanSignal> {
+  return pipe(singlePointer(target), panRecognizer(options));
 }
