@@ -6,15 +6,8 @@ import { createStream } from "../core/stream.js";
  * Required value properties for zoom operator input.
  * A signal must have these properties to be used with zoom().
  */
-export interface DistanceValue {
-  /** Initial distance (reference point for scale calculation) */
-  initialDistance: number;
-
-  /** Current distance */
-  distance: number;
-
-  /** Velocity of distance change (pixels per millisecond) */
-  velocity: number;
+export interface ZoomInput {
+  ratio: number;
 }
 
 export interface ZoomOptions {
@@ -50,9 +43,6 @@ export interface ZoomValue {
 
   /** Scale change since last event */
   deltaScale: number;
-
-  /** Scale velocity (scale change per millisecond) */
-  scaleVelocity: number;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -79,7 +69,7 @@ function clamp(value: number, min: number, max: number): number {
  * });
  * ```
  */
-export function zoom<T extends SignalWith<DistanceValue>>(
+export function zoom<T extends SignalWith<ZoomInput>>(
   options: ZoomOptions = {},
 ): Operator<T, ExtendSignalValue<T, ZoomValue>> {
   const { minScale = 0.1, maxScale = 10.0, baseScale = 1.0 } = options;
@@ -93,19 +83,17 @@ export function zoom<T extends SignalWith<DistanceValue>>(
       const unsub = source.subscribe({
         next(signal) {
           try {
-            const { initialDistance, distance, velocity } = signal.value;
+            const { ratio } = signal.value;
 
-            const rawScale = (distance / initialDistance) * baseScale;
+            const rawScale = ratio * baseScale;
             const scale = clamp(rawScale, minScale, maxScale);
             const deltaScale = scale - prevScale;
-            const scaleVelocity = (velocity / initialDistance) * baseScale;
 
             prevScale = scale;
 
-            const value = signal.value as DistanceValue & ZoomValue;
+            const value = signal.value as ZoomInput & ZoomValue;
             value.scale = scale;
             value.deltaScale = deltaScale;
-            value.scaleVelocity = scaleVelocity;
 
             observer.next(signal as unknown as OutputSignal);
           } catch (err) {
