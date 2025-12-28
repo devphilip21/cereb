@@ -3,16 +3,8 @@ import { createSignal } from "cereb";
 import type { PanDirection, PanPhase } from "./pan-types.js";
 
 /**
- * Pan gesture event emitted during pan lifecycle (start, change, end, cancel).
- * Contains position deltas, cumulative distance, and direction information.
- *
- * Use withVelocity() operator to add velocity data:
- * @example
- * ```typescript
- * pipe(source, singlePointerToPan(), withVelocity()).subscribe(event => {
- *   console.log(event.velocityX); // available after withVelocity()
- * });
- * ```
+ * Pan gesture value emitted during pan lifecycle (start, move, end, cancel).
+ * Contains position deltas, velocity, cumulative distance, and direction information.
  */
 export interface PanValue {
   phase: PanPhase;
@@ -27,6 +19,11 @@ export interface PanValue {
 
   /** Current movement direction */
   direction: PanDirection;
+
+  /** X velocity in pixels per millisecond */
+  velocityX: number;
+  /** Y velocity in pixels per millisecond */
+  velocityY: number;
 
   /** Current clientX */
   x: number;
@@ -49,6 +46,8 @@ export function createDefaultPanValue(): PanValue {
     deltaY: 0,
     distance: 0,
     direction: "none",
+    velocityX: 0,
+    velocityY: 0,
     x: 0,
     y: 0,
     pageX: 0,
