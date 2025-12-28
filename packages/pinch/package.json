@@ -1,0 +1,58 @@
+{
+  "name": "@cereb/pinch",
+  "description": "Pinch gesture recognition, designed to work seamlessly with reactive streams and other gesture interactions.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "devphilip21 <philip21.dev@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devphilip21/cereb.git",
+    "directory": "packages/pinch"
+  },
+  "homepage": "https://github.com/devphilip21/cereb/tree/main/packages/pinch",
+  "bugs": {
+    "url": "https://github.com/devphilip21/cereb/issues"
+  },
+  "keywords": [
+    "pinch",
+    "zoom",
+    "gesture",
+    "touch",
+    "pointer",
+    "multi-touch",
+    "cereb"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "builder build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "cereb": "workspace:^"
+  },
+  "devDependencies": {
+    "@cereb/builder": "workspace:^",
+    "@vitest/coverage-v8": "*",
+    "jsdom": "*",
+    "vite": "*",
+    "vitest": "*"
+  }
+}
