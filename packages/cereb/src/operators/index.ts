@@ -1,10 +1,6 @@
 export { debounce } from "./debounce.js";
 export { extend } from "./extend.js";
 export { filter } from "./filter.js";
-export type { KeyboardFilterOptions, ModifierKey } from "./keyboard-filter.js";
-export { keyboardFilter } from "./keyboard-filter.js";
-export type { HeldSignal, HeldValue, KeyboardHeldOptions } from "./keyboard-held.js";
-export { keyboardHeld } from "./keyboard-held.js";
 export { map } from "./map.js";
 export { merge, mergeWith } from "./merge.js";
 export { offset } from "./offset.js";
@@ -15,7 +11,6 @@ export { sessionJoin } from "./session-join.js";
 export { share, shareReplay } from "./share.js";
 export { spy, tap } from "./spy.js";
 export { throttle, throttleLast } from "./throttle.js";
-export { type WheelFilterOptions, wheelFilter } from "./wheel-filter.js";
 export { when } from "./when.js";
 export type { ZoomInput, ZoomOptions, ZoomValue } from "./zoom.js";
 export { zoom } from "./zoom.js";

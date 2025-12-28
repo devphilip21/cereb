@@ -1,10 +1,10 @@
-import { keyboard, type ModifierKey } from "../browser/keyboard/keyboard.js";
-import type { KeyboardSignal } from "../browser/keyboard/keyboard-signal.js";
-import type { Signal } from "../core/signal.js";
-import { createSignal } from "../core/signal.js";
-import type { Stream } from "../core/stream.js";
-import { createStream } from "../core/stream.js";
-import { share } from "./share.js";
+import type { Signal } from "../../core/signal.js";
+import { createSignal } from "../../core/signal.js";
+import type { Stream } from "../../core/stream.js";
+import { createStream } from "../../core/stream.js";
+import { share } from "../../operators/share.js";
+import { keyboard, type ModifierKey } from "./keyboard.js";
+import type { KeyboardSignal } from "./keyboard-signal.js";
 
 export interface HeldValue {
   held: boolean;
