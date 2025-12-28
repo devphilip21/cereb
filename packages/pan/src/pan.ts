@@ -1,8 +1,8 @@
 import type { Operator, SinglePointerSignal, Stream } from "cereb";
 import { createStream, pipe, singlePointer } from "cereb";
-import { createPanEmitter } from "./emitter.js";
 import type { PanSignal } from "./pan-signal.js";
 import type { PanOptions } from "./pan-types.js";
+import { createPanRecognizer } from "./recognizer.js";
 
 /**
  * Operator that transforms SinglePointer events into PanEvent events.
@@ -21,11 +21,11 @@ import type { PanOptions } from "./pan-types.js";
 export function panRecognizer(options: PanOptions = {}): Operator<SinglePointerSignal, PanSignal> {
   return (source) =>
     createStream((observer) => {
-      const emitter = createPanEmitter(options);
+      const recognizer = createPanRecognizer(options);
 
       const unsub = source.subscribe({
         next(pointer) {
-          const event = emitter.process(pointer);
+          const event = recognizer.process(pointer);
           if (event) {
             observer.next(event);
           }
@@ -37,7 +37,7 @@ export function panRecognizer(options: PanOptions = {}): Operator<SinglePointerS
       });
 
       return () => {
-        emitter.dispose();
+        recognizer.dispose();
         unsub();
       };
     });
