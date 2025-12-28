@@ -15,6 +15,9 @@ export interface PinchValue {
   /** Current distance between two pointers */
   distance: number;
 
+  /** Ratio of current distance to initial distance */
+  ratio: number;
+
   /** Distance change since last event */
   deltaDistance: number;
 
@@ -43,6 +46,7 @@ export function createDefaultPinchValue(): PinchValue {
     phase: "unknown",
     initialDistance: 0,
     distance: 0,
+    ratio: 0,
     deltaDistance: 0,
     velocity: 0,
     centerX: 0,
