@@ -12,8 +12,8 @@ This demo uses `pinch()` from `@cereb/pinch` to implement zoom in/out on a space
 ## Code
 
 ```ts
-import { pipe, keyboard, wheel, domEvent } from "cereb";
-import { zoom, share, scan, keyboardFilter, keyboardHeld, wheelFilter, when } from "cereb/operators";
+import { pipe, wheel, keyboard, keyboardHeld, domEvent } from "cereb";
+import { zoom, extend, when } from "cereb/operators";
 import { pinch } from "@cereb/pinch";
 
 // Pinch Zoom
