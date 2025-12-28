@@ -1,9 +1,7 @@
 import type { SinglePointerSignal } from "cereb";
-import type { DeepMutable } from "../../cereb/src/internal/types.js";
 import { calculateDistance, getDirection } from "./geometry.js";
-import type { PanSignal, PanValue } from "./pan-signal.js";
+import { createPanSignal, type PanSignal } from "./pan-signal.js";
 import type { PanDirectionMode, PanOptions, PanPhase } from "./pan-types.js";
-import { acquirePanSignal, releasePanSignal } from "./pool.js";
 import { createInitialPanState, type PanState, resetPanState } from "./state.js";
 
 const DEFAULT_THRESHOLD = 10;
@@ -12,7 +10,7 @@ const DEFAULT_THRESHOLD = 10;
  * Stateful processor that transforms SinglePointer events into PanSignal.
  * Can be used imperatively or integrated into custom pipelines.
  */
-export interface PanEmitter {
+export interface PanRecognizer {
   process(pointer: SinglePointerSignal): PanSignal | null;
   readonly isActive: boolean;
   readonly thresholdMet: boolean;
@@ -37,61 +35,48 @@ function isThresholdMet(
 }
 
 /**
- * Creates a pan gesture emitter that processes SinglePointer events.
+ * Creates a pan gesture recognizer that processes SinglePointer events.
  *
- * The emitter maintains internal state and can be used:
+ * The recognizer maintains internal state and can be used:
  * - Imperatively via process() method
  * - With any event source (not just Observable streams)
  * - In Web Workers or other non-DOM contexts
  *
  * @example
  * ```typescript
- * const emitter = createPanEmitter({ threshold: 10 });
+ * const recognizer = createPanRecognizer({ threshold: 10 });
  *
  * element.addEventListener('pointermove', (e) => {
  *   const pointer = toSinglePointer(e);
- *   const panEvent = emitter.process(pointer);
+ *   const panEvent = recognizer.process(pointer);
  *   if (panEvent) {
  *     console.log(panEvent.deltaX, panEvent.velocityX);
  *   }
  * });
  * ```
  */
-export function createPanEmitter(options: PanOptions = {}): PanEmitter {
+export function createPanRecognizer(options: PanOptions = {}): PanRecognizer {
   const { threshold = DEFAULT_THRESHOLD, direction = "all" } = options;
   const state: PanState = createInitialPanState();
-  let current: PanSignal | null = null;
-
-  function releaseCurrentSignal(): void {
-    if (current) {
-      releasePanSignal(current);
-    }
-    current = null;
-  }
 
   function createPanSignalFromPointer(
     pointerSignal: SinglePointerSignal,
     phase: PanPhase,
   ): PanSignal {
-    releaseCurrentSignal();
-    const signal = acquirePanSignal();
-
     const deltaX = pointerSignal.value.x - state.startX;
     const deltaY = pointerSignal.value.y - state.startY;
 
-    const v = signal.value as DeepMutable<PanValue>;
-    v.phase = phase;
-    v.deltaX = deltaX;
-    v.deltaY = deltaY;
-    v.distance = state.totalDistance;
-    v.direction = getDirection(deltaX, deltaY);
-    v.x = pointerSignal.value.x;
-    v.y = pointerSignal.value.y;
-    v.pageX = pointerSignal.value.pageX;
-    v.pageY = pointerSignal.value.pageY;
-
-    current = signal;
-    return signal;
+    return createPanSignal({
+      phase,
+      deltaX,
+      deltaY,
+      distance: state.totalDistance,
+      direction: getDirection(deltaX, deltaY),
+      x: pointerSignal.value.x,
+      y: pointerSignal.value.y,
+      pageX: pointerSignal.value.pageX,
+      pageY: pointerSignal.value.pageY,
+    });
   }
 
   function handleStart(signal: SinglePointerSignal): null {
@@ -190,12 +175,10 @@ export function createPanEmitter(options: PanOptions = {}): PanEmitter {
     },
 
     reset(): void {
-      releaseCurrentSignal();
       resetPanState(state);
     },
 
     dispose(): void {
-      releaseCurrentSignal();
       resetPanState(state);
     },
   };
