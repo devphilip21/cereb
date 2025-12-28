@@ -1,16 +1,11 @@
 # @cereb/pan
 
-Observable-based pan gesture recognition with composable operators.
-
-### Why @cereb/pan?
-- **Observable-Based** - Compose with pipe, filter, merge and other stream operators
-- **Extensible** - Add velocity tracking, axis locking, and custom behaviors via operators (type-inference support)
-- **Lightweight** - Minimal overhead for high-frequency gesture handling
+Pan gesture recognition for pointer interactions. Works seamlessly with [cereb](https://www.npmjs.com/package/cereb) reactive streams.
 
 ## Installation
 
 ```bash
-npm install @cereb/pan
+npm install @cereb/pan cereb
 ```
 
 ## Quick Start
@@ -19,68 +14,101 @@ npm install @cereb/pan
 import { pan } from "@cereb/pan";
 
 pan(element).subscribe((signal) => {
-  console.log(signal.deltaX, signal.deltaY); // displacement from start
-  console.log(signal.phase); // start, move, end, cancel
+  const { phase, deltaX, deltaY, velocityX, velocityY } = signal.value;
+
+  if (phase === "move") {
+    console.log(`Delta: (${deltaX}, ${deltaY}), Velocity: (${velocityX}, ${velocityY})`);
+  }
 });
 ```
 
-### With Extensions
+## With Axis Lock Operator
 
-```typescript
-import { pipe } from "cereb";
-import { pan } from "@cereb/pan";
-import { withVelocity } from "@cereb/pan/operators";
-
-const panCanvas$ = pipe(
-  pan(canvas, { threshold: 10 }),
-  withVelocity()
-);
-
-const unsub = panCanvas$.subscribe((signal) => {
-  console.log(signal.deltaX, signal.deltaY); // displacement from start
-  console.log(signal.velocityX, signal.velocityY);
-  console.log(signal.phase); // start, change, end, cancel
-});
-```
-
-## Recipes
-
-### Direction-Specific Threshold
-
-```typescript
-import { pan } from "@cereb/pan";
-
-/**
- * Only trigger when horizontal movement exceeds threshold.
- * Vertical movement is ignored for threshold calculation.
- */
-const pan$ = pan(element, {
-  threshold: 10,
-  direction: "horizontal", // "horizontal" | "vertical" | "all"
-});
-```
-
-### Axis Lock
+Use the `axisLock` operator to lock gesture to the initially detected axis:
 
 ```typescript
 import { pipe } from "cereb";
 import { pan } from "@cereb/pan";
 import { axisLock } from "@cereb/pan/operators";
 
-/**
- * Lock gesture to the initially detected axis.
- * After lock, movement on the opposite axis is zeroed out.
- */
-const pan$ = pipe(
+pipe(
   pan(element, { threshold: 10 }),
   axisLock()
-);
+).subscribe((signal) => {
+  const { deltaX, deltaY } = signal.value;
 
-pan$.subscribe((event) => {
   // One of deltaX/deltaY will always be 0 after axis is determined
-  element.style.transform = `translate(${event.deltaX}px, ${event.deltaY}px)`;
+  element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
 });
 ```
+
+## API
+
+### `pan(target, options?)`
+
+Creates a pan gesture stream from an element.
+
+```typescript
+import { pan } from "@cereb/pan";
+
+const stream = pan(element, { threshold: 10, direction: "horizontal" });
+```
+
+**Options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `threshold` | `number` | `10` | Minimum movement (px) before gesture starts |
+| `direction` | `"horizontal" \| "vertical" \| "all"` | `"all"` | Direction constraint for threshold calculation |
+
+### `panRecognizer(options?)`
+
+Operator that transforms single-pointer signals into pan events. Use this when composing with other operators.
+
+```typescript
+import { pipe, singlePointer } from "cereb";
+import { panRecognizer } from "@cereb/pan";
+
+pipe(
+  singlePointer(element),
+  panRecognizer({ threshold: 10 })
+).subscribe((signal) => {
+  // ...
+});
+```
+
+### `createPanRecognizer(options?)`
+
+Low-level API for imperative usage or custom integrations.
+
+```typescript
+import { createPanRecognizer } from "@cereb/pan";
+
+const recognizer = createPanRecognizer({ threshold: 10 });
+
+singlePointerStream.subscribe((signal) => {
+  const panEvent = recognizer.process(signal);
+  if (panEvent) {
+    console.log(panEvent.value.deltaX, panEvent.value.velocityX);
+  }
+});
+```
+
+## PanValue
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `phase` | `"start" \| "move" \| "end" \| "cancel"` | Current gesture phase |
+| `deltaX` | `number` | X displacement from start point |
+| `deltaY` | `number` | Y displacement from start point |
+| `distance` | `number` | Total cumulative distance traveled |
+| `direction` | `"up" \| "down" \| "left" \| "right" \| "none"` | Current movement direction |
+| `velocityX` | `number` | X velocity (px/ms) |
+| `velocityY` | `number` | Y velocity (px/ms) |
+| `x` | `number` | Current X position (client) |
+| `y` | `number` | Current Y position (client) |
+| `pageX` | `number` | Current X position (page) |
+| `pageY` | `number` | Current Y position (page) |
 
 ## License
 

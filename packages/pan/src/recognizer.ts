@@ -6,6 +6,26 @@ import { createInitialPanState, type PanState, resetPanState } from "./state.js"
 
 const DEFAULT_THRESHOLD = 10;
 
+function calculateVelocity(
+  currentX: number,
+  currentY: number,
+  currentTimestamp: number,
+  prevX: number,
+  prevY: number,
+  prevTimestamp: number,
+): { velocityX: number; velocityY: number } {
+  const timeDelta = currentTimestamp - prevTimestamp;
+
+  if (timeDelta <= 0) {
+    return { velocityX: 0, velocityY: 0 };
+  }
+
+  return {
+    velocityX: (currentX - prevX) / timeDelta,
+    velocityY: (currentY - prevY) / timeDelta,
+  };
+}
+
 /**
  * Stateful processor that transforms SinglePointer events into PanSignal.
  * Can be used imperatively or integrated into custom pipelines.
@@ -46,11 +66,10 @@ function isThresholdMet(
  * ```typescript
  * const recognizer = createPanRecognizer({ threshold: 10 });
  *
- * element.addEventListener('pointermove', (e) => {
- *   const pointer = toSinglePointer(e);
- *   const panEvent = recognizer.process(pointer);
+ * singlePointerStream.subscribe((signal) => {
+ *   const panEvent = recognizer.process(signal);
  *   if (panEvent) {
- *     console.log(panEvent.deltaX, panEvent.velocityX);
+ *     console.log(panEvent.value.deltaX, panEvent.value.velocityX);
  *   }
  * });
  * ```
@@ -66,12 +85,23 @@ export function createPanRecognizer(options: PanOptions = {}): PanRecognizer {
     const deltaX = pointerSignal.value.x - state.startX;
     const deltaY = pointerSignal.value.y - state.startY;
 
+    const { velocityX, velocityY } = calculateVelocity(
+      pointerSignal.value.x,
+      pointerSignal.value.y,
+      pointerSignal.createdAt,
+      state.prevX,
+      state.prevY,
+      state.prevTimestamp,
+    );
+
     return createPanSignal({
       phase,
       deltaX,
       deltaY,
       distance: state.totalDistance,
       direction: getDirection(deltaX, deltaY),
+      velocityX,
+      velocityY,
       x: pointerSignal.value.x,
       y: pointerSignal.value.y,
       pageX: pointerSignal.value.pageX,

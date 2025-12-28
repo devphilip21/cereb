@@ -47,6 +47,9 @@ importers:
       '@cereb/pan':
         specifier: workspace:^
         version: link:../packages/pan
+      '@cereb/pinch':
+        specifier: workspace:^
+        version: link:../packages/pinch
       astro:
         specifier: ^5.0.0
         version: 5.16.6(@types/node@24.10.4)(rollup@4.54.0)(typescript@5.9.3)(yaml@2.8.2)
@@ -99,6 +102,28 @@ importers:
         version: 2.1.9(@types/node@24.10.4)(jsdom@25.0.1)
 
   packages/pan:
+    dependencies:
+      cereb:
+        specifier: workspace:^
+        version: link:../cereb
+    devDependencies:
+      '@cereb/builder':
+        specifier: workspace:^
+        version: link:../../internal/builder
+      '@vitest/coverage-v8':
+        specifier: '*'
+        version: 2.1.9(vitest@2.1.9(@types/node@24.10.4)(jsdom@25.0.1))
+      jsdom:
+        specifier: '*'
+        version: 25.0.1
+      vite:
+        specifier: '*'
+        version: 7.3.0(@types/node@24.10.4)(yaml@2.8.2)
+      vitest:
+        specifier: '*'
+        version: 2.1.9(@types/node@24.10.4)(jsdom@25.0.1)
+
+  packages/pinch:
     dependencies:
       cereb:
         specifier: workspace:^

@@ -1,25 +1,25 @@
 {
-  "name": "@cereb/pan",
-  "description": "Pan gesture recognition, designed to work seamlessly with reactive streams and other gesture interactions.",
-  "version": "0.6.0",
+  "name": "@cereb/pinch",
+  "description": "Pinch gesture recognition, designed to work seamlessly with reactive streams and other gesture interactions.",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "devphilip21 <philip21.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/devphilip21/cereb.git",
-    "directory": "packages/pan"
+    "directory": "packages/pinch"
   },
-  "homepage": "https://github.com/devphilip21/cereb/tree/main/packages/pan",
+  "homepage": "https://github.com/devphilip21/cereb/tree/main/packages/pinch",
   "bugs": {
     "url": "https://github.com/devphilip21/cereb/issues"
   },
   "keywords": [
-    "pan",
+    "pinch",
+    "zoom",
     "gesture",
     "touch",
     "pointer",
-    "drag",
-    "swipe",
+    "multi-touch",
     "cereb"
   ],
   "type": "module",
@@ -32,11 +32,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./operators": {
-      "types": "./dist/operators/index.d.ts",
-      "import": "./dist/operators/index.js",
-      "require": "./dist/operators/index.cjs"
     }
   },
   "files": [
