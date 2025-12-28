@@ -119,6 +119,7 @@ export function createPinchRecognizer(options: PinchOptions = {}): PinchRecogniz
       phase,
       initialDistance: state.initialDistance,
       distance,
+      ratio: distance / state.initialDistance,
       deltaDistance,
       velocity,
       centerX,
