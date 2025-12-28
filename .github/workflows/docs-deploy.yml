@@ -31,7 +31,7 @@ jobs:
         run: pnpm install
 
       - name: Build docs
-        run: pnpm --filter @cereb/docs build
+        run: pnpm docs:build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
