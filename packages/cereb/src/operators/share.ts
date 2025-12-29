@@ -1,6 +1,6 @@
 import type { Signal } from "../core/signal.js";
 import type { Observer, Operator, Stream, Unsubscribe } from "../core/stream.js";
-import { toObserver } from "../core/stream.js";
+import { pipeStream, toObserver } from "../core/stream.js";
 
 export function share<T extends Signal>(): Operator<T, T> {
   return (source): Stream<T> => {
@@ -8,7 +8,7 @@ export function share<T extends Signal>(): Operator<T, T> {
     let sourceUnsub: Unsubscribe | null = null;
     let blocked = false;
 
-    return {
+    const stream: Stream<T> = {
       get isBlocked() {
         return blocked;
       },
@@ -56,7 +56,13 @@ export function share<T extends Signal>(): Operator<T, T> {
           }
         };
       },
+
+      pipe(...operators: Operator<Signal, Signal>[]) {
+        return pipeStream(stream, operators);
+      },
     };
+
+    return stream;
   };
 }
 
@@ -70,7 +76,7 @@ export function shareReplay<T extends Signal>(bufferSize = 1): Operator<T, T> {
     let errorValue: unknown;
     let blocked = false;
 
-    return {
+    const stream: Stream<T> = {
       get isBlocked() {
         return blocked;
       },
@@ -141,6 +147,12 @@ export function shareReplay<T extends Signal>(bufferSize = 1): Operator<T, T> {
           }
         };
       },
+
+      pipe(...operators: Operator<Signal, Signal>[]) {
+        return pipeStream(stream, operators);
+      },
     };
+
+    return stream;
   };
 }

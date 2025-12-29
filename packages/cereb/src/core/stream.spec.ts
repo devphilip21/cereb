@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { filter, map } from "../operators/index.js";
 import { createSignal, type Signal } from "./signal.js";
 import { createStream, toObserver } from "./stream.js";
 
@@ -59,5 +60,74 @@ describe("createStream", () => {
     unsub();
 
     expect(cleanup).toHaveBeenCalled();
+  });
+
+  describe("pipe method", () => {
+    it("should apply operators in order", () => {
+      const values: number[] = [];
+
+      createStream<TestSignal>((observer) => {
+        for (const v of [1, 2, 3, 4, 5]) {
+          observer.next(testSignal(v));
+        }
+        observer.complete?.();
+      })
+        .pipe(
+          filter((x: TestSignal) => x.value % 2 === 1),
+          map((x: TestSignal) => ({ ...x, value: x.value * 10 })),
+        )
+        .subscribe((v) => values.push(v.value));
+
+      expect(values).toEqual([10, 30, 50]);
+    });
+
+    it("should return the same stream when no operators are provided", () => {
+      const values: number[] = [];
+
+      createStream<TestSignal>((observer) => {
+        for (const v of [1, 2, 3]) {
+          observer.next(testSignal(v));
+        }
+        observer.complete?.();
+      })
+        .pipe()
+        .subscribe((v) => values.push(v.value));
+
+      expect(values).toEqual([1, 2, 3]);
+    });
+
+    it("should support nested pipe calls", () => {
+      const values: number[] = [];
+
+      createStream<TestSignal>((observer) => {
+        for (const v of [1, 2, 3, 4, 5]) {
+          observer.next(testSignal(v));
+        }
+        observer.complete?.();
+      })
+        .pipe(filter((x: TestSignal) => x.value % 2 === 1))
+        .pipe(map((x: TestSignal) => ({ ...x, value: x.value * 10 })))
+        .subscribe((v) => values.push(v.value));
+
+      expect(values).toEqual([10, 30, 50]);
+    });
+
+    it("should support type transformation", () => {
+      const values: string[] = [];
+
+      createStream<TestSignal>((observer) => {
+        for (const v of [1, 2, 3]) {
+          observer.next(testSignal(v));
+        }
+        observer.complete?.();
+      })
+        .pipe(
+          map((x: TestSignal) => ({ ...x, value: String(x.value) }) as Signal<"test", string>),
+          map((x: Signal<"test", string>) => ({ ...x, value: `${x.value}!` })),
+        )
+        .subscribe((v) => values.push(v.value));
+
+      expect(values).toEqual(["1!", "2!", "3!"]);
+    });
   });
 });

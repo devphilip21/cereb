@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createSubject } from "../internal/subject.js";
 import { createTestSignal, type TestSignal } from "../internal/test-utils.js";
-import { pipe } from "../ochestrations/index.js";
 import { debounce } from "./debounce.js";
 
 describe("debounce", () => {
@@ -12,7 +11,7 @@ describe("debounce", () => {
     const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, debounce(100)).subscribe((v) => values.push(v.value));
+    source.pipe(debounce(100)).subscribe((v) => values.push(v.value));
 
     source.next(createTestSignal(1));
     expect(values).toEqual([]);
@@ -25,7 +24,7 @@ describe("debounce", () => {
     const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, debounce(100)).subscribe((v) => values.push(v.value));
+    source.pipe(debounce(100)).subscribe((v) => values.push(v.value));
 
     source.next(createTestSignal(1));
     vi.advanceTimersByTime(50);

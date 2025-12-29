@@ -1,16 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import { fromArray, ofValue, type TestSignal } from "../internal/test-utils.js";
-import { pipe } from "../ochestrations/index.js";
 import { filter } from "./filter.js";
 
 describe("filter", () => {
   it("should filter values based on predicate", () => {
     const values: number[] = [];
 
-    pipe(
-      fromArray([1, 2, 3, 4, 5]),
-      filter((x: TestSignal<number>) => x.value % 2 === 0),
-    ).subscribe((v) => values.push(v.value));
+    fromArray([1, 2, 3, 4, 5])
+      .pipe(filter((x: TestSignal<number>) => x.value % 2 === 0))
+      .subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([2, 4]);
   });
@@ -18,14 +16,13 @@ describe("filter", () => {
   it("should filter complex objects", () => {
     const values: { name: string; age: number }[] = [];
 
-    pipe(
-      fromArray([
-        { name: "Alice", age: 25 },
-        { name: "Bob", age: 17 },
-        { name: "Charlie", age: 30 },
-      ]),
-      filter((x: TestSignal<{ name: string; age: number }>) => x.value.age >= 18),
-    ).subscribe((v) => values.push(v.value));
+    fromArray([
+      { name: "Alice", age: 25 },
+      { name: "Bob", age: 17 },
+      { name: "Charlie", age: 30 },
+    ])
+      .pipe(filter((x: TestSignal<{ name: string; age: number }>) => x.value.age >= 18))
+      .subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([
       { name: "Alice", age: 25 },
@@ -37,12 +34,13 @@ describe("filter", () => {
     const error = new Error("predicate error");
     const errorFn = vi.fn();
 
-    pipe(
-      ofValue(1),
-      filter(() => {
-        throw error;
-      }),
-    ).subscribe({ next: vi.fn(), error: errorFn });
+    ofValue(1)
+      .pipe(
+        filter(() => {
+          throw error;
+        }),
+      )
+      .subscribe({ next: vi.fn(), error: errorFn });
 
     expect(errorFn).toHaveBeenCalledWith(error);
   });

@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSubject } from "../internal/subject.js";
 import { fromArray, type TestSignal } from "../internal/test-utils.js";
-import { pipe } from "../ochestrations/pipe.js";
 import { merge, mergeWith } from "./merge.js";
 
 describe("merge", () => {
@@ -32,7 +31,9 @@ describe("mergeWith", () => {
   it("should merge with another observable", () => {
     const values: number[] = [];
 
-    pipe(fromArray([1, 2]), mergeWith(fromArray([3, 4]))).subscribe((v) => values.push(v.value));
+    fromArray([1, 2])
+      .pipe(mergeWith(fromArray([3, 4])))
+      .subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([1, 2, 3, 4]);
   });

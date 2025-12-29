@@ -1,5 +1,5 @@
 import type { Operator, SinglePointerSignal, Stream } from "cereb";
-import { createStream, pipe, singlePointer } from "cereb";
+import { createStream, singlePointer } from "cereb";
 import type { PanSignal } from "./pan-signal.js";
 import type { PanOptions } from "./pan-types.js";
 import { createPanRecognizer } from "./recognizer.js";
@@ -11,11 +11,9 @@ import { createPanRecognizer } from "./recognizer.js";
  *
  * @example
  * ```typescript
- * pipe(
- *   singlePointer(element),
- *   singlePointerToPan({ threshold: 10 }),
- *   withVelocity()
- * ).subscribe(pan => console.log(pan.deltaX, pan.velocityX));
+ * singlePointer(element)
+ *   .pipe(singlePointerToPan({ threshold: 10 }), withVelocity())
+ *   .subscribe(pan => console.log(pan.deltaX, pan.velocityX));
  * ```
  */
 export function panRecognizer(options: PanOptions = {}): Operator<SinglePointerSignal, PanSignal> {
@@ -50,12 +48,11 @@ export function panRecognizer(options: PanOptions = {}): Operator<SinglePointerS
  *
  * @example
  * ```typescript
- * pipe(
- *   pan(element, { threshold: 10 }),
- *   withVelocity()
- * ).subscribe(event => console.log(event.deltaX, event.velocityX));
+ * pan(element, { threshold: 10 })
+ *   .pipe(withVelocity())
+ *   .subscribe(event => console.log(event.deltaX, event.velocityX));
  * ```
  */
 export function pan(target: EventTarget, options: PanOptions = {}): Stream<PanSignal> {
-  return pipe(singlePointer(target), panRecognizer(options));
+  return singlePointer(target).pipe(panRecognizer(options));
 }

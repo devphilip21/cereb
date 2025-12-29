@@ -8,6 +8,8 @@ export interface Observer<T extends Signal> {
   complete?(): void;
 }
 
+export type Operator<T extends Signal, R extends Signal> = (source: Stream<T>) => Stream<R>;
+
 /**
  * Stream is the core reactive abstraction in Cereb.
  * All streams are blockable - when blocked, events are silently dropped.
@@ -24,9 +26,82 @@ export interface Stream<T extends Signal> {
 
   /** Returns true if the stream is currently blocked. */
   readonly isBlocked: boolean;
-}
 
-export type Operator<T extends Signal, R extends Signal> = (source: Stream<T>) => Stream<R>;
+  /** Chain operators to transform this stream. */
+  pipe(): Stream<T>;
+  pipe<A extends Signal>(op1: Operator<T, A>): Stream<A>;
+  pipe<A extends Signal, B extends Signal>(op1: Operator<T, A>, op2: Operator<A, B>): Stream<B>;
+  pipe<A extends Signal, B extends Signal, C extends Signal>(
+    op1: Operator<T, A>,
+    op2: Operator<A, B>,
+    op3: Operator<B, C>,
+  ): Stream<C>;
+  pipe<A extends Signal, B extends Signal, C extends Signal, D extends Signal>(
+    op1: Operator<T, A>,
+    op2: Operator<A, B>,
+    op3: Operator<B, C>,
+    op4: Operator<C, D>,
+  ): Stream<D>;
+  pipe<A extends Signal, B extends Signal, C extends Signal, D extends Signal, E extends Signal>(
+    op1: Operator<T, A>,
+    op2: Operator<A, B>,
+    op3: Operator<B, C>,
+    op4: Operator<C, D>,
+    op5: Operator<D, E>,
+  ): Stream<E>;
+  pipe<
+    A extends Signal,
+    B extends Signal,
+    C extends Signal,
+    D extends Signal,
+    E extends Signal,
+    F extends Signal,
+  >(
+    op1: Operator<T, A>,
+    op2: Operator<A, B>,
+    op3: Operator<B, C>,
+    op4: Operator<C, D>,
+    op5: Operator<D, E>,
+    op6: Operator<E, F>,
+  ): Stream<F>;
+  pipe<
+    A extends Signal,
+    B extends Signal,
+    C extends Signal,
+    D extends Signal,
+    E extends Signal,
+    F extends Signal,
+    G extends Signal,
+  >(
+    op1: Operator<T, A>,
+    op2: Operator<A, B>,
+    op3: Operator<B, C>,
+    op4: Operator<C, D>,
+    op5: Operator<D, E>,
+    op6: Operator<E, F>,
+    op7: Operator<F, G>,
+  ): Stream<G>;
+  pipe<
+    A extends Signal,
+    B extends Signal,
+    C extends Signal,
+    D extends Signal,
+    E extends Signal,
+    F extends Signal,
+    G extends Signal,
+    H extends Signal,
+  >(
+    op1: Operator<T, A>,
+    op2: Operator<A, B>,
+    op3: Operator<B, C>,
+    op4: Operator<C, D>,
+    op5: Operator<D, E>,
+    op6: Operator<E, F>,
+    op7: Operator<F, G>,
+    op8: Operator<G, H>,
+  ): Stream<H>;
+  pipe(...operators: Operator<Signal, Signal>[]): Stream<Signal>;
+}
 
 export function toObserver<T extends Signal>(
   observerOrNext: Observer<T> | ((value: T) => void),
@@ -35,6 +110,13 @@ export function toObserver<T extends Signal>(
     return { next: observerOrNext };
   }
   return observerOrNext;
+}
+
+export function pipeStream<T extends Signal>(
+  stream: Stream<T>,
+  operators: Operator<Signal, Signal>[],
+): Stream<Signal> {
+  return operators.reduce((prev, op) => op(prev), stream as Stream<Signal>);
 }
 
 /**
@@ -46,7 +128,7 @@ export function createStream<T extends Signal>(
 ): Stream<T> {
   let blocked = false;
 
-  return {
+  const stream: Stream<T> = {
     get isBlocked() {
       return blocked;
     },
@@ -75,5 +157,11 @@ export function createStream<T extends Signal>(
       const cleanup = subscribeFn(wrappedObserver);
       return cleanup ?? (() => {});
     },
+
+    pipe(...operators: Operator<Signal, Signal>[]) {
+      return pipeStream(stream, operators);
+    },
   };
+
+  return stream;
 }

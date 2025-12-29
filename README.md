@@ -50,15 +50,14 @@ import { pinch } from "@cereb/pinch";
 
 // pipe creates a pipeline where signals flow through operators
 // Each operator extends the signal (signals are immutable)
-pipe(
-  pinch(element), // Create stream: a pinch gesture
-  zoom({ minScale: 0.5, maxScale: 3.0 }), // Operator: Determine scale value.
-).subscribe((signal) => {
-  // The scale property is extended from the value.
-  // - pinch emits distance → zoom calculates scale
-  // - zoom also works with other inputs (keyboard, wheel, etc.)
-  element.style.transform = `scale(${signal.value.scale})`;
-});
+pinch(element)
+  // Operator: Determine scale value.
+  .pipe(zoom({ minScale: 0.5, maxScale: 3.0 })).subscribe((signal) => {
+    // The scale property is extended from the value.
+    // - pinch emits distance → zoom calculates scale
+    // - zoom also works with other inputs (keyboard, wheel, etc.)
+    element.style.transform = `scale(${signal.value.scale})`;
+  });
 ```
 
 ## API overview
@@ -127,45 +126,44 @@ const isInZoomMode$ = keyboardHeld(window, { key: "z" });
 isInZoomMode$.subscribe(toggleZoomModeIndicator);
 
 // Pinch Zoom
-pipe(
-  pinch(box, { threshold: 10 }),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE })
-).subscribe(render);
+pinch(box, { threshold: 10 })
+  .pipe(zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }))
+  .subscribe(render);
 
 // 'z' + '+/-'
-pipe(
-  keyboard(window, { key: ["+", "=", "-"], preventDefault: true }),
-  when(isInZoomMode$),
-  extend<KeyboardSignal, ZoomInput>((signal) => ({
-    ratio: zoomManager.getScale() + (signal.value.key === "+" || signal.value.key === "=" ? 0.15 : -0.15),
-  })),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
-).subscribe(render);
+keyboard(window, { key: ["+", "=", "-"], preventDefault: true })
+  .pipe(
+    when(isInZoomMode$),
+    extend<KeyboardSignal, ZoomInput>((signal) => ({
+      ratio: zoomManager.getScale() + (signal.value.key === "+" || signal.value.key === "=" ? 0.15 : -0.15),
+    })),
+    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
+  ).subscribe(render);
 
 // 'z' + 'wheel'
-pipe(
-  wheel(box, { passive: false, preventDefault: true }),
-  when(isInZoomMode$),
-  extend<WheelSignal, ZoomInput>((signal) => ({
-    ratio: zoomManager.getScale() + (-signal.value.deltaY * 0.005),
-  })),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
-).subscribe(render);
+wheel(box, { passive: false, preventDefault: true })
+  .pipe(
+    when(isInZoomMode$),
+    extend<WheelSignal, ZoomInput>((signal) => ({
+      ratio: zoomManager.getScale() + (-signal.value.deltaY * 0.005),
+    })),
+    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
+  ).subscribe(render);
 
 // 'Slider Input'
-pipe(
-  domEvent(slider, "input"),
-  extend<DomEventSignal<Event>, ZoomInput>((signal) => {
-    const inputElement = signal.value.target as HTMLInputElement;
-    const value = Number(inputElement.value);
-    const logScale = logMin + (value / 100) * (logMax - logMin);
-    const scale = Math.exp(logScale);
-    return {
-      ratio: clamp(scale, MIN_SCALE, MAX_SCALE),
-    };
-  }),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: zoomManager.getScale() }),
-).subscribe(render);
+domEvent(slider, "input")
+  .pipe(
+    extend<DomEventSignal<Event>, ZoomInput>((signal) => {
+      const inputElement = signal.value.target as HTMLInputElement;
+      const value = Number(inputElement.value);
+      const logScale = logMin + (value / 100) * (logMax - logMin);
+      const scale = Math.exp(logScale);
+      return {
+        ratio: clamp(scale, MIN_SCALE, MAX_SCALE),
+      };
+    }),
+    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: zoomManager.getScale() }),
+  ).subscribe(render);
 ```
 
 ### 2. Lightweight Bundle Size
@@ -199,11 +197,11 @@ keyboard(window).subscribe(handler3);
 **2. Single Responsibility Operators**
 
 ```typescript
-pipe(
-  pan(element),           // Pan gesture recognition
-  offset({ target }),     // Element-relative coordinates
-  axisLock()              // Lock to horizontal/vertical
-)
+pan(element)                // Pan gesture recognition
+  .pipe(
+    offset({ target }),     // Element-relative coordinates
+    axisLock()              // Lock to horizontal/vertical
+  )
 ```
 
 ## License

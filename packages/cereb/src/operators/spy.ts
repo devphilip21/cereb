@@ -14,16 +14,14 @@ import { createStream } from "../core/stream.js";
  *
  * @example
  * ```typescript
- * import { eventSource } from "../../source/event-source-factory.js";
- * import { pipe } from "../pipe.js";
- *
- * pipe(
- *   eventSource<PointerEvent>(element, "pointermove"),
- *   spy((e) => {
- *     // Observe without modifying the stream values
- *     console.log(e.clientX, e.clientY);
- *   }),
- * ).subscribe();
+ * eventSource<PointerEvent>(element, "pointermove")
+ *   .pipe(
+ *     spy((e) => {
+ *       // Observe without modifying the stream values
+ *       console.log(e.clientX, e.clientY);
+ *     }),
+ *   )
+ *   .subscribe();
  * ```
  */
 export function spy<T extends Signal>(fn: (value: T) => void): Operator<T, T> {

@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { createStream } from "../core/stream.js";
 import { createSubject } from "../internal/subject.js";
 import { createTestSignal, type TestSignal } from "../internal/test-utils.js";
-import { pipe } from "../ochestrations/pipe.js";
 import { share, shareReplay } from "./share.js";
 
 describe("share", () => {
@@ -12,7 +11,7 @@ describe("share", () => {
       subscribeCount++;
       observer.next(createTestSignal(1));
     });
-    const shared = pipe(source, share());
+    const shared = source.pipe(share());
 
     shared.subscribe(vi.fn());
     shared.subscribe(vi.fn());
@@ -22,7 +21,7 @@ describe("share", () => {
 
   it("should multicast values to all subscribers", () => {
     const source = createSubject<TestSignal<number>>();
-    const shared = pipe(source, share());
+    const shared = source.pipe(share());
     const values1: number[] = [];
     const values2: number[] = [];
 
@@ -39,7 +38,7 @@ describe("share", () => {
 describe("shareReplay", () => {
   it("should replay last value to new subscribers", () => {
     const source = createSubject<TestSignal<number>>();
-    const shared = pipe(source, shareReplay(1));
+    const shared = source.pipe(shareReplay(1));
     const values1: number[] = [];
     const values2: number[] = [];
 
@@ -55,7 +54,7 @@ describe("shareReplay", () => {
 
   it("should replay multiple values based on buffer size", () => {
     const source = createSubject<TestSignal<number>>();
-    const shared = pipe(source, shareReplay(3));
+    const shared = source.pipe(shareReplay(3));
     const values1: number[] = [];
     const values2: number[] = [];
 
@@ -76,7 +75,7 @@ describe("shareReplay", () => {
       observer.next(createTestSignal(1));
       return cleanup;
     });
-    const shared = pipe(source, shareReplay(1));
+    const shared = source.pipe(shareReplay(1));
 
     const unsub1 = shared.subscribe(vi.fn());
     const unsub2 = shared.subscribe(vi.fn());

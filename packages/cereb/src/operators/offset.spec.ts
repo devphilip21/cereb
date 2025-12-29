@@ -3,7 +3,6 @@ import type { SinglePointerSignal } from "../browser/single-pointer/single-point
 import { createSinglePointerSignal } from "../browser/single-pointer/single-pointer-signal.js";
 import { createSignal, type Signal } from "../core/signal.js";
 import { createStream } from "../core/stream.js";
-import { pipe } from "../ochestrations/pipe.js";
 import { type OffsetOperatorResult, offset } from "./offset.js";
 
 type OffsetPointerSignal = OffsetOperatorResult<SinglePointerSignal>;
@@ -55,7 +54,7 @@ describe("offset operator", () => {
       return () => {};
     });
 
-    pipe(source, op).subscribe((v: OffsetPointerSignal) => {
+    source.pipe(op).subscribe((v: OffsetPointerSignal) => {
       values.push({ offsetX: v.value.offsetX, offsetY: v.value.offsetY });
     });
 
@@ -71,7 +70,7 @@ describe("offset operator", () => {
       return () => {};
     });
 
-    pipe(source, op).subscribe((v: OffsetPointerSignal) => {
+    source.pipe(op).subscribe((v: OffsetPointerSignal) => {
       expect(v.value.x).toBe(150);
       expect(v.value.y).toBe(200);
       expect(v.kind).toBe("single-pointer");
@@ -88,7 +87,7 @@ describe("offset operator", () => {
       return () => {};
     });
 
-    pipe(source, op).subscribe(() => {});
+    source.pipe(op).subscribe(() => {});
 
     expect(getBoundingClientRect).toHaveBeenCalledTimes(2);
   });
@@ -110,7 +109,7 @@ describe("offset operator", () => {
       return () => {};
     });
 
-    pipe(source, op).subscribe(() => {});
+    source.pipe(op).subscribe(() => {});
 
     // Should only call once due to caching
     expect(getBoundingClientRect).toHaveBeenCalledTimes(1);
@@ -137,7 +136,7 @@ describe("offset operator", () => {
       return () => {};
     });
 
-    const unsub = pipe(source, op).subscribe(() => {});
+    const unsub = source.pipe(op).subscribe(() => {});
     expect(unsubscribed).toBe(false);
 
     unsub();

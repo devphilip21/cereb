@@ -12,7 +12,7 @@ This demo uses `pinch()` from `@cereb/pinch` to implement zoom in/out on a space
 ## Code
 
 ```ts
-import { pipe, wheel, keyboard, keyboardHeld, domEvent } from "cereb";
+import { wheel, keyboard, keyboardHeld, domEvent } from "cereb";
 import { zoom, extend, when } from "cereb/operators";
 import { pinch } from "@cereb/pinch";
 
@@ -21,43 +21,47 @@ const isInZoomMode$ = keyboardHeld(window, { key: "z" });
 isInZoomMode$.subscribe(toggleZoomModeIndicator);
 
 // Pinch Zoom
-pipe(
-  pinch(box, { threshold: 10 }),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE })
-).subscribe(render);
+pinch(box, { threshold: 10 })
+  .pipe(
+    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE })
+  )
+  .subscribe(render);
 
 // 'z' + '+/-'
-pipe(
-  keyboard(window, { key: ["+", "=", "-"], preventDefault: true }),
-  when(isInZoomMode$),
-  extend<KeyboardSignal, ZoomInput>((signal) => ({
-    ratio: zoomManager.getScale() + (signal.value.key === "+" || signal.value.key === "=" ? 0.15 : -0.15),
-  })),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
-).subscribe(render);
+keyboard(window, { key: ["+", "=", "-"], preventDefault: true })
+  .pipe(
+    when(isInZoomMode$),
+    extend<KeyboardSignal, ZoomInput>((signal) => ({
+      ratio: zoomManager.getScale() + (signal.value.key === "+" || signal.value.key === "=" ? 0.15 : -0.15),
+    })),
+    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
+  )
+  .subscribe(render);
 
 // 'CTRL' + 'wheel'
-pipe(
-  wheel(box, { passive: false, preventDefault: true }),
-  when(isInZoomMode$),
-  extend<WheelSignal, ZoomInput>((signal) => ({
-    ratio: zoomManager.getScale() + (-signal.value.deltaY * 0.005),
-  })),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
-).subscribe(render);
+wheel(box, { passive: false, preventDefault: true })
+  .pipe(
+    when(isInZoomMode$),
+    extend<WheelSignal, ZoomInput>((signal) => ({
+      ratio: zoomManager.getScale() + (-signal.value.deltaY * 0.005),
+    })),
+    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
+  )
+  .subscribe(render);
 
 // 'Slider Input'
-pipe(
-  domEvent(slider, "input"),
-  extend<DomEventSignal<Event>, ZoomInput>((signal) => {
-    const inputElement = signal.value.target as HTMLInputElement;
-    const value = Number(inputElement.value);
-    const logScale = logMin + (value / 100) * (logMax - logMin);
-    const scale = Math.exp(logScale);
-    return {
-      ratio: clamp(scale, MIN_SCALE, MAX_SCALE),
-    };
-  }),
-  zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: zoomManager.getScale() }),
-).subscribe(render);
+domEvent(slider, "input")
+  .pipe(
+    extend<DomEventSignal<Event>, ZoomInput>((signal) => {
+      const inputElement = signal.value.target as HTMLInputElement;
+      const value = Number(inputElement.value);
+      const logScale = logMin + (value / 100) * (logMax - logMin);
+      const scale = Math.exp(logScale);
+      return {
+        ratio: clamp(scale, MIN_SCALE, MAX_SCALE),
+      };
+    }),
+    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: zoomManager.getScale() }),
+  )
+  .subscribe(render);
 ```

@@ -5,7 +5,7 @@ Pan gesture recognition for pointer interactions. Works seamlessly with [cereb](
 ## Installation
 
 ```bash
-npm install @cereb/pan cereb
+npm install --save cereb @cereb/pan
 ```
 
 ## Quick Start
@@ -27,19 +27,17 @@ pan(element).subscribe((signal) => {
 Use the `axisLock` operator to lock gesture to the initially detected axis:
 
 ```typescript
-import { pipe } from "cereb";
 import { pan } from "@cereb/pan";
 import { axisLock } from "@cereb/pan/operators";
 
-pipe(
-  pan(element, { threshold: 10 }),
-  axisLock()
-).subscribe((signal) => {
-  const { deltaX, deltaY } = signal.value;
+pan(element, { threshold: 10 })
+  .pipe(axisLock())
+  .subscribe((signal) => {
+    const { deltaX, deltaY } = signal.value;
 
-  // One of deltaX/deltaY will always be 0 after axis is determined
-  element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-});
+    // One of deltaX/deltaY will always be 0 after axis is determined
+    element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+  });
 ```
 
 ## API
@@ -66,15 +64,14 @@ const stream = pan(element, { threshold: 10, direction: "horizontal" });
 Operator that transforms single-pointer signals into pan events. Use this when composing with other operators.
 
 ```typescript
-import { pipe, singlePointer } from "cereb";
+import { singlePointer } from "cereb";
 import { panRecognizer } from "@cereb/pan";
 
-pipe(
-  singlePointer(element),
-  panRecognizer({ threshold: 10 })
-).subscribe((signal) => {
-  // ...
-});
+singlePointer(element)
+  .pipe(panRecognizer({ threshold: 10 }))
+  .subscribe((signal) => {
+    // ...
+  });
 ```
 
 ### `createPanRecognizer(options?)`

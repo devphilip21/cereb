@@ -15,25 +15,24 @@ This demo uses `singlePointer()` from cereb to track pointer movements and draw 
 import { pipe, singlePointer } from "cereb";
 import { offset, singlePointerSession } from "cereb/operators";
 
-pipe(
-  // Subscribe to a single-pointer signal from `window`.
-  singlePointer(window),
+// Subscribe to a single-pointer signal from `window`.
+singlePointer(window)
+  .pipe(
+    // Treat start → end as one session (signals outside the session are ignored).
+    singlePointerSession(),
 
-  // Treat start → end as one session (signals outside the session are ignored).
-  singlePointerSession(),
+    // `singlePointer(window)` yields window-relative x/y.
+    // Compute canvas-relative coordinates and add `offsetX`/`offsetY`.
+    offset({ target: canvas }),
+  ).subscribe((signal) => {
+    // Read values from the signal and draw.
+    const { phase, offsetX, offsetY, pointerType } = signal.value;
 
-  // `singlePointer(window)` yields window-relative x/y.
-  // Compute canvas-relative coordinates and add `offsetX`/`offsetY`.
-  offset({ target: canvas }),
-).subscribe((signal) => {
-  // Read values from the signal and draw.
-  const { phase, offsetX, offsetY, pointerType } = signal.value;
-
-  drawTrackingPointer({
-    x: offsetX,
-    y: offsetY,
-    phase,
-    pointerType,
+    drawTrackingPointer({
+      x: offsetX,
+      y: offsetY,
+      phase,
+      pointerType,
+    });
   });
-});
 ```

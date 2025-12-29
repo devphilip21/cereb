@@ -5,7 +5,7 @@ Pinch gesture recognition for multi-touch interactions. Works seamlessly with [c
 ## Installation
 
 ```bash
-npm install @cereb/pinch cereb
+npm install cereb @cereb/pinch
 ```
 
 ## Quick Start
@@ -27,18 +27,16 @@ pinch(element).subscribe((signal) => {
 Use the `zoom` operator from cereb to convert distance into scale values:
 
 ```typescript
-import { pipe } from "cereb";
 import { zoom } from "cereb/operators";
 import { pinch } from "@cereb/pinch";
 
-pipe(
-  pinch(element),
-  zoom({ minScale: 0.5, maxScale: 3.0 })
-).subscribe((signal) => {
-  const { scale, scaleVelocity } = signal.value;
+pinch(element)
+  .pipe(zoom({ minScale: 0.5, maxScale: 3.0 }))
+  .subscribe((signal) => {
+    const { scale, scaleVelocity } = signal.value;
 
-  element.style.transform = `scale(${scale})`;
-});
+    element.style.transform = `scale(${scale})`;
+  });
 ```
 
 ## API
@@ -64,17 +62,17 @@ const stream = pinch(element, { threshold: 10 });
 Operator that transforms multi-pointer signals into pinch events. Use this when composing with other operators.
 
 ```typescript
-import { pipe, multiPointer } from "cereb";
+import { multiPointer } from "cereb";
 import { multiPointerSession } from "cereb/operators";
 import { pinchRecognizer } from "@cereb/pinch";
 
-pipe(
-  multiPointer(element, { maxPointers: 2 }),
-  multiPointerSession(2),
-  pinchRecognizer({ threshold: 10 })
-).subscribe((signal) => {
-  // ...
-});
+multiPointer(element, { maxPointers: 2 })
+  .pipe(
+    multiPointerSession(2),
+    pinchRecognizer({ threshold: 10 })
+  ).subscribe((signal) => {
+    // ...
+  });
 ```
 
 ### `createPinchRecognizer(options?)`

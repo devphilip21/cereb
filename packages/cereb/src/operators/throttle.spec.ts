@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createSubject } from "../internal/subject.js";
 import { createTestSignal, type TestSignal } from "../internal/test-utils.js";
-import { pipe } from "../ochestrations/pipe.js";
 import { throttle, throttleLast } from "./throttle.js";
 
 describe("throttle", () => {
@@ -22,7 +21,7 @@ describe("throttle", () => {
     const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, throttle(100)).subscribe((v) => values.push(v.value));
+    source.pipe(throttle(100)).subscribe((v) => values.push(v.value));
 
     source.next(createTestSignal(1)); // Emitted immediately (first value)
     advanceTime(50);
@@ -42,7 +41,7 @@ describe("throttleLast", () => {
     const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, throttleLast(100)).subscribe((v) => values.push(v.value));
+    source.pipe(throttleLast(100)).subscribe((v) => values.push(v.value));
 
     source.next(createTestSignal(1));
     source.next(createTestSignal(2));
@@ -56,7 +55,7 @@ describe("throttleLast", () => {
     const source = createSubject<TestSignal<number>>();
     const values: number[] = [];
 
-    pipe(source, throttleLast(100)).subscribe((v) => values.push(v.value));
+    source.pipe(throttleLast(100)).subscribe((v) => values.push(v.value));
 
     source.next(createTestSignal(1));
     source.next(createTestSignal(2));

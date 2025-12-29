@@ -51,7 +51,7 @@ import "./pointer-tracker.css";
 </div>
 
 <script>
-  import { pipe, singlePointer, type ExtendSignalValue, type SinglePointerSignal } from "cereb";
+  import { singlePointer, type ExtendSignalValue, type SinglePointerSignal } from "cereb";
   import { offset, singlePointerSession } from "cereb/operators";
 
   type Point = { x: number; y: number };
@@ -280,13 +280,13 @@ import "./pointer-tracker.css";
     const infoElements = { x: infoXEl, y: infoYEl, hint: hintEl, offsetX: infoOffsetXEl, offsetY: infoOffsetYEl, phase: infoPhaseEl, type: infoTypeEl };
     const eventHandler = new PointerEventHandler(boxEl, canvasManager, drawingState, infoElements);
 
-    pipe(
-      singlePointer(window),
-      singlePointerSession(),
-      offset({ target: boxEl })
-    ).subscribe(signal => {
-      eventHandler.handlePointer(signal);
-    });
+    singlePointer(window)
+      .pipe(
+        singlePointerSession(),
+        offset({ target: boxEl })
+      ).subscribe(signal => {
+        eventHandler.handlePointer(signal);
+      });
 
     clearBtnEl.addEventListener("click", () => {
       canvasManager.clear();

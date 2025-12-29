@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSignal, type Signal } from "../core/signal.js";
 import { createStream } from "../core/stream.js";
-import { pipe } from "../ochestrations/pipe.js";
 import { when } from "./when.js";
 
 function createGateSignal(opened: boolean): Signal<string, { opened: boolean }> {
@@ -28,7 +27,7 @@ describe("when operator", () => {
       return () => {};
     });
 
-    pipe(source$, when(gate$)).subscribe((signal) => {
+    source$.pipe(when(gate$)).subscribe((signal) => {
       values.push(signal.value);
     });
 
@@ -57,7 +56,7 @@ describe("when operator", () => {
       return () => {};
     });
 
-    pipe(source$, when(gate$)).subscribe((signal) => {
+    source$.pipe(when(gate$)).subscribe((signal) => {
       values.push(signal.value);
     });
 
@@ -84,7 +83,7 @@ describe("when operator", () => {
       return () => {};
     });
 
-    pipe(source$, when(gate$)).subscribe((signal) => {
+    source$.pipe(when(gate$)).subscribe((signal) => {
       values.push(signal.value);
     });
 
@@ -109,7 +108,7 @@ describe("when operator", () => {
       return () => {};
     });
 
-    pipe(source$, when(gate$)).subscribe((signal) => {
+    source$.pipe(when(gate$)).subscribe((signal) => {
       values.push(signal.value);
     });
 
@@ -133,7 +132,7 @@ describe("when operator", () => {
     let gateUnsubscribed = false;
     let sourceUnsubscribed = false;
 
-    const gate$ = createStream<Signal<string, { held: boolean }>>(() => {
+    const gate$ = createStream<Signal<string, { opened: boolean }>>(() => {
       return () => {
         gateUnsubscribed = true;
       };
@@ -145,7 +144,7 @@ describe("when operator", () => {
       };
     });
 
-    const unsub = pipe(source$, when(gate$)).subscribe(() => {});
+    const unsub = source$.pipe(when(gate$)).subscribe(() => {});
 
     expect(gateUnsubscribed).toBe(false);
     expect(sourceUnsubscribed).toBe(false);
@@ -163,12 +162,15 @@ describe("when operator", () => {
     const gate$ = createStream<Signal<string, { opened: boolean }>>((observer) => {
       // Simulate accessing a property that throws
       observer.next({
+        kind: "gate",
+        deviceId: 0,
+        createdAt: Date.now(),
         value: {
-          get opened() {
+          get opened(): boolean {
             throw testError;
           },
         },
-      } as Signal<string, { opened: boolean }>);
+      } as unknown as Signal<string, { opened: boolean }>);
       return () => {};
     });
 
@@ -176,7 +178,7 @@ describe("when operator", () => {
       return () => {};
     });
 
-    pipe(source$, when(gate$)).subscribe({
+    source$.pipe(when(gate$)).subscribe({
       next: () => {},
       error: errorHandler,
     });
@@ -196,7 +198,7 @@ describe("when operator", () => {
       return () => {};
     });
 
-    pipe(source$, when(gate$)).subscribe({
+    source$.pipe(when(gate$)).subscribe({
       next: () => {},
       complete: completeHandler,
     });

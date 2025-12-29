@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import { fromArray, ofValue, type TestSignal } from "../internal/test-utils.js";
-import { pipe } from "../ochestrations/pipe.js";
 import { spy } from "./spy.js";
 
 describe("tap", () => {
@@ -8,10 +7,9 @@ describe("tap", () => {
     const sideEffects: number[] = [];
     const values: number[] = [];
 
-    pipe(
-      fromArray([1, 2, 3]),
-      spy((x: TestSignal<number>) => sideEffects.push(x.value * 10)),
-    ).subscribe((v) => values.push(v.value));
+    fromArray([1, 2, 3])
+      .pipe(spy((x: TestSignal<number>) => sideEffects.push(x.value * 10)))
+      .subscribe((v) => values.push(v.value));
 
     expect(values).toEqual([1, 2, 3]);
     expect(sideEffects).toEqual([10, 20, 30]);
@@ -21,12 +19,13 @@ describe("tap", () => {
     const error = new Error("tap error");
     const errorFn = vi.fn();
 
-    pipe(
-      ofValue(1),
-      spy(() => {
-        throw error;
-      }),
-    ).subscribe({ next: vi.fn(), error: errorFn });
+    ofValue(1)
+      .pipe(
+        spy(() => {
+          throw error;
+        }),
+      )
+      .subscribe({ next: vi.fn(), error: errorFn });
 
     expect(errorFn).toHaveBeenCalledWith(error);
   });

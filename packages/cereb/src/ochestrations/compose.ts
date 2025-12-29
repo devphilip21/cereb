@@ -1,6 +1,5 @@
 import type { Signal } from "../core/signal.js";
 import type { Operator } from "../core/stream.js";
-import { pipe } from "../index.js";
 
 export function compose<T extends Signal, A extends Signal>(op1: Operator<T, A>): Operator<T, A>;
 export function compose<T extends Signal, A extends Signal, B extends Signal>(
@@ -40,5 +39,5 @@ export function compose<
 ): Operator<T, E>;
 export function compose(...operators: Operator<Signal, Signal>[]): Operator<Signal, Signal>;
 export function compose(...operators: Operator<Signal, Signal>[]): Operator<Signal, Signal> {
-  return (source) => pipe(source, ...operators);
+  return (source) => source.pipe(...operators);
 }
