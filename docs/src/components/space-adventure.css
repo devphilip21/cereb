@@ -59,17 +59,17 @@
 
 .space-adventure ._slider {
   flex: 1;
-  height: 4px;
+  height: 6px;
   appearance: none;
   background: var(--sl-color-gray-5);
-  border-radius: 2px;
+  border-radius: 3px;
   cursor: pointer;
 }
 
 .space-adventure ._slider::-webkit-slider-thumb {
   appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
   background: var(--sl-color-white);
   border-radius: 50%;
   cursor: pointer;
@@ -77,12 +77,12 @@
 }
 
 .space-adventure ._slider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.15);
 }
 
 .space-adventure ._slider::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
   background: var(--sl-color-white);
   border: none;
   border-radius: 50%;

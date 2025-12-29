@@ -1,7 +1,7 @@
 # Cereb
 
 **User input handling and orchestration** library,
-From low-level events (keyboard, wheel, pointer) to high-level gestures (pan, pinch)
+From low-level events (keyboard, wheel, pointer, touch, ...) to high-level gestures (pan, pinch, ...)
 
 ```bash
 npm install --save cereb
@@ -115,42 +115,39 @@ Model events as streams, and you get readable, reusable, extensible declarative 
 
 ```typescript
 // After: Clear flow, no side effects, composable
-import { pipe, keyboard, keyboardHeld, wheel, domEvent } from "cereb";
-import { zoom, extend, when } from "cereb/operators";
+import { keydown, keyheld, wheel, domEvent } from "cereb";
+import { zoom as createZoom, when, extend, spy } from "cereb/operators";
 import { pinch } from "@cereb/pinch";
 
-const MIN_SCALE = 0.2, MAX_SCALE = 5;
+const zoomMode$ = keyheld(window, { code: "KeyZ" });
+const zoom = (op) => createZoom({ minScale: 0.5, maxScale: 3.0, baseScale: getScale, ...op });
 
-// 'z' key pressed to enter Zoom Mode Stream
-const isInZoomMode$ = keyboardHeld(window, { key: "z" });
-isInZoomMode$.on(toggleZoomModeIndicator);
+// Pinch zoom - baseScale syncs with external state
+pinch(element)
+  .pipe(zoom())
+  .on(applyScale);
 
-// Pinch Zoom
-pinch(box, { threshold: 10 })
-  .pipe(zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }))
-  .on(render);
-
-// 'z' + '+/-'
-keyboard(window, { key: ["+", "=", "-"], preventDefault: true })
+// z + wheel zoom - ratio as multiplicative factor
+wheel(element, { passive: false })
   .pipe(
-    when(isInZoomMode$),
-    extend<KeyboardSignal, ZoomInput>((signal) => ({
-      ratio: zoomManager.getScale() + (signal.value.key === "+" || signal.value.key === "=" ? 0.15 : -0.15),
-    })),
-    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
-  ).on(render);
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
+    extend((signal) => ({ ratio: Math.exp(-signal.value.deltaY * 0.005) })),
+    zoom(),
+  )
+  .on(applyScale);
 
-// 'z' + 'wheel'
-wheel(box, { passive: false, preventDefault: true })
+// z + '+/-' zoom - ratio as multiplier
+keydown(window, { code: ["Equal", "Minus"] })
   .pipe(
-    when(isInZoomMode$),
-    extend<WheelSignal, ZoomInput>((signal) => ({
-      ratio: zoomManager.getScale() + (-signal.value.deltaY * 0.005),
-    })),
-    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
-  ).on(render);
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
+    extend((signal) => ({ ratio: signal.value.code === "Equal" ? 1.2 : 1 / 1.2 })),
+    zoom(),
+  )
+  .on(applyScale);
 
-// 'Slider Input'
+// 'Slider Input' - sets absolute scale, so ratio is the target scale itself
 domEvent(slider, "input")
   .pipe(
     extend<DomEventSignal<Event>, ZoomInput>((signal) => {
@@ -162,7 +159,7 @@ domEvent(slider, "input")
         ratio: clamp(scale, MIN_SCALE, MAX_SCALE),
       };
     }),
-    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: zoomManager.getScale() }),
+    zoom({ baseScale: 1.0 }),  // baseScale = 1.0 for absolute scale
   ).on(render);
 ```
 

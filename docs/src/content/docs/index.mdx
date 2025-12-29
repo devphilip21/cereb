@@ -1,46 +1,70 @@
 ---
-title: Cereb
-description: High-performance gesture recognition library for the web
-template: splash
-hero:
-  title: Cereb
-  tagline: High-performance gesture recognition library for the web
-  actions:
-    - text: Get Started
-      link: /getting-started/quick-start/
-      icon: right-arrow
-      variant: primary
-    - text: View on GitHub
-      link: https://github.com/devphilip21/cereb
-      icon: external
+title: Intro to Cereb
+description: User input handling and orchestration library for the web
 ---
 
-import { Card, CardGrid } from "@astrojs/starlight/components";
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-## Features
+**Cereb** is a user input handling and orchestration library.
+From low-level events (touch, pointer, keyboard, wheel, ...) to high-level gestures (pan, pinch, ...)—all through composable stream pipelines.
 
-<CardGrid stagger>
-  <Card title="Observable-based" icon="seti:typescript">
-    Built on a lightweight reactive stream library with RxJS-like pipe operators
-  </Card>
-  <Card title="Zero GC Jank" icon="rocket">
-    Object pooling prevents garbage collection stutters during gestures
-  </Card>
-  <Card title="Extensible" icon="puzzle">
-    Compose gesture behaviors with operators and extensions
-  </Card>
-  <Card title="Tree-shakeable" icon="seti:folder">
-    Import only what you need for minimal bundle size
-  </Card>
-</CardGrid>
+```typescript
+import { domEvent } from "cereb";
 
-## Packages
+domEvent(element, "pointermove").on((signal) => {
+  const { clientX, clientY } = signal.value;
+  target.style.transform = `translate(${clientX}px, ${clientY}px)`;
+});
+```
 
-<CardGrid stagger>
-  <Card title="@cereb/single-pointer" icon="open-book">
-    Unified pointer/touch/mouse input handling
-  </Card>
-  <Card title="@cereb/pan" icon="open-book">
-    Pan gesture recognition with momentum and constraints
-  </Card>
-</CardGrid>
+Mouse, touch, pen—unified into a single API.
+
+---
+
+## Build input pipelines
+
+Raw events become refined signals. Compose them into readable, extensible pipelines.
+
+```typescript
+import { keydown, keyheld, wheel } from "cereb";
+import { zoom as createZoom, when, extend, spy } from "cereb/operators";
+import { pinch } from "@cereb/pinch";
+
+const zoomMode$ = keyheld(window, { code: "KeyZ" });
+const zoom = () => createZoom({ minScale: 0.5, maxScale: 3.0, baseScale: getScale });
+
+// Pinch zoom - baseScale syncs with external state
+pinch(element)
+  .pipe(zoom())
+  .on(applyScale);
+
+// z + wheel zoom - ratio as multiplicative factor
+wheel(element, { passive: false })
+  .pipe(
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
+    extend((signal) => ({ ratio: Math.exp(-signal.value.deltaY * 0.005) })),
+    zoom(),
+  )
+  .on(applyScale);
+
+// z + '+/-' zoom - ratio as multiplier
+keydown(window, { code: ["Equal", "Minus"] })
+  .pipe(
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
+    extend((signal) => ({ ratio: signal.value.code === "Equal" ? 1.2 : 1 / 1.2 })),
+    zoom(),
+  )
+  .on(applyScale);
+```
+
+---
+
+## Ready to start?
+
+<LinkCard
+  title="Quick Start"
+  description="Get up and running in 2 minutes"
+  href="/getting-started/quick-start"
+/>

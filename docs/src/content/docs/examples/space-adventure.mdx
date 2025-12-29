@@ -12,44 +12,47 @@ This demo uses `pinch()` from `@cereb/pinch` to implement zoom in/out on a space
 ## Code
 
 ```ts
-import { wheel, keyboard, keyboardHeld, domEvent } from "cereb";
-import { zoom, extend, when } from "cereb/operators";
+import { wheel, keydown, keyheld, type KeyboardSignal, type WheelSignal, domEvent, type KeyboardValue } from "cereb";
+import { zoom as createZoom, extend, when, spy, type ZoomInput, type ZoomOptions } from "cereb/operators";
 import { pinch } from "@cereb/pinch";
 
-// 'z' key pressed to enter Zoom Mode Stream
-const isInZoomMode$ = keyboardHeld(window, { key: "z" });
-isInZoomMode$.on(toggleZoomModeIndicator);
+const zoomMode$ = keyheld(window, { code: "KeyZ" }).pipe(extend((signal) => ({ opened: signal.value.held })));
+const zoomModeIndicator = document.getElementById("space-zoom-mode");
+const zoom = (options: ZoomOptions = {}) => createZoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: () => zoomManager.getScale(), ...options });
+
+zoomMode$.on((signal) => {
+  zoomModeIndicator?.classList.toggle("active", signal.value.held);
+});
 
 // Pinch Zoom
 pinch(box, { threshold: 10 })
-  .pipe(
-    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE })
-  )
+  .pipe(zoom())
   .on(render);
 
-// 'z' + '+/-'
-keyboard(window, { key: ["+", "=", "-"], preventDefault: true })
+// 'z' + '+/-' (logarithmic zoom: multiply by 1.2 or 1/1.2)
+keydown(window, { code: ["Equal", "Minus"] })
   .pipe(
-    when(isInZoomMode$),
+    when(zoomMode$),
     extend<KeyboardSignal, ZoomInput>((signal) => ({
-      ratio: zoomManager.getScale() + (signal.value.key === "+" || signal.value.key === "=" ? 0.15 : -0.15),
+      ratio: signal.value.code === "Equal" ? 1.2 : 1 / 1.2,
     })),
-    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
+    zoom(),
   )
   .on(render);
 
-// 'CTRL' + 'wheel'
-wheel(box, { passive: false, preventDefault: true })
+// 'z' + 'wheel'
+wheel(box, { passive: false })
   .pipe(
-    when(isInZoomMode$),
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
     extend<WheelSignal, ZoomInput>((signal) => ({
-      ratio: zoomManager.getScale() + (-signal.value.deltaY * 0.005),
+      ratio: Math.exp(-signal.value.deltaY * 0.005),
     })),
-    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
+    zoom(),
   )
   .on(render);
 
-// 'Slider Input'
+// 'Progress' - slider sets absolute scale (baseScale=1 so ratio becomes the scale directly)
 domEvent(slider, "input")
   .pipe(
     extend<DomEventSignal<Event>, ZoomInput>((signal) => {
@@ -61,7 +64,7 @@ domEvent(slider, "input")
         ratio: clamp(scale, MIN_SCALE, MAX_SCALE),
       };
     }),
-    zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: zoomManager.getScale() }),
+    zoom({ baseScale: 1.0 }),
   )
   .on(render);
 ```

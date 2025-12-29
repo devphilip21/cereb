@@ -26,12 +26,49 @@ export interface ZoomOptions {
   maxScale?: number;
 
   /**
-   * Base scale multiplier.
-   * Applied to calculated scale: finalScale = baseScale * calculatedScale
-   * Useful for accumulating zoom across gesture sessions.
+   * Base scale value or a function that returns the current scale.
+   *
+   * When a function is provided, it is called once at the start of each session
+   * (first event after stream creation or after complete). This enables proper
+   * synchronization with external state when multiple input sources control zoom.
+   *
+   * @example
+   * ```typescript
+   * // Static value (default behavior)
+   * zoom({ baseScale: 1.0 })
+   *
+   * // Dynamic reference to external state
+   * zoom({ baseScale: () => zoomManager.getScale() })
+   * ```
+   *
    * @default 1.0
    */
-  baseScale?: number;
+  baseScale?: number | (() => number);
+
+  /**
+   * How ratio is applied to baseScale.
+   *
+   * - `'multiply'`: scale = baseScale × ratio (default)
+   *   Use for pinch gestures where ratio represents a scale factor (1.0 = no change)
+   *
+   * - `'add'`: scale = baseScale + ratio
+   *   Use for delta-based inputs where ratio represents a change amount
+   *
+   * @example
+   * ```typescript
+   * // Pinch: ratio is 1.2 means "120% of base" → multiply
+   * pinch(el).pipe(zoom({ mode: 'multiply', baseScale: getScale }))
+   *
+   * // Keyboard: ratio is 0.1 means "+0.1 to base" → add
+   * keyboard(el).pipe(
+   *   extend(() => ({ ratio: 0.1 })),
+   *   zoom({ mode: 'add', baseScale: getScale })
+   * )
+   * ```
+   *
+   * @default 'multiply'
+   */
+  mode?: "multiply" | "add";
 }
 
 /**
@@ -72,20 +109,32 @@ function clamp(value: number, min: number, max: number): number {
 export function zoom<T extends SignalWith<ZoomInput>>(
   options: ZoomOptions = {},
 ): Operator<T, ExtendSignalValue<T, ZoomValue>> {
-  const { minScale = 0.1, maxScale = 10.0, baseScale = 1.0 } = options;
+  const { minScale = 0.1, maxScale = 10.0, baseScale = 1.0, mode = "multiply" } = options;
+  const resolveBaseScale = typeof baseScale === "function" ? baseScale : () => baseScale;
+  const applyRatio =
+    mode === "add"
+      ? (base: number, ratio: number) => base + ratio
+      : (base: number, ratio: number) => base * ratio;
 
   type OutputSignal = ExtendSignalValue<T, ZoomValue>;
 
   return (source) =>
     createStream<OutputSignal>((observer) => {
-      let prevScale = baseScale;
+      let prevScale: number | null = null;
+      let sessionBaseScale = 1.0;
 
       const unsub = source.on({
         next(signal) {
           try {
             const { ratio } = signal.value;
 
-            const rawScale = ratio * baseScale;
+            // Capture baseScale at session start (first event or after complete)
+            sessionBaseScale = resolveBaseScale();
+            if (prevScale === null) {
+              prevScale = sessionBaseScale;
+            }
+
+            const rawScale = applyRatio(sessionBaseScale, ratio);
             const scale = clamp(rawScale, minScale, maxScale);
             const deltaScale = scale - prevScale;
 
@@ -102,13 +151,13 @@ export function zoom<T extends SignalWith<ZoomInput>>(
         },
         error: observer.error?.bind(observer),
         complete() {
-          prevScale = baseScale;
+          prevScale = null;
           observer.complete?.();
         },
       });
 
       return () => {
-        prevScale = baseScale;
+        prevScale = null;
         unsub();
       };
     });

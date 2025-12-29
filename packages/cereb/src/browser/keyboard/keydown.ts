@@ -1,11 +1,10 @@
 import { createStream, type Stream } from "../../core/stream.js";
 import type { KeyCode } from "./key-code.js";
+import type { ModifierKey } from "./keyboard.js";
 import type { KeyboardSignal } from "./keyboard-signal.js";
-import { getSharedKeyboard } from "./shared.js";
+import { getSharedKeydown } from "./shared.js";
 
-export type ModifierKey = "meta" | "ctrl" | "alt" | "shift";
-
-export interface KeyboardOptions {
+export interface KeydownOptions {
   /**
    * Filter by physical key code(s). Uses OR logic if array.
    * @see https://www.w3.org/TR/uievents-code/
@@ -21,15 +20,15 @@ export interface KeyboardOptions {
 }
 
 /**
- * Creates a keyboard signal stream (keydown + keyup).
+ * Creates a keydown-only signal stream.
  * Shares underlying listeners per EventTarget.
  *
  * @example
- * keyboard(window).on(signal => console.log(signal.value.code));
- * keyboard(window, { code: 'KeyZ', modifiers: ['meta'] }).on(handleUndo);
+ * keydown(window).on(signal => console.log(signal.value.code));
+ * keydown(window, { code: 'KeyZ', modifiers: ['meta'] }).on(handleUndo);
  */
-export function keyboard(target: EventTarget, options?: KeyboardOptions): Stream<KeyboardSignal> {
-  if (!options) return getSharedKeyboard(target);
+export function keydown(target: EventTarget, options?: KeydownOptions): Stream<KeyboardSignal> {
+  if (!options) return getSharedKeydown(target);
 
   const modifiers = options.modifiers;
   const preventDefault = options.preventDefault ?? true;
@@ -41,7 +40,7 @@ export function keyboard(target: EventTarget, options?: KeyboardOptions): Stream
       : [options.code.toLowerCase()]
     : null;
 
-  const baseStream = getSharedKeyboard(target);
+  const baseStream = getSharedKeydown(target);
 
   const matchesCode = (value: KeyboardSignal["value"]): boolean => {
     if (!codeList) return true;

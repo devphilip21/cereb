@@ -3,7 +3,7 @@ import { share } from "../../operators/share.js";
 import { createKeyboardSignalFromEvent, type KeyboardSignal } from "./keyboard-signal.js";
 
 const sharedKeyboardStreams = new WeakMap<EventTarget, Stream<KeyboardSignal>>();
-const sharedKeyStreams = new WeakMap<EventTarget, Map<string, Stream<KeyboardSignal>>>();
+const sharedKeydownStreams = new WeakMap<EventTarget, Stream<KeyboardSignal>>();
 
 function createRawKeyboardStream(target: EventTarget): Stream<KeyboardSignal> {
   return createStream<KeyboardSignal>((observer) => {
@@ -35,33 +35,26 @@ export function getSharedKeyboard(target: EventTarget): Stream<KeyboardSignal> {
   return stream;
 }
 
-/** Shared keyboard stream filtered by a specific key. Filters out repeated events. */
-export function getSharedKeyboardForKey(target: EventTarget, key: string): Stream<KeyboardSignal> {
-  const keyLower = key.toLowerCase();
+function createRawKeydownStream(target: EventTarget): Stream<KeyboardSignal> {
+  return createStream<KeyboardSignal>((observer) => {
+    const handleKeyDown = (e: Event) => {
+      observer.next(createKeyboardSignalFromEvent(e as KeyboardEvent, "down"));
+    };
 
-  let keyMap = sharedKeyStreams.get(target);
-  if (!keyMap) {
-    keyMap = new Map();
-    sharedKeyStreams.set(target, keyMap);
-  }
+    target.addEventListener("keydown", handleKeyDown);
 
-  let stream = keyMap.get(keyLower);
+    return () => {
+      target.removeEventListener("keydown", handleKeyDown);
+    };
+  });
+}
+
+/** Shared keydown stream for the given target. */
+export function getSharedKeydown(target: EventTarget): Stream<KeyboardSignal> {
+  let stream = sharedKeydownStreams.get(target);
   if (!stream) {
-    const baseStream = getSharedKeyboard(target);
-    const filteredStream = createStream<KeyboardSignal>((observer) => {
-      return baseStream.on({
-        next(signal) {
-          if (signal.value.repeat) return;
-          if (signal.value.key.toLowerCase() !== keyLower) return;
-          observer.next(signal);
-        },
-        error: observer.error?.bind(observer),
-        complete: observer.complete?.bind(observer),
-      });
-    });
-    stream = share<KeyboardSignal>()(filteredStream);
-    keyMap.set(keyLower, stream);
+    stream = share<KeyboardSignal>()(createRawKeydownStream(target));
+    sharedKeydownStreams.set(target, stream);
   }
-
   return stream;
 }

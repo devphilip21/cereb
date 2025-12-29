@@ -41,8 +41,8 @@ import "./space-adventure.css";
 </div>
 
 <script>
-import { wheel, keyboard, keyboardHeld, type KeyboardSignal, type WheelSignal, domEvent } from "cereb";
-import { zoom, extend, when, type ZoomInput } from "cereb/operators";
+import { wheel, keydown, keyheld, type KeyboardSignal, type WheelSignal, domEvent, type KeyboardValue } from "cereb";
+import { zoom as createZoom, extend, when, spy, type ZoomInput, type ZoomOptions } from "cereb/operators";
 import { pinch } from "@cereb/pinch";
 import type { DomEventSignal } from "../../../packages/cereb/dist/browser/dom-event/dom-event-signal";
 
@@ -55,17 +55,6 @@ import type { DomEventSignal } from "../../../packages/cereb/dist/browser/dom-ev
     twinkleSpeed: number;
     twinklePhase: number;
     color: string;
-  }
-
-  interface Nebula {
-    x: number;
-    y: number;
-    z: number;
-    radius: number;
-    color: [number, number, number];
-    opacity: number;
-    rotationSpeed: number;
-    rotationPhase: number;
   }
 
   interface ShootingStar {
@@ -812,41 +801,44 @@ import type { DomEventSignal } from "../../../packages/cereb/dist/browser/dom-ev
       updateInfo(signal.kind);
     }
 
-    const isInZoomMod$ = keyboardHeld(window, { key: "z" });
+    const zoomMode$ = keyheld(window, { code: "KeyZ" }).pipe(extend((signal) => ({ opened: signal.value.held })));
     const zoomModeIndicator = document.getElementById("space-zoom-mode");
+    const zoom = (options: ZoomOptions = {}) => createZoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: () => zoomManager.getScale(), ...options });
 
-    isInZoomMod$.on((signal) => {
-      zoomModeIndicator?.classList.toggle("active", signal.value.opened);
+    zoomMode$.on((signal) => {
+      zoomModeIndicator?.classList.toggle("active", signal.value.held);
     });
 
     // Pinch Zoom
     pinch(box, { threshold: 10 })
-      .pipe(zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }))
+      .pipe(zoom())
       .on(render);
 
-    // 'z' + '+/-'
-    keyboard(window, { key: ["+", "=", "-"], preventDefault: true })
+    // 'z' + '+/-' (logarithmic zoom: multiply by 1.2 or 1/1.2)
+    keydown(window, { code: ["Equal", "Minus"] })
       .pipe(
-        when(isInZoomMod$),
+        when(zoomMode$),
+        spy((signal) => signal.value.originalEvent.preventDefault()),
         extend<KeyboardSignal, ZoomInput>((signal) => ({
-          ratio: zoomManager.getScale() + (signal.value.key === "+" || signal.value.key === "=" ? 0.15 : -0.15),
+          ratio: signal.value.code === "Equal" ? 1.2 : 1 / 1.2,
         })),
-        zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE })
+        zoom(),
       )
       .on(render);
 
     // 'z' + 'wheel'
-    wheel(box, { passive: false, preventDefault: true })
+    wheel(box, { passive: false })
       .pipe(
-        when(isInZoomMod$),
+        when(zoomMode$),
+        spy((signal) => signal.value.originalEvent.preventDefault()),
         extend<WheelSignal, ZoomInput>((signal) => ({
-          ratio: zoomManager.getScale() + (-signal.value.deltaY * 0.005),
+          ratio: Math.exp(-signal.value.deltaY * 0.005),
         })),
-        zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE }),
+        zoom(),
       )
       .on(render);
 
-    // 'Progress'
+    // 'Progress' - slider sets absolute scale (baseScale=1 so ratio becomes the scale directly)
     domEvent(slider, "input")
       .pipe(
         extend<DomEventSignal<Event>, ZoomInput>((signal) => {
@@ -858,7 +850,7 @@ import type { DomEventSignal } from "../../../packages/cereb/dist/browser/dom-ev
             ratio: clamp(scale, MIN_SCALE, MAX_SCALE),
           };
         }),
-        zoom({ minScale: MIN_SCALE, maxScale: MAX_SCALE, baseScale: zoomManager.getScale() }),
+        zoom({ baseScale: 1.0 }),
       )
       .on(render);
   }
