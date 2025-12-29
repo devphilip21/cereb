@@ -124,7 +124,7 @@ describe("offset operator", () => {
     const { element } = createMockElement();
 
     let unsubscribed = false;
-    const recalculate$ = createStream<Signal>((observer) => {
+    const recalculate$ = createStream<Signal>(() => {
       return () => {
         unsubscribed = true;
       };

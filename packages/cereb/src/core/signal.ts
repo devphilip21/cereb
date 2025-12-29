@@ -12,10 +12,9 @@ export interface Signal<K extends string = string, V = unknown> {
  * Utility type to extend a Signal's value type with additional properties.
  * Used by operators that add computed properties to signals.
  */
-export type ExtendSignalValue<T extends Signal, Additional> = Signal<
-  T["kind"],
-  T["value"] & Additional
->;
+export type ExtendSignalValue<T extends Signal, Additional> = Omit<T, "value"> & {
+  readonly value: T["value"] & Additional;
+};
 
 /**
  * Utility type to constrain a Signal to have specific value properties.

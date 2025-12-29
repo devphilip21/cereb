@@ -31,10 +31,20 @@ export interface OffsetValue {
   offsetY: number;
 }
 
-export type OffsetOperatorResult<T extends SignalWith<PointerValue>> = ExtendSignalValue<
+type OffsetInputValue = PointerValue & Partial<OffsetValue>;
+
+export type OffsetOperatorResult<T extends SignalWith<OffsetInputValue>> = ExtendSignalValue<
   T,
   OffsetValue
 >;
+
+function applyOffset<T extends SignalWith<OffsetInputValue>>(
+  signal: T,
+  rect: DOMRect,
+): asserts signal is T & ExtendSignalValue<T, OffsetValue> {
+  signal.value.offsetX = signal.value.x - rect.left;
+  signal.value.offsetY = signal.value.y - rect.top;
+}
 
 /**
  * Creates an operator that adds element-relative offset coordinates to pointer signals.
@@ -43,7 +53,7 @@ export type OffsetOperatorResult<T extends SignalWith<PointerValue>> = ExtendSig
  * @param options.target - The element to calculate offset relative to
  * @param options.recalculate$ - Optional stream that triggers rect recalculation for caching
  */
-export function offset<T extends SignalWith<PointerValue>>(
+export function offset<T extends SignalWith<OffsetInputValue>>(
   options: OffsetOptions,
 ): Operator<T, ExtendSignalValue<T, OffsetValue>> {
   const { target, recalculate$ } = options;
@@ -83,12 +93,8 @@ export function offset<T extends SignalWith<PointerValue>>(
         next(signal) {
           try {
             const rect = getRect();
-            const value = signal.value as PointerValue & OffsetValue;
-
-            value.offsetX = value.x - rect.left;
-            value.offsetY = value.y - rect.top;
-
-            observer.next(signal as unknown as OutputSignal);
+            applyOffset(signal, rect);
+            observer.next(signal);
           } catch (err) {
             observer.error?.(err);
           }

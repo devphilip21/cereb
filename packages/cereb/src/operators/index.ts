@@ -6,8 +6,6 @@ export { merge, mergeWith } from "./merge.js";
 export { offset } from "./offset.js";
 export { reduce } from "./reduce.js";
 export { multiPointerSession, session, singlePointerSession } from "./session.js";
-export type { SessionJoinOptions } from "./session-join.js";
-export { sessionJoin } from "./session-join.js";
 export { share, shareReplay } from "./share.js";
 export { spy, tap } from "./spy.js";
 export { throttle, throttleLast } from "./throttle.js";
