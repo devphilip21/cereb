@@ -1,0 +1,170 @@
+# `domEvent`
+
+Low-level DOM event stream factory. Wraps any DOM event into a Stream with full TypeScript type inference.
+
+```bash
+npm install --save cereb
+```
+
+## Basic Usage
+
+```typescript
+import { domEvent } from "cereb";
+
+// Strongly typed based on target and event name
+domEvent(window, "resize").on((signal) => {
+  console.log(signal.value.innerWidth); // UIEvent, typed correctly
+});
+
+domEvent(element, "click").on((signal) => {
+  console.log(signal.value.clientX); // MouseEvent
+});
+```
+
+## Signature
+
+```typescript
+function domEvent<E extends Event>(
+  target: EventTarget,
+  eventName: string,
+  options?: AddEventListenerOptions
+): Stream<DomEventSignal<E>>
+```
+
+## Signal Value
+
+The `signal.value` is the original DOM Event object. The type is inferred based on the target and event name:
+
+| Target | Event | Type |
+|--------|-------|------|
+| `window` | `"resize"` | `UIEvent` |
+| `HTMLElement` | `"click"` | `MouseEvent` |
+| `HTMLElement` | `"keydown"` | `KeyboardEvent` |
+| `HTMLInputElement` | `"input"` | `Event` |
+
+## Examples
+
+### Resize Observer
+
+```typescript
+domEvent(window, "resize").on((signal) => {
+  updateLayout(signal.value.target.innerWidth);
+});
+```
+
+### Custom Event
+
+```typescript
+domEvent<CustomEvent<{ id: string }>>(element, "my-event").on((signal) => {
+  console.log(signal.value.detail.id);
+});
+```
+
+---
+
+# Input Event Helpers
+
+Convenience functions that combine multiple related events into a single stream.
+
+## `pointerEvents`
+
+Combines `pointerdown`, `pointermove`, `pointerup`, `pointercancel` into one stream.
+
+```typescript
+import { pointerEvents } from "cereb";
+
+pointerEvents(element).on((signal) => {
+  const e = signal.value; // PointerEvent
+  console.log(e.type, e.clientX, e.clientY);
+});
+```
+
+### Signature
+
+```typescript
+function pointerEvents(
+  target: EventTarget,
+  options?: AddEventListenerOptions
+): Stream<DomEventSignal<PointerEvent>>
+```
+
+### Events Included
+
+- `pointerdown`
+- `pointermove`
+- `pointerup`
+- `pointercancel`
+
+---
+
+## `mouseEvents`
+
+Combines `mousedown`, `mousemove`, `mouseup` into one stream.
+
+```typescript
+import { mouseEvents } from "cereb";
+
+mouseEvents(element).on((signal) => {
+  const e = signal.value; // MouseEvent
+  console.log(e.type, e.clientX, e.clientY);
+});
+```
+
+### Signature
+
+```typescript
+function mouseEvents(
+  target: EventTarget,
+  options?: AddEventListenerOptions
+): Stream<DomEventSignal<MouseEvent>>
+```
+
+### Events Included
+
+- `mousedown`
+- `mousemove`
+- `mouseup`
+
+---
+
+## `touchEvents`
+
+Combines `touchstart`, `touchmove`, `touchend`, `touchcancel` into one stream.
+
+```typescript
+import { touchEvents } from "cereb";
+
+touchEvents(element).on((signal) => {
+  const e = signal.value; // TouchEvent
+  console.log(e.type, e.touches.length);
+});
+```
+
+### Signature
+
+```typescript
+function touchEvents(
+  target: EventTarget,
+  options?: AddEventListenerOptions
+): Stream<DomEventSignal<TouchEvent>>
+```
+
+### Events Included
+
+- `touchstart`
+- `touchmove`
+- `touchend`
+- `touchcancel`
+
+---
+
+## When to Use
+
+| Use Case | Recommended |
+|----------|-------------|
+| Normalized pointer input | `singlePointer`, `multiPointer` |
+| Gesture recognition | `pan`, `pinch` |
+| Raw DOM events | `domEvent`, `pointerEvents`, etc. |
+| Custom event handling | `domEvent` |
+
+These low-level APIs are useful when building custom recognizers or when you need direct access to the original DOM events.

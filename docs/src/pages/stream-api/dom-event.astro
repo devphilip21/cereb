@@ -1,0 +1,19 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/stream-api/dom-event.mdx";
+
+const headings = [
+  { depth: 2, slug: "basic-usage", text: "Basic Usage" },
+  { depth: 2, slug: "signature", text: "Signature" },
+  { depth: 2, slug: "signal-value", text: "Signal Value" },
+  { depth: 2, slug: "examples", text: "Examples" },
+  { depth: 2, slug: "pointerevents", text: "pointerEvents" },
+  { depth: 2, slug: "mouseevents", text: "mouseEvents" },
+  { depth: 2, slug: "touchevents", text: "touchEvents" },
+  { depth: 2, slug: "when-to-use", text: "When to Use" },
+];
+---
+
+<DocsLayout title="domEvent" description="Low-level DOM event stream factory" headings={headings}>
+  <Content />
+</DocsLayout>

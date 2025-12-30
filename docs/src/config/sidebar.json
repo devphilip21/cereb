@@ -73,6 +73,10 @@
         {
           "label": "wheel",
           "slug": "stream-api/wheel"
+        },
+        {
+          "label": "domEvent",
+          "slug": "stream-api/dom-event"
         }
       ]
     }
