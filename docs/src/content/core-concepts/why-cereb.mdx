@@ -1,0 +1,115 @@
+# Why Cereb?
+
+> **Note:** These are the problems Cereb solves.
+
+## 1. Event-Driven Code Becomes Spaghetti
+
+Traditional event handlers create scattered logic, shared mutable state, and duplicated code. Consider a multi-input zoom implementation:
+
+```typescript
+// Before: Scattered handlers, shared state, duplicated logic
+let currentScale = 1;
+let isZoomMode = false;
+let initialPinchDistance = 0;
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'z') { isZoomMode = true; }
+  if (isZoomMode && (e.key === '+' || e.key === '-')) {
+    e.preventDefault();
+    currentScale = Math.max(MIN, Math.min(MAX, currentScale * ...));
+    render(currentScale);
+  }
+});
+window.addEventListener('keyup', e => { /* isZoomMode = false ... */ });
+
+box.addEventListener('wheel', e => {
+  if (!isZoomMode) return;
+  currentScale = Math.max(MIN, Math.min(MAX, ...));  // duplicated
+  render(currentScale);
+}, { passive: false });
+
+// Pinch: touchstart/touchmove/touchend with distance calculation...
+box.addEventListener('touchstart', e => { /* ... */ });
+box.addEventListener('touchmove', e => { /* distance, ratio, min/max again */ });
+box.addEventListener('touchend', () => { /* cleanup */ });
+
+// 8+ handlers, 3+ shared states, min/max duplicated everywhere
+```
+
+Cereb models events as streams, creating readable and composable pipelines:
+
+```typescript
+// After: Clear flow, no shared state, composable
+import { keydown, keyheld, wheel } from "cereb";
+import { zoom, when, extend, spy } from "cereb/operators";
+import { pinch } from "@cereb/pinch";
+
+const zoomMode$ = keyheld(window, { code: "KeyZ" })
+  .pipe(extend((signal) => ({ opened: signal.value.held })));
+
+const zoomOp = () => zoom({ minScale: 0.5, maxScale: 3.0, baseScale: getScale });
+
+// Pinch zoom
+pinch(element)
+  .pipe(zoomOp())
+  .on(applyScale);
+
+// z + wheel zoom
+wheel(element, { passive: false })
+  .pipe(
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
+    extend((signal) => ({ ratio: Math.exp(-signal.value.deltaY * 0.005) })),
+    zoomOp(),
+  )
+  .on(applyScale);
+
+// z + '+/-' zoom
+keydown(window, { code: ["Equal", "Minus"] })
+  .pipe(
+    when(zoomMode$),
+    extend((signal) => ({ ratio: signal.value.code === "Equal" ? 1.2 : 1 / 1.2 })),
+    zoomOp(),
+  )
+  .on(applyScale);
+```
+
+## 2. Lightweight Bundle Size
+
+Benchmark: Equivalent pan gesture implementation
+
+| | Minified | Gzipped |
+|--|----------|---------|
+| cereb + @cereb/pan | 4.58 KB | **1.73 KB** |
+| Hammer.js | 20.98 KB | 7.52 KB |
+
+~77% smaller than Hammer.js for equivalent pan gesture functionality.
+
+## 3. Performance & Resource Efficiency
+
+**Event Listener Reuse**
+
+```typescript
+// Before: Multiple addEventListener calls
+window.addEventListener('keydown', handler1);
+window.addEventListener('keydown', handler2);
+window.addEventListener('keydown', handler3);
+
+// After: Single native listener, multiple observers
+const key$ = keyboard(window).pipe(share());
+key$.on(handler1);
+key$.on(handler2);
+key$.on(handler3);
+```
+
+**Single Responsibility Operators**
+
+```typescript
+pan(element)
+  .pipe(
+    offset({ target }),     // Element-relative coordinates
+    axisLock()              // Lock to horizontal/vertical
+  )
+```
+
+Each operator does one thing well, and you compose them as needed.

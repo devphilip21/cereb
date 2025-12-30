@@ -4,7 +4,7 @@
       "label": "First Step",
       "items": [
         {
-          "label": "[seti:vite] Intro to Cereb",
+          "label": "[book] Intro to Cereb",
           "slug": ""
         },
         {
@@ -21,7 +21,7 @@
           "slug": "examples/signature-pad"
         },
         {
-          "label": "[star] Space Adventure",
+          "label": "[sparkles] Space Adventure",
           "slug": "examples/space-adventure"
         }
       ]
@@ -30,8 +30,12 @@
       "label": "Core Concepts",
       "items": [
         {
-          "label": "[book] Key Models",
+          "label": "Key Models",
           "slug": "core-concepts/key-models"
+        },
+        {
+          "label": "Why Cereb?",
+          "slug": "core-concepts/why-cereb"
         }
       ]
     },
