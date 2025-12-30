@@ -1,0 +1,14 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/core-concepts/key-models.mdx";
+
+const headings = [
+  { depth: 2, slug: "signal", text: "Signal" },
+  { depth: 2, slug: "stream", text: "Stream" },
+  { depth: 2, slug: "operator", text: "Operator" },
+];
+---
+
+<DocsLayout title="Key Models" description="Understanding the fundamental building blocks of Cereb" headings={headings}>
+  <Content />
+</DocsLayout>

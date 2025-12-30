@@ -10,10 +10,6 @@
         {
           "label": "[rocket] Quick Start",
           "slug": "getting-started/quick-start"
-        },
-        {
-          "label": "[book] Core Concepts",
-          "slug": "getting-started/core-concepts"
         }
       ]
     },
@@ -27,6 +23,15 @@
         {
           "label": "[star] Space Adventure",
           "slug": "examples/space-adventure"
+        }
+      ]
+    },
+    {
+      "label": "Core Concepts",
+      "items": [
+        {
+          "label": "[book] Key Models",
+          "slug": "core-concepts/key-models"
         }
       ]
     },

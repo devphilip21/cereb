@@ -1,0 +1,85 @@
+# KeyModels
+
+Cereb is built around three core abstractions: **Signal**, **Stream**, and **Operator**. Understanding these models is key to using the library effectively.
+
+## Signal
+
+A **Signal** is an immutable data object representing a discrete event. Every pointer move, gesture change, or keyboard input produces a Signal.
+
+```typescript
+interface Signal<K extends string, V> {
+  readonly kind: K;           // Type discriminator (e.g., "single-pointer", "pan")
+  readonly value: V;          // Event payload
+  readonly deviceId: string;  // Unique device identifier
+  readonly createdAt: number; // Timestamp (performance.now())
+}
+```
+
+Signals are readonly by design. This prevents side-effects and enables safe composition—multiple operators can share signal references without conflicts.
+
+## Stream
+
+A **Stream** is an observable sequence of Signals. It's the pipeline through which all events flow, with built-in flow control.
+
+```typescript
+interface Stream<T extends Signal> {
+  on(observer: (value: T) => void): Unsubscribe;
+  pipe(...operators: Operator[]): Stream;
+  block(): void;
+  unblock(): void;
+  readonly isBlocked: boolean;
+}
+```
+
+| Method | Description |
+|--------|-------------|
+| `on()` | Subscribe to receive signals. Returns an unsubscribe function. |
+| `pipe()` | Chain operators to transform the stream. |
+| `block()` | Pause event propagation. Blocked events are dropped, not queued. |
+| `unblock()` | Resume normal event flow. |
+
+Streams are **lazy**—no work happens until you call `on()`. They're also **unicast by default**—each subscription creates its own event source. Use `share()` for multicast.
+
+## Operator
+
+An **Operator** is a function that transforms one Stream into another. Operators are the composition primitive for building pipelines.
+
+```typescript
+type Operator<T extends Signal, R extends Signal> = (source: Stream<T>) => Stream<R>;
+```
+
+Operators enable declarative data transformation:
+
+```typescript
+import { singlePointer } from "cereb";
+import { filter, throttle, offset } from "cereb/operators";
+
+singlePointer(element)
+  .pipe(
+    filter((s) => s.value.pointerType === "touch"),  // Only touch input
+    throttle(16),                                     // ~60fps max
+    offset({ target: canvas }),                       // Add element-relative coords
+  )
+  .on((signal) => {
+    // Transformed signal with offsetX, offsetY properties
+  });
+```
+
+## How They Work Together
+
+```
+┌─ Stream ───────────────────────────────────┐
+│   ●━━●━━●━━▶ [operator] ▶━━◆━━◆━━◆        │
+└────────────────────────────────────────────┘
+                                ╲
+                                 ╲ merge
+                                  ╲
+┌─ Stream ───────────────────┐    ╲   ┌─ Merged ──────────────────┐
+│   ◇━━◇━━◇                  │─────────│   ◆━━◇━━◆━━◇━━◆━━◇       │
+└────────────────────────────┘    ╱   └───────────────────────────┘
+                                 ╱
+```
+
+- Input sources create Streams that emit Signals over time
+- Operators transform Streams—each returns a new Stream with modified Signals
+- Multiple Streams can be orchestrated together (merge, conditional gating, etc.)
