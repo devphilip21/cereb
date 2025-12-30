@@ -1,0 +1,14 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/operator-api/session.mdx";
+
+const headings = [
+  { depth: 2, slug: "functions", text: "Functions" },
+  { depth: 2, slug: "examples", text: "Examples" },
+  { depth: 2, slug: "session-lifecycle", text: "Session Lifecycle" },
+];
+---
+
+<DocsLayout title="session" description="Filter signals during active sessions" headings={headings}>
+  <Content />
+</DocsLayout>

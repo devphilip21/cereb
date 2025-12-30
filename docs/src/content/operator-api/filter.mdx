@@ -1,0 +1,42 @@
+# `filter`
+
+Filters signals based on a predicate function. Only signals that pass the predicate are emitted.
+
+## Signature
+
+```typescript
+function filter<T extends Signal>(
+  predicate: (signal: T) => boolean
+): Operator<T, T>
+```
+
+## Example
+
+```typescript
+import { singlePointer } from "cereb";
+import { filter } from "cereb/operators";
+
+singlePointer(element)
+  .pipe(filter((signal) => signal.value.phase === "move"))
+  .on((signal) => {
+    // Only move events
+  });
+```
+
+## Use Cases
+
+### Filter by Phase
+
+```typescript
+pan(element)
+  .pipe(filter((s) => s.value.phase !== "cancel"))
+  .on(handlePan);
+```
+
+### Filter by Position
+
+```typescript
+singlePointer(element)
+  .pipe(filter((s) => s.value.x > 100))
+  .on(handleRightSide);
+```

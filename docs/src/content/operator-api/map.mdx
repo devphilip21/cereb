@@ -1,0 +1,33 @@
+# `map`
+
+Transforms each signal into a new signal using a transform function.
+
+## Signature
+
+```typescript
+function map<T extends Signal, R extends Signal>(
+  transform: (signal: T) => R
+): Operator<T, R>
+```
+
+## Example
+
+```typescript
+import { keyboard } from "cereb";
+import { map } from "cereb/operators";
+
+keyboard(window)
+  .pipe(
+    map((signal) => ({
+      ...signal,
+      value: { ...signal.value, upperKey: signal.value.key.toUpperCase() }
+    }))
+  )
+  .on((signal) => {
+    console.log(signal.value.upperKey);
+  });
+```
+
+## Note
+
+For adding properties to the existing signal value, prefer `extend` over `map` as it's more ergonomic and preserves the signal structure.

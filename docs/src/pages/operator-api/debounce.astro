@@ -1,0 +1,15 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/operator-api/debounce.mdx";
+
+const headings = [
+  { depth: 2, slug: "signature", text: "Signature" },
+  { depth: 2, slug: "example", text: "Example" },
+  { depth: 2, slug: "comparison-with-throttle", text: "Comparison with Throttle" },
+  { depth: 2, slug: "use-cases", text: "Use Cases" },
+];
+---
+
+<DocsLayout title="debounce" description="Emit after activity stops" headings={headings}>
+  <Content />
+</DocsLayout>

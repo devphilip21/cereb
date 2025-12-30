@@ -1,0 +1,15 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/operator-api/throttle.mdx";
+
+const headings = [
+  { depth: 2, slug: "functions", text: "Functions" },
+  { depth: 2, slug: "examples", text: "Examples" },
+  { depth: 2, slug: "comparison", text: "Comparison" },
+  { depth: 2, slug: "use-cases", text: "Use Cases" },
+];
+---
+
+<DocsLayout title="throttle" description="Limit signal emission rate" headings={headings}>
+  <Content />
+</DocsLayout>

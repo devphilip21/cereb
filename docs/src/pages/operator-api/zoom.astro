@@ -1,0 +1,16 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/operator-api/zoom.mdx";
+
+const headings = [
+  { depth: 2, slug: "signature", text: "Signature" },
+  { depth: 2, slug: "options", text: "Options" },
+  { depth: 2, slug: "output-value", text: "Output Value" },
+  { depth: 2, slug: "examples", text: "Examples" },
+  { depth: 2, slug: "mode", text: "Mode" },
+];
+---
+
+<DocsLayout title="zoom" description="Calculate bounded scale values" headings={headings}>
+  <Content />
+</DocsLayout>

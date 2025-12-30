@@ -1,0 +1,14 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/operator-api/merge.mdx";
+
+const headings = [
+  { depth: 2, slug: "functions", text: "Functions" },
+  { depth: 2, slug: "examples", text: "Examples" },
+  { depth: 2, slug: "use-cases", text: "Use Cases" },
+];
+---
+
+<DocsLayout title="merge" description="Combine multiple streams" headings={headings}>
+  <Content />
+</DocsLayout>

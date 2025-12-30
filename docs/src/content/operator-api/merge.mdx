@@ -1,0 +1,72 @@
+# `merge`
+
+Combines multiple streams into one, emitting signals from all sources.
+
+## Functions
+
+### merge
+
+Combines multiple streams into a single stream.
+
+```typescript
+function merge<T extends Signal>(...sources: Stream<T>[]): Stream<T>
+```
+
+### mergeWith
+
+Operator version that merges another stream with the source.
+
+```typescript
+function mergeWith<T extends Signal, R extends Signal>(
+  other: Stream<R>
+): Operator<T, T | R>
+```
+
+## Examples
+
+### Merge Multiple Streams
+
+```typescript
+import { keyboard, wheel } from "cereb";
+import { merge } from "cereb/operators";
+
+const keyboard$ = keyboard(window, { code: ["Equal", "Minus"] });
+const wheel$ = wheel(element);
+
+merge(keyboard$, wheel$).on((signal) => {
+  // Receives signals from both sources
+});
+```
+
+### mergeWith Operator
+
+```typescript
+import { pinch } from "@cereb/pinch";
+import { mergeWith, extend } from "cereb/operators";
+
+pinch(element)
+  .pipe(
+    mergeWith(
+      wheel(element).pipe(
+        extend((s) => ({ ratio: Math.exp(-s.value.deltaY * 0.005) }))
+      )
+    )
+  )
+  .on(handleZoom);
+```
+
+## Use Cases
+
+### Multiple Zoom Inputs
+
+```typescript
+const pinchZoom$ = pinch(element).pipe(zoom());
+const wheelZoom$ = wheel(element)
+  .pipe(extend((s) => ({ ratio: Math.exp(-s.value.deltaY * 0.005) })))
+  .pipe(zoom());
+const keyboardZoom$ = keydown(window, { code: ["Equal", "Minus"] })
+  .pipe(extend((s) => ({ ratio: s.value.code === "Equal" ? 1.2 : 0.8 })))
+  .pipe(zoom());
+
+merge(pinchZoom$, wheelZoom$, keyboardZoom$).on(applyScale);
+```

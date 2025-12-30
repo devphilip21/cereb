@@ -1,0 +1,72 @@
+# `when`
+
+Passes through source signals only when a gate stream indicates "open" state. Useful for mode-based interactions.
+
+## Signature
+
+```typescript
+function when<T extends Signal>(
+  gate: Stream<Signal<string, { opened: boolean }>>
+): Operator<T, T>
+```
+
+## Gate Signal
+
+The gate stream must emit signals with `{ opened: boolean }` in the value:
+- `opened: true` - Pass signals through
+- `opened: false` - Block signals
+
+## Example
+
+```typescript
+import { wheel, keyheld } from "cereb";
+import { when, extend } from "cereb/operators";
+
+// Create gate from keyheld (needs extend to add 'opened')
+const zoomMode$ = keyheld(window, { code: "KeyZ" })
+  .pipe(extend((s) => ({ opened: s.value.held })));
+
+// Only handle wheel when Z is held
+wheel(element)
+  .pipe(when(zoomMode$))
+  .on(handleZoomWheel);
+```
+
+## Use Cases
+
+### Zoom Mode Toggle
+
+```typescript
+const zoomMode$ = keyheld(window, { code: "KeyZ" })
+  .pipe(extend((s) => ({ opened: s.value.held })));
+
+// Wheel zoom only in zoom mode
+wheel(element, { passive: false })
+  .pipe(
+    when(zoomMode$),
+    spy((s) => s.value.originalEvent.preventDefault()),
+    extend((s) => ({ ratio: Math.exp(-s.value.deltaY * 0.005) })),
+    zoom()
+  )
+  .on(applyScale);
+
+// Keyboard zoom only in zoom mode
+keydown(window, { code: ["Equal", "Minus"] })
+  .pipe(
+    when(zoomMode$),
+    extend((s) => ({ ratio: s.value.code === "Equal" ? 1.2 : 1 / 1.2 })),
+    zoom()
+  )
+  .on(applyScale);
+```
+
+### Drawing Mode
+
+```typescript
+const drawMode$ = keyheld(window, { code: "KeyD" })
+  .pipe(extend((s) => ({ opened: s.value.held })));
+
+singlePointer(canvas)
+  .pipe(when(drawMode$))
+  .on(draw);
+```

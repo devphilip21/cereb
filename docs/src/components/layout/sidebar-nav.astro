@@ -126,8 +126,16 @@ function flattenItems(items: SidebarItem[]): SidebarItem[] {
   }
 
   .sidebar-nav {
-    position: sticky;
-    top: calc(var(--sl-header-height) + 1rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    height: 100%;
+    padding-top: 1rem;
+    padding-right: 1rem;
+  }
+
+  .sidebar-nav > ul {
   }
 
   .large {

@@ -79,6 +79,67 @@
           "slug": "stream-api/dom-event"
         }
       ]
+    },
+    {
+      "label": "Operator API",
+      "items": [
+        {
+          "label": "compose",
+          "slug": "operator-api/compose"
+        },
+        {
+          "label": "debounce",
+          "slug": "operator-api/debounce"
+        },
+        {
+          "label": "extend",
+          "slug": "operator-api/extend"
+        },
+        {
+          "label": "filter",
+          "slug": "operator-api/filter"
+        },
+        {
+          "label": "map",
+          "slug": "operator-api/map"
+        },
+        {
+          "label": "merge",
+          "slug": "operator-api/merge"
+        },
+        {
+          "label": "offset",
+          "slug": "operator-api/offset"
+        },
+        {
+          "label": "reduce",
+          "slug": "operator-api/reduce"
+        },
+        {
+          "label": "session",
+          "slug": "operator-api/session"
+        },
+        {
+          "label": "share",
+          "slug": "operator-api/share"
+        },
+        {
+          "label": "spy",
+          "slug": "operator-api/spy"
+        },
+        {
+          "label": "throttle",
+          "slug": "operator-api/throttle"
+        },
+        {
+          "label": "when",
+          "slug": "operator-api/when"
+        },
+        {
+          "label": "zoom",
+          "slug": "operator-api/zoom"
+        }
+      ]
     }
   ]
 }

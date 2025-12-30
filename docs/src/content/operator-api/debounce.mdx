@@ -1,0 +1,60 @@
+# `debounce`
+
+Delays emission until a specified duration has passed without new signals. Emits only the last signal after activity stops.
+
+## Signature
+
+```typescript
+function debounce<T extends Signal>(ms: number): Operator<T, T>
+```
+
+## Example
+
+```typescript
+import { keyboard } from "cereb";
+import { debounce } from "cereb/operators";
+
+keyboard(window)
+  .pipe(debounce(300))
+  .on((signal) => {
+    // Fires 300ms after last keypress
+    search(signal.value.key);
+  });
+```
+
+## Comparison with Throttle
+
+| Operator | Behavior | Use Case |
+|----------|----------|----------|
+| `debounce` | Wait for silence | After activity stops |
+| `throttle` | Emit first, ignore rest | Real-time feedback |
+| `throttleLast` | Collect, emit last | Final state matters |
+
+## Use Cases
+
+### Search Input
+
+```typescript
+// Wait for user to stop typing
+keyboard(searchInput)
+  .pipe(debounce(300))
+  .on(() => performSearch());
+```
+
+### Resize Handler
+
+```typescript
+// Handle resize only after user stops resizing
+domEvent(window, "resize")
+  .pipe(debounce(200))
+  .on(recalculateLayout);
+```
+
+### Save Draft
+
+```typescript
+// Auto-save 1 second after last edit
+keyboard(editor)
+  .pipe(debounce(1000))
+  .on(saveDraft);
+```

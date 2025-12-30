@@ -1,0 +1,70 @@
+# `share`
+
+Multicasts a stream to multiple subscribers, sharing a single subscription to the source.
+
+## Functions
+
+### share
+
+Creates a shared stream. The source subscription starts when the first observer subscribes and ends when the last unsubscribes.
+
+```typescript
+function share<T extends Signal>(): Operator<T, T>
+```
+
+### shareReplay
+
+Like `share`, but replays the last N values to new subscribers.
+
+```typescript
+function shareReplay<T extends Signal>(bufferSize?: number): Operator<T, T>
+```
+
+## Example
+
+```typescript
+import { keyboard } from "cereb";
+import { share } from "cereb/operators";
+
+const keyboard$ = keyboard(window).pipe(share());
+
+// Single native event listener, multiple observers
+keyboard$.on(handler1);
+keyboard$.on(handler2);
+keyboard$.on(handler3);
+```
+
+## Use Cases
+
+### Share Event Source
+
+```typescript
+// Without share: 3 addEventListener calls
+const kb1$ = keyboard(window);
+const kb2$ = keyboard(window);
+const kb3$ = keyboard(window);
+
+// With share: 1 addEventListener call
+const shared$ = keyboard(window).pipe(share());
+shared$.on(handler1);
+shared$.on(handler2);
+shared$.on(handler3);
+```
+
+### Replay Last Value
+
+```typescript
+const position$ = singlePointer(element)
+  .pipe(shareReplay(1));
+
+// New subscribers immediately get the last position
+position$.on(updateUI);
+
+setTimeout(() => {
+  position$.on(lateSubscriber); // Gets last position immediately
+}, 1000);
+```
+
+## Note
+
+Many built-in stream factories like `keyboard()`, `wheel()` already use sharing internally per EventTarget.

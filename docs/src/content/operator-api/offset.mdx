@@ -1,0 +1,76 @@
+# `offset`
+
+Adds element-relative coordinates (`offsetX`, `offsetY`) to pointer signals.
+
+## Signature
+
+```typescript
+function offset<T extends SignalWith<{ x: number; y: number }>>(options: {
+  target: Element;
+  recalculate$?: Stream<Signal>;
+}): Operator<T, T & { offsetX: number; offsetY: number }>
+```
+
+## Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `target` | `Element` | Element to calculate offset relative to |
+| `recalculate$` | `Stream<Signal>` | Optional stream that triggers rect recalculation |
+
+## Example
+
+```typescript
+import { singlePointer } from "cereb";
+import { offset } from "cereb/operators";
+
+singlePointer(canvas)
+  .pipe(offset({ target: canvas }))
+  .on((signal) => {
+    // Draw at element-relative position
+    draw(signal.value.offsetX, signal.value.offsetY);
+  });
+```
+
+## Caching Behavior
+
+By default, `getBoundingClientRect()` is called on every signal for accuracy.
+
+For performance optimization, provide `recalculate$` to cache the rect:
+
+```typescript
+import { domEvent } from "cereb";
+
+const resize$ = domEvent(window, "resize");
+
+singlePointer(canvas)
+  .pipe(offset({ target: canvas, recalculate$: resize$ }))
+  .on(draw);
+```
+
+## Use Cases
+
+### Drawing Application
+
+```typescript
+singlePointer(canvas)
+  .pipe(
+    singlePointerSession(),
+    offset({ target: canvas })
+  )
+  .on((signal) => {
+    ctx.lineTo(signal.value.offsetX, signal.value.offsetY);
+    ctx.stroke();
+  });
+```
+
+### Drag Within Container
+
+```typescript
+pan(container)
+  .pipe(offset({ target: container }))
+  .on((signal) => {
+    draggable.style.left = `${signal.value.offsetX}px`;
+    draggable.style.top = `${signal.value.offsetY}px`;
+  });
+```

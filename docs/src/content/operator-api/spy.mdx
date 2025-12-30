@@ -1,0 +1,64 @@
+# `spy`
+
+Executes a side-effect function for each signal without modifying the stream. Also exported as `tap` for RxJS compatibility.
+
+## Signature
+
+```typescript
+function spy<T extends Signal>(fn: (signal: T) => void): Operator<T, T>
+```
+
+## Aliases
+
+- `spy` - Primary name
+- `tap` - RxJS-compatible alias
+
+## Example
+
+```typescript
+import { singlePointer } from "cereb";
+import { spy } from "cereb/operators";
+
+singlePointer(element)
+  .pipe(
+    spy((signal) => {
+      console.log(signal.value.x, signal.value.y);
+    })
+  )
+  .on(handlePointer);
+```
+
+## Use Cases
+
+### Debug Logging
+
+```typescript
+pan(element)
+  .pipe(spy((s) => console.log("Pan:", s.value.phase, s.value.deltaX)))
+  .on(handlePan);
+```
+
+### Prevent Default
+
+```typescript
+wheel(element, { passive: false })
+  .pipe(
+    when(zoomMode$),
+    spy((s) => s.value.originalEvent.preventDefault())
+  )
+  .on(handleZoomWheel);
+```
+
+### Analytics / Metrics
+
+```typescript
+pan(element)
+  .pipe(
+    spy((s) => {
+      if (s.value.phase === "end") {
+        analytics.track("pan_complete", { distance: s.value.distance });
+      }
+    })
+  )
+  .on(handlePan);
+```

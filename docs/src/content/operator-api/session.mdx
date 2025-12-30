@@ -1,0 +1,86 @@
+# `session`
+
+Filters signals to only emit during active sessions. A session begins when the start predicate returns true and ends when the end predicate returns true.
+
+## Functions
+
+### session
+
+Generic session operator with custom start/end predicates.
+
+```typescript
+function session<T extends Signal>(options: {
+  start: (signal: T) => boolean;
+  end: (signal: T) => boolean;
+}): Operator<T, T>
+```
+
+### singlePointerSession
+
+Pre-configured for SinglePointer signals (start → end/cancel).
+
+```typescript
+function singlePointerSession(): Operator<SinglePointerSignal, SinglePointerSignal>
+```
+
+### multiPointerSession
+
+Pre-configured for MultiPointer signals with required pointer count.
+
+```typescript
+function multiPointerSession(requiredCount: number): Operator<MultiPointerSignal, MultiPointerSignal>
+```
+
+## Examples
+
+### Single Pointer Session
+
+```typescript
+import { singlePointer } from "cereb";
+import { singlePointerSession } from "cereb/operators";
+
+singlePointer(element)
+  .pipe(singlePointerSession())
+  .on((signal) => {
+    // Only receives signals from start to end/cancel
+  });
+```
+
+### Multi Pointer Session
+
+```typescript
+import { multiPointer } from "cereb";
+import { multiPointerSession } from "cereb/operators";
+
+multiPointer(element, { maxPointers: 2 })
+  .pipe(multiPointerSession(2)) // Wait for 2 pointers
+  .on((signal) => {
+    // Only when 2 pointers are active
+  });
+```
+
+### Custom Session
+
+```typescript
+import { keyboard } from "cereb";
+import { session } from "cereb/operators";
+
+// Session from Space down to Space up
+keyboard(window, { code: "Space" })
+  .pipe(
+    session({
+      start: (s) => s.value.phase === "down",
+      end: (s) => s.value.phase === "up"
+    })
+  )
+  .on(handleSpaceHeld);
+```
+
+## Session Lifecycle
+
+```
+[idle] → start predicate true → [active] → end predicate true → [idle] → ...
+```
+
+- Both start and end signals are included in output
+- Sessions can repeat after ending

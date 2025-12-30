@@ -1,0 +1,15 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/operator-api/spy.mdx";
+
+const headings = [
+  { depth: 2, slug: "signature", text: "Signature" },
+  { depth: 2, slug: "aliases", text: "Aliases" },
+  { depth: 2, slug: "example", text: "Example" },
+  { depth: 2, slug: "use-cases", text: "Use Cases" },
+];
+---
+
+<DocsLayout title="spy" description="Execute side effects without modifying the stream" headings={headings}>
+  <Content />
+</DocsLayout>

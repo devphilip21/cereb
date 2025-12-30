@@ -1,0 +1,79 @@
+# `throttle`
+
+Limits signal emission rate. Useful for performance optimization on high-frequency events.
+
+## Functions
+
+### throttle
+
+Emits the first signal, then ignores subsequent signals for the specified duration.
+
+```typescript
+function throttle<T extends Signal>(ms: number): Operator<T, T>
+```
+
+### throttleLast
+
+Collects signals during the throttle window and emits the last one when the window closes.
+
+```typescript
+function throttleLast<T extends Signal>(ms: number): Operator<T, T>
+```
+
+## Examples
+
+### Basic Throttle
+
+```typescript
+import { singlePointer } from "cereb";
+import { throttle } from "cereb/operators";
+
+// Limit to ~60fps (16ms)
+singlePointer(element)
+  .pipe(throttle(16))
+  .on(updatePosition);
+```
+
+### Throttle Last
+
+```typescript
+import { wheel } from "cereb";
+import { throttleLast } from "cereb/operators";
+
+// Get the last scroll position every 100ms
+wheel(element)
+  .pipe(throttleLast(100))
+  .on(handleScroll);
+```
+
+## Comparison
+
+| Operator | Behavior | Use Case |
+|----------|----------|----------|
+| `throttle` | Emit first, ignore rest | Real-time feedback |
+| `throttleLast` | Collect, emit last | Final state matters |
+| `debounce` | Wait for silence | After activity stops |
+
+## Use Cases
+
+### Performance Optimization
+
+```typescript
+// Expensive DOM updates at most 60 times per second
+singlePointer(element)
+  .pipe(throttle(16))
+  .on((s) => {
+    element.style.transform = `translate(${s.value.x}px, ${s.value.y}px)`;
+  });
+```
+
+### Network Rate Limiting
+
+```typescript
+// Send position updates at most every 100ms
+singlePointer(element)
+  .pipe(throttleLast(100))
+  .on((s) => {
+    socket.emit("position", { x: s.value.x, y: s.value.y });
+  });
+```

@@ -1,0 +1,85 @@
+# `zoom`
+
+Calculates bounded scale values from ratio-based inputs. Works with pinch, wheel, and keyboard zoom sources.
+
+## Signature
+
+```typescript
+function zoom<T extends SignalWith<{ ratio: number; phase?: string }>>(
+  options?: ZoomOptions
+): Operator<T, T & { scale: number; deltaScale: number }>
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `minScale` | `number` | `0.1` | Minimum allowed scale |
+| `maxScale` | `number` | `10.0` | Maximum allowed scale |
+| `baseScale` | `number \| () => number` | `1.0` | Base scale or getter function |
+| `mode` | `"multiply" \| "add"` | `"multiply"` | How ratio is applied |
+
+## Output Value
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `scale` | `number` | Current scale (clamped to min/max) |
+| `deltaScale` | `number` | Scale change since last signal |
+
+## Examples
+
+### Pinch Zoom
+
+```typescript
+import { pinch } from "@cereb/pinch";
+import { zoom } from "cereb/operators";
+
+pinch(element)
+  .pipe(zoom({ minScale: 0.5, maxScale: 3.0 }))
+  .on((signal) => {
+    element.style.transform = `scale(${signal.value.scale})`;
+  });
+```
+
+### Wheel Zoom
+
+```typescript
+import { wheel } from "cereb";
+import { extend, zoom } from "cereb/operators";
+
+wheel(element, { passive: false })
+  .pipe(
+    extend((s) => ({ ratio: Math.exp(-s.value.deltaY * 0.005) })),
+    zoom({ minScale: 0.5, maxScale: 3.0 })
+  )
+  .on((signal) => {
+    element.style.transform = `scale(${signal.value.scale})`;
+  });
+```
+
+### Dynamic Base Scale
+
+When multiple inputs control zoom, use a function to sync with external state:
+
+```typescript
+let currentScale = 1;
+
+const zoomOp = () => zoom({
+  minScale: 0.5,
+  maxScale: 3.0,
+  baseScale: () => currentScale  // Always use current scale
+});
+
+pinch(element).pipe(zoomOp()).on(apply);
+wheel(element).pipe(extend(...), zoomOp()).on(apply);
+
+function apply(signal) {
+  currentScale = signal.value.scale;
+  element.style.transform = `scale(${currentScale})`;
+}
+```
+
+## Mode
+
+- `multiply` (default): `scale = baseScale × ratio` - For pinch gestures
+- `add`: `scale = baseScale + ratio` - For delta-based inputs

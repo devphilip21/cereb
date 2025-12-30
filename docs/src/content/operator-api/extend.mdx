@@ -1,0 +1,66 @@
+# `extend`
+
+Extends the signal value with additional properties. The most common way to add computed properties to signals.
+
+## Signature
+
+```typescript
+function extend<T extends Signal, A extends object>(
+  extender: (signal: T) => A
+): Operator<T, ExtendSignalValue<T, A>>
+```
+
+## Example
+
+```typescript
+import { wheel } from "cereb";
+import { extend } from "cereb/operators";
+
+wheel(element)
+  .pipe(
+    extend((signal) => ({
+      ratio: Math.exp(-signal.value.deltaY * 0.005)
+    }))
+  )
+  .on((signal) => {
+    // signal.value now has ratio property
+    setScale(scale * signal.value.ratio);
+  });
+```
+
+## Use Cases
+
+### Add Zoom Ratio from Wheel
+
+```typescript
+wheel(element)
+  .pipe(extend((s) => ({ ratio: Math.exp(-s.value.deltaY * 0.005) })))
+  .pipe(zoom({ minScale: 0.5, maxScale: 3 }))
+  .on(applyZoom);
+```
+
+### Convert keyheld to when-compatible Signal
+
+```typescript
+// keyheld emits { held: boolean }
+// when expects { opened: boolean }
+const zoomMode$ = keyheld(window, { code: "KeyZ" })
+  .pipe(extend((s) => ({ opened: s.value.held })));
+
+wheel(element)
+  .pipe(when(zoomMode$))
+  .on(handleZoomWheel);
+```
+
+### Add Keyboard Shortcut Info
+
+```typescript
+keydown(window, { code: ["Equal", "Minus"] })
+  .pipe(
+    extend((s) => ({
+      ratio: s.value.code === "Equal" ? 1.2 : 1 / 1.2
+    }))
+  )
+  .pipe(zoom())
+  .on(applyZoom);
+```

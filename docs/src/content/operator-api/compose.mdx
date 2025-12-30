@@ -1,0 +1,61 @@
+# `compose`
+
+Combines multiple operators into a single reusable operator.
+
+## Signature
+
+```typescript
+function compose<T, A>(op1: Operator<T, A>): Operator<T, A>
+function compose<T, A, B>(op1: Operator<T, A>, op2: Operator<A, B>): Operator<T, B>
+function compose<T, A, B, C>(
+  op1: Operator<T, A>,
+  op2: Operator<A, B>,
+  op3: Operator<B, C>
+): Operator<T, C>
+// ... up to 5 operators with type inference
+```
+
+## Example
+
+```typescript
+import { singlePointer } from "cereb";
+import { compose, singlePointerSession, offset } from "cereb/operators";
+
+// Create a reusable operator
+const drawingPipeline = compose(
+  singlePointerSession(),
+  offset({ target: canvas })
+);
+
+// Use it
+singlePointer(canvas)
+  .pipe(drawingPipeline)
+  .on(draw);
+```
+
+## Use Cases
+
+### Reusable Gesture Pipeline
+
+```typescript
+const panGesture = compose(
+  singlePointerSession(),
+  offset({ target: container }),
+  filter((s) => s.value.phase !== "cancel")
+);
+
+singlePointer(element1).pipe(panGesture).on(handlePan1);
+singlePointer(element2).pipe(panGesture).on(handlePan2);
+```
+
+### Zoom Pipeline Factory
+
+```typescript
+const createZoomPipeline = (target: Element) => compose(
+  offset({ target }),
+  extend((s) => ({ ratio: Math.exp(-s.value.deltaY * 0.005) })),
+  zoom({ minScale: 0.5, maxScale: 3.0 })
+);
+
+wheel(canvas).pipe(createZoomPipeline(canvas)).on(applyZoom);
+```
