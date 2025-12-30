@@ -15,11 +15,11 @@ import ThemeToggle from "@/components/shared/theme-toggle.astro";
       for="nav-toggle"
       class="cursor-pointer items-center hamburger-menu"
     >
-      <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
+      <svg id="show-button" viewBox="0 0 20 20" fill="currentColor">
         <title>Menu Open</title>
         <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
       </svg>
-      <svg id="hide-button" class="h-6 fill-current hidden" viewBox="0 0 20 20">
+      <svg id="hide-button" class="hidden" viewBox="0 0 20 20" fill="currentColor">
         <title>Menu Close</title>
         <polygon
           points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
@@ -33,7 +33,7 @@ import ThemeToggle from "@/components/shared/theme-toggle.astro";
   .header {
     display: flex;
     width: 100%;
-    padding: 0 var(--sl-nav-pad-x);
+    padding-left: var(--sl-nav-pad-x);
     justify-content: space-between;
     align-items: center;
     height: var(--sl-header-height);
@@ -44,11 +44,26 @@ import ThemeToggle from "@/components/shared/theme-toggle.astro";
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0;
   }
 
   .hamburger-menu {
     display: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--sl-header-height);
+    height: var(--sl-header-height);
+    cursor: pointer;
+  }
+
+  .hamburger-menu svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--sl-color-gray-2);
+  }
+
+  .hamburger-menu:hover svg {
+    color: var(--sl-color-white);
   }
 
   @media (max-width: 600px) {

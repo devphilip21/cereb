@@ -1,9 +1,16 @@
 html {
-  @apply text-base-sm md:text-base;
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 15px;
+  }
 }
 
 body {
-  @apply text-base font-primary font-normal leading-relaxed text-lightmode-text dark:text-text;
+  @apply font-primary font-normal leading-relaxed text-lightmode-text dark:text-text;
+  font-size: 1rem;
   background-color: var(--sl-color-background);
 }
 

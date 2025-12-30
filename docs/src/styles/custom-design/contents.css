@@ -52,32 +52,56 @@ blockquote > p {
   @apply my-0!;
 }
 
-/* Table styles */
+/* Table styles - Outlined */
 .table-container {
   @apply overflow-x-auto my-6;
 }
 
 table {
-  @apply w-full border-collapse text-sm;
+  @apply w-full text-sm;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 thead {
   @apply text-left;
+  background: var(--sl-color-gray-6);
 }
 
 thead th {
   @apply py-3 px-4 font-semibold text-xs uppercase tracking-wider;
-  color: var(--sl-color-gray-3);
+  color: var(--sl-color-gray-2);
   border-bottom: 1px solid var(--sl-color-gray-5);
 }
 
-tbody tr {
-  border-bottom: 1px solid var(--sl-color-gray-6);
+thead th:not(:last-child) {
+  border-right: 1px solid var(--sl-color-gray-5);
+}
+
+tbody tr:not(:last-child) {
+  border-bottom: 1px solid var(--sl-color-gray-5);
 }
 
 tbody td {
-  @apply py-3.5 px-4;
+  @apply py-3 px-4;
   color: var(--sl-color-gray-2);
+  border-bottom: 1px solid var(--sl-color-gray-5);
+  background: var(--sl-color-gray-6);
+}
+
+:root[data-theme="light"] tbody td {
+  background: #ffffff;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody td:not(:last-child) {
+  border-right: 1px solid var(--sl-color-gray-5);
 }
 
 tbody td:first-child {
@@ -87,4 +111,42 @@ tbody td:first-child {
 
 tbody td code {
   color: var(--sl-color-white);
+}
+
+/* Tab styles */
+.tabs {
+  @apply my-6;
+}
+
+.tab-buttons {
+  @apply flex gap-1;
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+.tab-button {
+  @apply px-4 py-2 text-sm font-medium cursor-pointer;
+  color: var(--sl-color-gray-3);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-button:hover {
+  color: var(--sl-color-gray-2);
+}
+
+.tab-button.active {
+  color: var(--sl-color-white);
+  border-bottom-color: var(--sl-color-white);
+}
+
+.tab-content {
+  display: none;
+  @apply pt-4;
+}
+
+.tab-content.active {
+  display: block;
 }
