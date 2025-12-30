@@ -106,6 +106,10 @@ multiPointerStream.on((signal) => {
 | `pageCenterX` | `number` | Center X between pointers (page) |
 | `pageCenterY` | `number` | Center Y between pointers (page) |
 
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](https://github.com/devphilip21/cereb/blob/main/CONTRIBUTING.md).
+
 ## License
 
 MIT

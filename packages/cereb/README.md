@@ -208,6 +208,12 @@ pan(element)                // Pan gesture recognition
 
 <br>
 
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](https://github.com/devphilip21/cereb/blob/main/CONTRIBUTING.md).
+
+<br>
+
 ## License
 
 MIT

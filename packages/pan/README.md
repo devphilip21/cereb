@@ -107,6 +107,10 @@ singlePointerStream.on((signal) => {
 | `pageX` | `number` | Current X position (page) |
 | `pageY` | `number` | Current Y position (page) |
 
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](https://github.com/devphilip21/cereb/blob/main/CONTRIBUTING.md).
+
 ## License
 
 MIT

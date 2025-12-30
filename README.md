@@ -201,6 +201,10 @@ pan(element)                // Pan gesture recognition
   )
 ```
 
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting a Pull Request.
+
 ## License
 
-Cereb is [MIT licensed](./packages/cereb/LICENSE).
+Cereb is [MIT licensed](./LICENSE).
