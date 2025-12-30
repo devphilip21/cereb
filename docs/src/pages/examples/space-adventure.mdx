@@ -1,0 +1,54 @@
+import { Code } from "astro:components";
+import SpaceAdventure from "@/components/examples/space-adventure.astro";
+
+# Space Adventure
+
+This demo uses `pinch()` from `@cereb/pinch` to implement zoom in/out on a space-themed canvas with stars and nebulae.
+
+<SpaceAdventure />
+
+## Code
+
+```typescript
+import { wheel, keydown, keyheld, domEvent } from "cereb";
+import { zoom as createZoom, extend, when, spy } from "cereb/operators";
+import { pinch } from "@cereb/pinch";
+
+const zoomMode$ = keyheld(window, { code: "KeyZ" })
+  .pipe(extend((signal) => ({ opened: signal.value.held })));
+
+const zoom = (options = {}) => createZoom({
+  minScale: MIN_SCALE,
+  maxScale: MAX_SCALE,
+  baseScale: () => zoomManager.getScale(),
+  ...options
+});
+
+// Pinch Zoom
+pinch(box, { threshold: 10 })
+  .pipe(zoom())
+  .on(render);
+
+// 'z' + '+/-' (logarithmic zoom)
+keydown(window, { code: ["Equal", "Minus"] })
+  .pipe(
+    when(zoomMode$),
+    extend((signal) => ({
+      ratio: signal.value.code === "Equal" ? 1.2 : 1 / 1.2,
+    })),
+    zoom(),
+  )
+  .on(render);
+
+// 'z' + 'wheel'
+wheel(box, { passive: false })
+  .pipe(
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
+    extend((signal) => ({
+      ratio: Math.exp(-signal.value.deltaY * 0.005),
+    })),
+    zoom(),
+  )
+  .on(render);
+```

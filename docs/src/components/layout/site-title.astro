@@ -1,0 +1,73 @@
+---
+import config from "@/config/config.json";
+import ImageMod from "@/components/shared/image-mod.astro";
+
+const {
+  logo,
+  logo_darkmode,
+  logo_width,
+  logo_height,
+  logo_text,
+  title,
+} = config.site;
+
+const logoStyle = {
+  height: logo_height.replace("px", "") + "px",
+  width: logo_width.replace("px", "") + "px",
+};
+const logoWidth = Number(logo_width.replace("px", "")) * 2;
+const logoHeight = Number(logo_height.replace("px", "")) * 2;
+---
+
+<a href="/" class="navbar-brand">
+  {
+    logo || logo_darkmode ? (
+      <>
+        <span class="logo logo-dark">
+          <ImageMod
+            src={logo_darkmode || logo}
+            width={logoWidth}
+            height={logoHeight}
+            alt={title}
+            style={logoStyle}
+            format="webp"
+          />
+        </span>
+        <span class="logo logo-light">
+          <ImageMod
+            src={logo}
+            width={logoWidth}
+            height={logoHeight}
+            alt={title}
+            style={logoStyle}
+            format="webp"
+          />
+        </span>
+      </>
+    ) : logo_text ? (
+      logo_text
+    ) : (
+      title
+    )
+  }
+</a>
+
+<style is:global>
+  .navbar-brand {
+    display: block;
+  }
+  .logo img {
+    display: block;
+  }
+  .logo-dark,
+  .logo-light {
+    display: none;
+  }
+  :root[data-theme="dark"] .logo-dark,
+  :root:not([data-theme]) .logo-dark {
+    display: block;
+  }
+  :root[data-theme="light"] .logo-light {
+    display: block;
+  }
+</style>

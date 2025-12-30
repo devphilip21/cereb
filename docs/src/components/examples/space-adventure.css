@@ -1,0 +1,16 @@
+/* Space Adventure - component-specific styles */
+
+.space-adventure ._demo-box {
+  touch-action: none;
+}
+
+/* Grid: 2 columns */
+.space-adventure ._signal-snapshot-grid ._grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 480px) {
+  .space-adventure ._signal-snapshot-grid ._grid {
+    grid-template-columns: 1fr;
+  }
+}

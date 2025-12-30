@@ -1,0 +1,38 @@
+{
+  "main": [
+    {
+      "label": "First Step",
+      "items": [
+        {
+          "label": "[seti:vite] Intro to Cereb",
+          "slug": ""
+        },
+        {
+          "label": "[rocket] Quick Start",
+          "slug": "getting-started/quick-start"
+        },
+        {
+          "label": "[book] Core Concepts",
+          "slug": "getting-started/core-concepts"
+        }
+      ]
+    },
+    {
+      "label": "Examples",
+      "items": [
+        {
+          "label": "[pen] Signature Pad",
+          "slug": "examples/signature-pad"
+        },
+        {
+          "label": "[star] Space Adventure",
+          "slug": "examples/space-adventure"
+        }
+      ]
+    },
+    {
+      "label": "API Reference",
+      "items": []
+    }
+  ]
+}

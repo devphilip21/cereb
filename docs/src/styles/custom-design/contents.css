@@ -1,0 +1,90 @@
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply  font-bold leading-tight;
+  color: var(--sl-color-white);
+}
+
+h1,
+.h1 {
+  @apply text-h1-sm md:text-h1;
+}
+
+h2,
+.h2 {
+  @apply text-h2-sm md:text-h2;
+}
+
+h3,
+.h3 {
+  @apply text-h3-sm md:text-h3;
+}
+
+h4,
+.h4 {
+  @apply text-h4;
+}
+
+h5,
+.h5 {
+  @apply text-h5;
+}
+
+h6,
+.h6 {
+  @apply text-h6;
+}
+
+b,
+strong {
+  @apply font-semibold;
+}
+
+code {
+  @apply after:border-none;
+}
+
+blockquote > p {
+  @apply my-0!;
+}
+
+/* Table styles */
+.table-container {
+  @apply overflow-x-auto my-6;
+}
+
+table {
+  @apply w-full border-collapse text-sm;
+}
+
+thead {
+  @apply text-left;
+}
+
+thead th {
+  @apply py-3 px-4 font-semibold text-xs uppercase tracking-wider;
+  color: var(--sl-color-gray-3);
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--sl-color-gray-6);
+}
+
+tbody td {
+  @apply py-3.5 px-4;
+  color: var(--sl-color-gray-2);
+}
+
+tbody td:first-child {
+  @apply font-medium;
+  color: var(--sl-color-white);
+}
+
+tbody td code {
+  color: var(--sl-color-white);
+}

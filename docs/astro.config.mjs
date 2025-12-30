@@ -1,47 +1,38 @@
-import starlight from "@astrojs/starlight";
+import { fileURLToPath } from "node:url";
+import expressiveCode from "astro-expressive-code";
+import mdx from "@astrojs/mdx";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
+const DARK_THEME = "github-dark";
+const LIGHT_THEME = "github-light";
+
+// https://astro.build/config
 export default defineConfig({
   site: "https://cereb.dev",
+  image: {
+    service: { entrypoint: "astro/assets/services/noop" },
+  },
   integrations: [
-    starlight({
-      title: "Cereb",
-      description: "High-performance gesture recognition library for the web",
-      social: [
-        {
-          icon: "github",
-          label: "GitHub",
-          href: "https://github.com/devphilip21/cereb",
-        },
-      ],
-      editLink: {
-        baseUrl: "https://github.com/devphilip21/cereb/edit/main/docs/",
-      },
-      sidebar: [
-        {
-          label: "First Step",
-          items: [
-            { label: "Intro to Cereb", slug: "" },
-            { label: "Quick Start", slug: "getting-started/quick-start" },
-            { label: "Core Concepts", slug: "getting-started/core-concepts" },
-          ],
-        },
-        {
-          label: "Examples",
-          items: [
-            { label: "Pointer Tracker", slug: "examples/pointer-tracker" },
-            { label: "Space Adventure", slug: "examples/space-adventure" },
-          ],
-        },
-        {
-          label: "API Reference",
-          items: [],
-        },
-      ],
-      customCss: ["./src/styles/custom.css"],
-      expressiveCode: {
-        themes: ["github-dark"],
+    expressiveCode({
+      themes: [DARK_THEME, LIGHT_THEME],
+      useDarkModeMediaQuery: false,
+      themeCssSelector: (theme) => {
+        if (theme.name === DARK_THEME) {
+          return '[data-theme="dark"]';
+        }
+        return '[data-theme="light"]';
       },
     }),
+    mdx(),
   ],
+  vite: {
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
+        "~": fileURLToPath(new URL("./src", import.meta.url)),
+      },
+    },
+  },
 });

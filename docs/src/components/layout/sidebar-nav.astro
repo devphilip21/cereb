@@ -1,0 +1,305 @@
+---
+import type { SidebarGroup, SidebarItem } from "@/lib/utils/sidebar";
+import { plainLabel, getIconFromLabel } from "@/lib/utils/text-converter";
+import Icon from "@/components/shared/icon.astro";
+
+interface Props {
+  sidebar: SidebarGroup[];
+}
+
+const { sidebar } = Astro.props;
+
+function flattenItems(items: SidebarItem[]): SidebarItem[] {
+  return items.flatMap((item) =>
+    item.type === "group" && item.items ? flattenItems(item.items) : item
+  );
+}
+---
+
+<nav class="sidebar-nav">
+  <ul class="list">
+    {
+      sidebar.map((group) => (
+        <li>
+          <details open>
+            <summary>
+              <span class="group-label">
+                {getIconFromLabel(group.label) && (
+                  <Icon
+                    name={getIconFromLabel(group.label)!}
+                    size="1.3rem"
+                    class="mr-2.5"
+                    color={
+                      flattenItems(group.items).some((i) => i.isCurrent)
+                        ? "var(--color-primary)"
+                        : undefined
+                    }
+                  />
+                )}
+                <span class="large">{plainLabel(group.label)}</span>
+              </span>
+              <svg class="caret" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" />
+              </svg>
+            </summary>
+            <ul>
+              {group.items.map((item) => (
+                <li>
+                  {item.type === "link" ? (
+                    <a
+                      href={item.href}
+                      aria-current={item.isCurrent ? "page" : undefined}
+                      class:list={[{ large: true }]}
+                    >
+                      {getIconFromLabel(item.label) && (
+                        <Icon
+                          name={getIconFromLabel(item.label)!}
+                          size="1.3rem"
+                          class="mr-2.5"
+                        />
+                      )}
+                      <span>{plainLabel(item.label)}</span>
+                    </a>
+                  ) : (
+                    <details open={item.items?.some((i) => i.isCurrent)}>
+                      <summary>
+                        <span class="group-label">
+                          {getIconFromLabel(item.label) && (
+                            <Icon
+                              name={getIconFromLabel(item.label)!}
+                              size="1.3rem"
+                              class="mr-2.5"
+                            />
+                          )}
+                          <span>{plainLabel(item.label)}</span>
+                        </span>
+                        <svg class="caret" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" />
+                        </svg>
+                      </summary>
+                      <ul>
+                        {item.items?.map((subItem) => (
+                          <li>
+                            <a
+                              href={subItem.href}
+                              aria-current={subItem.isCurrent ? "page" : undefined}
+                            >
+                              {getIconFromLabel(subItem.label) && (
+                                <Icon
+                                  name={getIconFromLabel(subItem.label)!}
+                                  size="1.3rem"
+                                  class="mr-2.5"
+                                />
+                              )}
+                              <span>{plainLabel(subItem.label)}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  ul {
+    --sl-sidebar-item-padding-inline: 0.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    overflow-wrap: anywhere;
+  }
+
+  ul ul li {
+    margin-inline-start: calc(var(--sl-sidebar-item-padding-inline) + 8px);
+    border-inline-start: 1px solid var(--sl-color-hairline-light, #252525);
+    padding-inline-start: var(--sl-sidebar-item-padding-inline);
+  }
+
+  .sidebar-nav {
+    position: sticky;
+    top: calc(var(--sl-header-height) + 1rem);
+  }
+
+  .large {
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: var(--sl-color-white);
+  }
+
+  .list > li + li {
+    margin-top: 0.75rem;
+  }
+
+  .list > li > details > ul > li {
+    margin-inline-start: 0px;
+    border-inline-start: 0px;
+    padding-inline-start: 0px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .group-label {
+    display: flex;
+    align-items: center;
+  }
+
+  .group-label .large {
+    font-weight: 600;
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3rem var(--sl-sidebar-item-padding-inline);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 0.25rem;
+  }
+
+  summary:hover {
+    background-color: var(--sl-color-gray-6, rgba(255, 255, 255, 0.05));
+  }
+
+  .list > li > details > summary {
+    padding-left: 0 !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .list > li > details > summary:hover {
+    background-color: transparent;
+  }
+
+  .list > li {
+    border-bottom: 1px solid var(--sl-color-hairline, rgba(255, 255, 255, 0.1));
+    padding-bottom: 1.4rem;
+    padding-top: 1rem;
+  }
+
+  .list > li:last-child {
+    border-bottom: none;
+    padding-bottom: 0px;
+  }
+
+  .list > li:first-child {
+    padding-top: 0px;
+  }
+
+  summary::marker,
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .caret {
+    transition: transform 0.2s ease-in-out;
+    flex-shrink: 0;
+  }
+
+  .list > li > details > summary .caret {
+    color: var(--sl-color-gray-3, #888);
+  }
+
+  [open] > summary .caret {
+    transform: rotateZ(90deg);
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    color: var(--sl-color-gray-2, #a8a8a8);
+    padding: 0.3rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  a:hover,
+  a:focus {
+    color: var(--sl-color-white);
+    background-color: var(--sl-color-gray-6);
+  }
+
+  [aria-current="page"],
+  [aria-current="page"]:hover,
+  [aria-current="page"]:focus {
+    font-weight: 600;
+    color: var(--sl-color-black);
+    background-color: var(--sl-color-white);
+    border-radius: 4px;
+  }
+
+  :global(:root[data-theme="light"]) [aria-current="page"],
+  :global(:root[data-theme="light"]) [aria-current="page"]:hover,
+  :global(:root[data-theme="light"]) [aria-current="page"]:focus {
+    color: var(--color-primary);
+    background-color: var(--sl-color-white);
+  }
+
+  a > *:not(:last-child),
+  .group-label > *:not(:last-child) {
+    margin-inline-end: 0.25em;
+  }
+
+  @media (min-width: 50rem) {
+    .list > li + li {
+      margin-top: 0.5rem;
+    }
+  }
+</style>
+
+<script>
+  function initializeSidebar(): void {
+    const STORAGE_KEY = "sidebar-state";
+
+    function getSavedState(): Record<string, boolean> {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState(state: Record<string, boolean>): void {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    const allDetails = document.querySelectorAll(
+      ".sidebar-nav details"
+    ) as NodeListOf<HTMLDetailsElement>;
+
+    const savedState = getSavedState();
+
+    allDetails.forEach((details, index) => {
+      const key = `details-${index}`;
+
+      if (savedState[key] !== undefined) {
+        details.open = savedState[key];
+      }
+
+      details.addEventListener("toggle", () => {
+        const state = getSavedState();
+        state[key] = details.open;
+        saveState(state);
+      });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeSidebar);
+  } else {
+    initializeSidebar();
+  }
+</script>

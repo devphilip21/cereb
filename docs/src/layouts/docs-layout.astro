@@ -1,0 +1,259 @@
+---
+import BaseLayout from "./base-layout.astro";
+import Header from "@/components/layout/header.astro";
+import SidebarNav from "@/components/layout/sidebar-nav.astro";
+import Footer from "@/components/layout/footer.astro";
+import TableOfContents from "@/components/layout/table-of-contents.astro";
+import PrevNextNav from "@/components/layout/prev-next-nav.astro";
+import { getSidebar } from "@/lib/utils/sidebar";
+
+export interface TocItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  hasSidebar?: boolean;
+  headings?: TocItem[];
+}
+
+const { title, description, hasSidebar = true, headings = [] } = Astro.props;
+const currentPath = Astro.url.pathname;
+const sidebar = getSidebar(currentPath);
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page">
+    <div class="header-layout">
+      <Header />
+    </div>
+    {hasSidebar && (
+      <>
+        <div class="mobile-sidebar-backdrop"></div>
+        <div class="mobile-sidebar">
+          <SidebarNav sidebar={sidebar} />
+        </div>
+      </>
+    )}
+    <div class="container">
+      {
+        hasSidebar && (
+          <div class="sidebar-nav-layout">
+            <SidebarNav sidebar={sidebar} />
+          </div>
+        )
+      }
+      <main class="main-layout">
+        <div class="content">
+          <slot />
+          <PrevNextNav currentPath={currentPath} />
+        </div>
+      </main>
+      {headings.length > 0 && (
+        <div class="toc-layout">
+          <TableOfContents headings={headings} />
+        </div>
+      )}
+    </div>
+    {!hasSidebar && (
+      <div class="footer-layout">
+        <Footer />
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+  }
+
+  .page-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--sl-color-background-gradient);
+  }
+
+  .header-layout {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
+
+  .container {
+    display: flex;
+    width: 100%;
+    padding: var(--sl-header-height) var(--sl-nav-pad-x) 0;
+    box-sizing: border-box;
+  }
+
+  .sidebar-nav-layout {
+    display: sticky;
+    top: 0;
+    flex: 0 0 auto;
+    width: 220px;
+    padding-top: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-nav-layout {
+      width: 176px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .sidebar-nav-layout {
+      display: none;
+    }
+  }
+
+  .main-layout {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 2rem 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .main-layout {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .toc-layout {
+    flex: 0 0 auto;
+    width: 220px;
+  }
+
+  @media (max-width: 1280px) {
+    .toc-layout {
+      display: none;
+    }
+  }
+
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .content :global(h1) {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--sl-color-white);
+  }
+
+  .content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--sl-color-white);
+  }
+
+  .content :global(p) {
+    color: var(--sl-color-gray-2, #c2c2c2);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .content :global(.expressive-code) :global(.frame) {
+    box-shadow: none;
+    border-radius: 0.5rem;
+  }
+  .content :global(.expressive-code) :global(pre) {
+    border: 1px solid var(--sl-color-hairline, rgba(255, 255, 255, 0.1));
+    padding: 0.75rem 0.75rem !important;
+  }
+  .content :global(.expressive-code) :global(code),
+  .content :global(.expressive-code) :global(.code) {
+    padding: 0;
+  }
+
+  /* Mobile sidebar drawer */
+  .mobile-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-sidebar {
+    display: none;
+    position: fixed;
+    top: var(--sl-header-height);
+    left: 0;
+    width: 280px;
+    height: calc(100vh - var(--sl-header-height));
+    background: var(--sl-color-background);
+    z-index: 95;
+    padding: 1rem;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    border-right: 1px solid var(--sl-color-hairline);
+  }
+
+  .mobile-sidebar :global(.sidebar-nav) {
+    position: static;
+    top: 0;
+  }
+
+  .mobile-sidebar :global(.large) {
+    font-size: 1rem;
+  }
+
+  .mobile-sidebar :global(a) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .mobile-sidebar-backdrop,
+    .mobile-sidebar {
+      display: block;
+    }
+  }
+
+  :global(.mobile-nav-open) .mobile-sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  :global(.mobile-nav-open) .mobile-sidebar {
+    transform: translateX(0);
+  }
+</style>
+
+<script>
+  const navToggle = document.getElementById('nav-toggle') as HTMLInputElement;
+  const page = document.querySelector('.page');
+  const backdrop = document.querySelector('.mobile-sidebar-backdrop');
+
+  navToggle?.addEventListener('change', () => {
+    page?.classList.toggle('mobile-nav-open', navToggle.checked);
+  });
+
+  backdrop?.addEventListener('click', () => {
+    if (navToggle) {
+      navToggle.checked = false;
+      page?.classList.remove('mobile-nav-open');
+    }
+  });
+</script>

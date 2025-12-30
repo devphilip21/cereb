@@ -1,0 +1,18 @@
+{
+  "site": {
+    "title": "Cereb",
+    "logo": "/src/assets/logo-with-text.svg",
+    "logo_darkmode": "/src/assets/logo-with-text-dark.svg",
+    "logo_width": "90",
+    "logo_height": "40",
+    "logo_text": "Cereb"
+  },
+
+  "params": {
+    "footer_contact": {
+      "enable": false,
+      "action": "#"
+    },
+    "copyright": "Cereb &copy; 2025. MIT License."
+  }
+}

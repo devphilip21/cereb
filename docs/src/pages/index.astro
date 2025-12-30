@@ -1,0 +1,92 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "./index.mdx";
+---
+
+<DocsLayout title="Intro to Cereb" description="User input handling and orchestration library for the web">
+  <article class="content">
+    <Content />
+  </article>
+</DocsLayout>
+
+<style>
+  .content {
+    max-width: 800px;
+  }
+
+  .content :global(h1) {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--sl-color-white);
+  }
+
+  .content :global(h2) {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--sl-color-white);
+  }
+
+  .content :global(p) {
+    color: var(--sl-color-gray-2, #c2c2c2);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .content :global(pre) {
+    border-radius: 8px;
+    margin: 1.5rem 0;
+  }
+
+  .content :global(hr) {
+    border: none;
+    border-top: 1px solid var(--sl-color-hairline, rgba(255, 255, 255, 0.1));
+    margin: 2rem 0;
+  }
+
+  .content :global(.link-card) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background: var(--sl-color-gray-5, #323232);
+    border: 1px solid var(--sl-color-gray-4, #454545);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+  }
+
+  .content :global(.link-card:hover) {
+    background: var(--sl-color-gray-4, #454545);
+    border-color: var(--sl-color-gray-3, #555555);
+  }
+
+  :global(:root[data-theme="light"]) .content :global(.link-card) {
+    background: #f0f2f5;
+    border-color: #d8dce3;
+  }
+
+  :global(:root[data-theme="light"]) .content :global(.link-card:hover) {
+    background: #e4e7ec;
+    border-color: #c8cdd6;
+  }
+
+  .content :global(.link-card h3) {
+    color: var(--sl-color-white);
+    font-size: 1.1rem;
+    margin: 0 0 0.25rem;
+  }
+
+  .content :global(.link-card p) {
+    color: var(--sl-color-gray-2, #c2c2c2);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .content :global(.link-card svg) {
+    color: var(--color-primary);
+  }
+</style>

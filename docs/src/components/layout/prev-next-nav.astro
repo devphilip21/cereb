@@ -1,0 +1,163 @@
+---
+import { getSidebar, type SidebarItem } from "@/lib/utils/sidebar";
+import { plainLabel } from "@/lib/utils/text-converter";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+// Flatten all sidebar items to get ordered list
+function flattenSidebar(items: SidebarItem[]): SidebarItem[] {
+  return items.flatMap((item) => {
+    if (item.type === "group" && item.items) {
+      return flattenSidebar(item.items);
+    }
+    return item.type === "link" ? [item] : [];
+  });
+}
+
+const sidebar = getSidebar(currentPath);
+const allItems = sidebar.flatMap((group) => flattenSidebar(group.items));
+
+// Find current index
+const currentIndex = allItems.findIndex((item) => item.isCurrent);
+const prevItem = currentIndex > 0 ? allItems[currentIndex - 1] : null;
+const nextItem = currentIndex < allItems.length - 1 ? allItems[currentIndex + 1] : null;
+---
+
+{(prevItem || nextItem) && (
+  <nav class="prev-next-nav">
+    {prevItem && prevItem.type === "link" ? (
+      <a href={prevItem.href} class="nav-card prev">
+        <span class="nav-label">Previous</span>
+        <span class="nav-title">
+          <svg class="nav-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          {plainLabel(prevItem.label)}
+        </span>
+      </a>
+    ) : (
+      <div />
+    )}
+    {nextItem && nextItem.type === "link" ? (
+      <a href={nextItem.href} class="nav-card next">
+        <span class="nav-label">Next</span>
+        <span class="nav-title">
+          {plainLabel(nextItem.label)}
+          <svg class="nav-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </span>
+      </a>
+    ) : (
+      <div />
+    )}
+  </nav>
+)}
+
+<style>
+  .prev-next-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--sl-color-hairline, rgba(255, 255, 255, 0.1));
+  }
+
+  .nav-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    background: var(--sl-color-gray-5, #323232);
+    border: 1px solid var(--sl-color-gray-4, #454545);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .nav-card:hover {
+    background: var(--sl-color-gray-4, #454545);
+    border-color: var(--sl-color-gray-3, #555555);
+  }
+
+  .nav-card.next {
+    text-align: right;
+  }
+
+  .nav-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--sl-color-gray-3, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sl-color-white, #fff);
+  }
+
+  .nav-card.next .nav-title {
+    justify-content: flex-end;
+  }
+
+  .nav-arrow {
+    flex-shrink: 0;
+    color: var(--sl-color-gray-3, #888);
+    transition: transform 0.2s ease;
+  }
+
+  .nav-card.prev:hover .nav-arrow {
+    transform: translateX(-3px);
+  }
+
+  .nav-card.next:hover .nav-arrow {
+    transform: translateX(3px);
+  }
+
+  :root[data-theme="light"] .nav-card {
+    background: #f0f2f5;
+    border-color: #d8dce3;
+  }
+
+  :root[data-theme="light"] .nav-card:hover {
+    background: #e4e7ec;
+    border-color: #c8cdd6;
+  }
+
+  :root[data-theme="light"] .nav-label {
+    color: #666;
+  }
+
+  :root[data-theme="light"] .nav-title {
+    color: #222;
+  }
+
+  :root[data-theme="light"] .nav-arrow {
+    color: #888;
+  }
+
+  @media (max-width: 640px) {
+    .prev-next-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-card.next {
+      text-align: left;
+    }
+
+    .nav-card.next .nav-title {
+      justify-content: flex-start;
+      flex-direction: row-reverse;
+    }
+  }
+</style>

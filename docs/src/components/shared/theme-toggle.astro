@@ -1,0 +1,129 @@
+---
+---
+
+<div class="theme-toggle">
+  <button
+    type="button"
+    aria-label="Toggle dark mode"
+    class="toggle-button"
+  >
+    <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>
+    <svg class="icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  </button>
+</div>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+  }
+
+  .toggle-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .toggle-button:hover {
+    background: color-mix(in srgb, var(--sl-color-white) 10%, transparent);
+    color: var(--sl-color-white);
+  }
+
+  .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .sun-icon {
+    display: none;
+  }
+
+  .moon-icon {
+    display: block;
+  }
+
+  :global(:root[data-theme="light"]) .sun-icon {
+    display: block;
+  }
+
+  :global(:root[data-theme="light"]) .moon-icon {
+    display: none;
+  }
+</style>
+
+<script>
+  function initThemeToggle(): void {
+    const STORAGE_KEY = "theme";
+    const button = document.querySelector(".theme-toggle .toggle-button");
+
+    function getStoredTheme(): string | null {
+      return localStorage.getItem(STORAGE_KEY);
+    }
+
+    function getSystemTheme(): string {
+      return window.matchMedia("(prefers-color-scheme: light)").matches
+        ? "light"
+        : "dark";
+    }
+
+    function setTheme(theme: string): void {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem(STORAGE_KEY, theme);
+    }
+
+    function initTheme(): void {
+      const stored = getStoredTheme();
+      if (stored) {
+        setTheme(stored);
+      } else {
+        setTheme(getSystemTheme());
+      }
+    }
+
+    function toggleTheme(): void {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "light" ? "dark" : "light";
+      setTheme(next);
+    }
+
+    initTheme();
+
+    button?.addEventListener("click", toggleTheme);
+
+    window
+      .matchMedia("(prefers-color-scheme: light)")
+      .addEventListener("change", (e) => {
+        if (!getStoredTheme()) {
+          setTheme(e.matches ? "light" : "dark");
+        }
+      });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initThemeToggle);
+  } else {
+    initThemeToggle();
+  }
+</script>

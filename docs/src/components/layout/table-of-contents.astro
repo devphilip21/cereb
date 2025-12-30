@@ -1,0 +1,130 @@
+---
+export interface TocItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings?: TocItem[];
+}
+
+const { headings = [] } = Astro.props;
+---
+
+{headings.length > 0 && (
+  <aside class="toc">
+    <nav aria-label="On this page">
+      <h2 class="toc-title">On this page</h2>
+      <ul class="toc-list">
+        {headings.map((heading) => (
+          <li class={`toc-item depth-${heading.depth}`}>
+            <a href={`#${heading.slug}`} class="toc-link">
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </aside>
+)}
+
+<style>
+  .toc {
+    position: sticky;
+    top: calc(var(--sl-header-height) + 1rem);
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    padding-left: 1rem;
+    border-left: 1px solid var(--sl-color-hairline, rgba(255, 255, 255, 0.1));
+  }
+
+  .toc-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sl-color-white);
+    margin: 0 0 0.75rem;
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toc-item {
+    margin: 0;
+  }
+
+  .toc-item.depth-3 {
+    padding-left: 0.75rem;
+  }
+
+  .toc-item.depth-4 {
+    padding-left: 1.5rem;
+  }
+
+  .toc-link {
+    display: block;
+    padding: 0.25rem 0;
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-3, #8b8b8b);
+    text-decoration: none;
+    transition: color 0.2s;
+    line-height: 1.4;
+  }
+
+  .toc-link:hover {
+    color: var(--sl-color-white);
+  }
+
+  .toc-link.active {
+    color: var(--sl-color-gray-1);
+    background-color: var(--sl-color-gray-6);
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    margin-left: -0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  @media (max-width: 1280px) {
+    .toc {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  function initToc() {
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
+
+    if (tocLinks.length === 0 || headings.length === 0) return;
+
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          tocLinks.forEach((link) => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+          });
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      rootMargin: '-80px 0px -80% 0px',
+      threshold: 0,
+    });
+
+    headings.forEach((heading) => observer.observe(heading));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initToc);
+  } else {
+    initToc();
+  }
+</script>

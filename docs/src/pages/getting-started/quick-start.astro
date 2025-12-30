@@ -1,0 +1,31 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "./quick-start.mdx";
+
+const headings = [
+  { depth: 2, slug: "install-packages-you-need", text: "Install Packages You Need" },
+  { depth: 2, slug: "packages", text: "Packages" },
+  { depth: 2, slug: "example-installing-pan-gesture", text: "Example: Installing Pan Gesture" },
+];
+---
+
+<DocsLayout title="Quick Start" description="How to use Cereb packages" headings={headings}>
+  <Content />
+</DocsLayout>
+
+<script>
+  const buttons = document.querySelectorAll('.tab-button');
+  const contents = document.querySelectorAll('.tab-content');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tab = button.getAttribute('data-tab');
+
+      buttons.forEach(b => b.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+
+      button.classList.add('active');
+      document.getElementById(tab!)?.classList.add('active');
+    });
+  });
+</script>

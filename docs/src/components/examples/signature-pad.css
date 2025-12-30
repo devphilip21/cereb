@@ -1,0 +1,16 @@
+/* Signature Pad - component-specific styles */
+
+.signature-pad ._demo-box {
+  touch-action: none;
+}
+
+/* Grid: 6 columns on desktop, 3 on mobile */
+.signature-pad ._signal-snapshot-grid ._grid {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+@media (max-width: 640px) {
+  .signature-pad ._signal-snapshot-grid ._grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

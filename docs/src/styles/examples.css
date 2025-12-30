@@ -1,0 +1,287 @@
+/* =============================================
+   Shared styles for example components
+   ============================================= */
+
+/* Demo Box - Main interactive area */
+._demo-box {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  min-height: 180px;
+  max-height: 400px;
+  margin: 0 auto;
+  background: var(--sl-color-gray-6, #1c1c1c);
+  border: 1px solid var(--sl-color-gray-5, #2a2a2a);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+:root[data-theme="light"] ._demo-box {
+  background: #1c1c1c;
+  border-color: #333;
+}
+
+._demo-box canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tip overlay */
+._demo-box ._tip {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  color: #555;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  pointer-events: none;
+  text-align: right;
+  max-width: 280px;
+}
+
+._demo-box ._tip-title {
+  color: #333;
+}
+
+
+/* Hint text (centered) */
+._demo-box ._hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  color: #ccc;
+  font-size: 1.5rem;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+._demo-box ._hint.hidden {
+  display: none;
+}
+
+
+/* Mode indicator badge */
+._demo-box ._zoom-mode {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  margin: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #555;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+._demo-box ._zoom-mode.active {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+
+/* Demo Controls - Buttons and sliders area */
+._demo-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  background: var(--sl-color-gray-6, #1c1c1c);
+  border: 1px solid var(--sl-color-gray-5, #2a2a2a);
+  border-radius: 12px;
+}
+
+:root[data-theme="light"] ._demo-controls {
+  background: #f0f1f3;
+  border-color: #d8dce3;
+}
+
+/* Buttons container */
+._demo-controls ._buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+/* Button styles */
+._button {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid var(--sl-color-gray-4, #454545);
+  border-radius: 8px;
+  color: var(--sl-color-gray-2, #a8a8a8);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+._button:hover {
+  background: var(--sl-color-gray-5, #2a2a2a);
+  border-color: var(--sl-color-gray-3, #555);
+  color: var(--sl-color-white, #fff);
+}
+
+._button:active {
+  transform: scale(0.97);
+}
+
+:root[data-theme="light"] ._button {
+  border-color: #c8cdd6;
+  color: #555;
+}
+
+:root[data-theme="light"] ._button:hover {
+  background: #e4e7ec;
+  border-color: #a8adb6;
+  color: #333;
+}
+
+/* Slider container */
+._slider-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+._slider-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--sl-color-gray-3, #888);
+  white-space: nowrap;
+}
+
+:root[data-theme="light"] ._slider-label {
+  color: #666;
+}
+
+/* Custom slider */
+._slider {
+  flex: 1;
+  height: 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--sl-color-gray-5, #2a2a2a);
+  border-radius: 3px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+._slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--sl-color-white, #fff);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+._slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+._slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--sl-color-white, #fff);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="light"] ._slider {
+  background: #d8dce3;
+}
+
+:root[data-theme="light"] ._slider::-webkit-slider-thumb {
+  background: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] ._slider::-moz-range-thumb {
+  background: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Signal Snapshot Grid */
+._signal-snapshot-grid {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--sl-color-gray-6, #1c1c1c);
+  border: 1px solid var(--sl-color-gray-5, #2a2a2a);
+  border-radius: 12px;
+}
+
+:root[data-theme="light"] ._signal-snapshot-grid {
+  background: #f0f1f3;
+  border-color: #d8dce3;
+}
+
+._signal-snapshot-grid ._title {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--sl-color-gray-3, #888);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+:root[data-theme="light"] ._signal-snapshot-grid ._title {
+  color: #666;
+}
+
+._signal-snapshot-grid ._grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+._signal-snapshot-grid ._item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--sl-color-gray-5, #252525);
+  border: 1px solid var(--sl-color-gray-4, #353535);
+  border-radius: 8px;
+}
+
+:root[data-theme="light"] ._signal-snapshot-grid ._item {
+  background: #fff;
+  border-color: #d8dce3;
+}
+
+._signal-snapshot-grid ._label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--sl-color-gray-4, #666);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+:root[data-theme="light"] ._signal-snapshot-grid ._label {
+  color: #888;
+}
+
+._signal-snapshot-grid ._value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--sl-color-white, #fff);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+}
+
+:root[data-theme="light"] ._signal-snapshot-grid ._value {
+  color: #222;
+}

@@ -1,0 +1,48 @@
+import { Code } from "astro:components";
+
+# Intro to Cereb
+
+**Cereb** is a user input handling and orchestration library.
+From low-level events (touch, pointer, keyboard, wheel, ...) to high-level gestures (pan, pinch, ...)—all through composable stream pipelines.
+
+```typescript
+import { domEvent } from "cereb";
+
+domEvent(element, "pointermove").on((signal) => {
+  const { clientX, clientY } = signal.value;
+  target.style.transform = `translate(${clientX}px, ${clientY}px)`;
+});
+```
+
+Mouse, touch, pen—unified into a single API.
+
+---
+
+## Build input pipelines
+
+Raw events become refined signals. Compose them into readable, extensible pipelines.
+
+```typescript
+import { keydown, keyheld, wheel } from "cereb";
+import { zoom as createZoom, when, extend, spy } from "cereb/operators";
+import { pinch } from "@cereb/pinch";
+
+const zoomMode$ = keyheld(window, { code: "KeyZ" });
+const zoom = () => createZoom({ minScale: 0.5, maxScale: 3.0, baseScale: getScale });
+
+// Pinch zoom - baseScale syncs with external state
+pinch(element)
+  .pipe(zoom())
+  .on(applyScale);
+
+// z + wheel zoom - ratio as multiplicative factor
+wheel(element, { passive: false })
+  .pipe(
+    when(zoomMode$),
+    spy((signal) => signal.value.originalEvent.preventDefault()),
+    extend((signal) => ({ ratio: Math.exp(-signal.value.deltaY * 0.005) })),
+    zoom(),
+  )
+  .on(applyScale);
+```
+

@@ -1,0 +1,74 @@
+---
+import SiteTitle from "./site-title.astro";
+import ThemeToggle from "@/components/shared/theme-toggle.astro";
+
+---
+
+<header class="header">
+  <div class="order-0">
+    <SiteTitle />
+  </div>
+  <div class="header-actions">
+    <ThemeToggle />
+    <input id="nav-toggle" type="checkbox" class="hidden" />
+    <label
+      for="nav-toggle"
+      class="cursor-pointer items-center hamburger-menu"
+    >
+      <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
+        <title>Menu Open</title>
+        <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
+      </svg>
+      <svg id="hide-button" class="h-6 fill-current hidden" viewBox="0 0 20 20">
+        <title>Menu Close</title>
+        <polygon
+          points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
+          transform="rotate(45 10 10)"></polygon>
+      </svg>
+    </label>
+  </div>
+</header>
+
+<style>
+  .header {
+    display: flex;
+    width: 100%;
+    padding: 0 var(--sl-nav-pad-x);
+    justify-content: space-between;
+    align-items: center;
+    height: var(--sl-header-height);
+    background: var(--sl-color-background);
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hamburger-menu {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .hamburger-menu {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector(".header");
+
+  window.onscroll = function () {
+    if (
+      document.body.scrollTop > 10 ||
+      document.documentElement.scrollTop > 10
+    ) {
+      header?.classList.add("navbar-scrolled");
+    } else {
+      header?.classList.remove("navbar-scrolled");
+    }
+  };
+</script>

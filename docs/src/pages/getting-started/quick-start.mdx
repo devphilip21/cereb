@@ -1,0 +1,64 @@
+import { Code } from "astro:components";
+
+# Quick Start
+
+## Install Packages You Need
+
+To keep the library lightweight, install only the packages you need.
+Internally reused chunks are shared and built efficiently.
+
+## Packages
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Package</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Signal</td>
+        <td><code>cereb</code></td>
+        <td>Unified pointer/touch/mouse input handling</td>
+      </tr>
+      <tr>
+        <td>Gesture</td>
+        <td><code>@cereb/pan</code></td>
+        <td>Pan gesture recognition with momentum and constraints</td>
+      </tr>
+      <tr>
+        <td>Gesture</td>
+        <td><code>@cereb/pinch</code></td>
+        <td>Pinch gesture recognition for zoom interactions</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## Example: Installing Pan Gesture
+
+<div class="tabs">
+  <div class="tab-buttons">
+    <button class="tab-button active" data-tab="npm">npm</button>
+    <button class="tab-button" data-tab="pnpm">pnpm</button>
+    <button class="tab-button" data-tab="yarn">yarn</button>
+  </div>
+  <div class="tab-content active" id="npm">
+    ```bash
+    npm install @cereb/pan
+    ```
+  </div>
+  <div class="tab-content" id="pnpm">
+    ```bash
+    pnpm add @cereb/pan
+    ```
+  </div>
+  <div class="tab-content" id="yarn">
+    ```bash
+    yarn add @cereb/pan
+    ```
+  </div>
+</div>

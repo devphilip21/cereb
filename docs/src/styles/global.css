@@ -1,0 +1,155 @@
+@layer base, theme, components, utilities;
+
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "./custom-design/index.css";
+@import "./examples.css";
+
+@plugin "../tailwind-plugin/tw-theme";
+@plugin "../tailwind-plugin/tw-bs-grid";
+
+:root {
+  --color-primary: #ffffff;
+  --color-light: #f6f6f6;
+  --color-dark: #151515;
+
+  --sl-color-accent-low: color-mix(in srgb, var(--color-primary), #000 90%);
+  --sl-color-accent: var(--color-primary);
+  --sl-color-accent-high: color-mix(in srgb, var(--color-primary), #fff 70%);
+
+  --sl-color-white: var(--color-light);
+  --sl-color-gray-1: #e8e8e8;
+  --sl-color-gray-2: #b8b8b8;
+  --sl-color-gray-3: #787878;
+  --sl-color-gray-4: #484848;
+  --sl-color-gray-5: #282828;
+  --sl-color-gray-6: #1a1a1a;
+
+  --sl-color-black: var(--color-dark);
+  --sl-color-text: #999999;
+  --sl-sidebar-width: 320px;
+  --sl-color-hairline: color-mix(in srgb, var(--sl-color-white) 10%, transparent);
+  --sl-color-hairline-light: #252525;
+  --sl-color-background: #0d0d0d;
+
+  /* Z-index */
+  --sl-z-index-navbar: 100;
+  --sl-z-index-menu: 50;
+
+  /* Spacing */
+  --sl-header-height: 3.5rem;
+  --sl-main-padding: 2rem;
+  --sl-nav-pad-x: 1rem;
+  --sl-nav-pad-y: 1rem;
+  --sl-nav-height: 4rem;
+  --sl-sidebar-pad-x: 1rem;
+
+  /* Text sizes */
+  --sl-text-base: 1rem;
+  --sl-text-lg: 1.125rem;
+}
+
+/* Light mode colors */
+:root[data-theme="light"] {
+  --sl-color-accent-low: color-mix(in srgb, var(--color-primary), #fff 70%);
+  --sl-color-accent: var(--color-primary);
+  --sl-color-accent-high: color-mix(in srgb, var(--color-primary), #000 90%);
+
+  --sl-color-white: var(--color-dark);
+  --sl-color-gray-1: #1c1c20;
+  --sl-color-gray-2: #4c4c54;
+  --sl-color-gray-3: #7c7c88;
+  --sl-color-gray-4: #a8a8b4;
+  --sl-color-gray-5: #d0d0da;
+  --sl-color-gray-6: #eaeaf0;
+
+  --sl-color-black: var(--color-light);
+  --sl-color-text: #333333;
+  --sl-color-background: #f8f9fc;
+}
+
+
+/* Global utilities */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Theme switcher styles */
+.theme-switcher {
+  position: relative;
+}
+
+.theme-switcher input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.theme-switcher label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--sl-color-white) 10%, transparent);
+  transition: background 0.2s;
+}
+
+.theme-switcher label:hover {
+  background: color-mix(in srgb, var(--sl-color-white) 20%, transparent);
+}
+
+.theme-switcher label span:not(.sr-only) {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+/* Dark mode class for compatibility */
+.dark {
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] .dark\:hidden {
+  display: none;
+}
+
+:root[data-theme="light"] .dark\:inline-block {
+  display: none;
+}
+
+:root[data-theme="dark"] .dark\:inline-block {
+  display: inline-block;
+}
+
+:root[data-theme="light"] .dark\:opacity-0 {
+  opacity: 0;
+}
+
+:root[data-theme="dark"] .dark\:opacity-100 {
+  opacity: 1;
+}
+
+:root[data-theme="light"] .dark\:opacity-40 {
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .dark\:opacity-40 {
+  opacity: 0.4;
+}

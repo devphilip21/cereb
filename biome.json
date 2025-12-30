@@ -35,7 +35,15 @@
     "lineWidth": 100
   },
   "files": {
-    "includes": ["**", "!**/dist", "!**/node_modules", "!**/.nx", "!**/coverage"]
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/.nx",
+      "!**/coverage",
+      "!**/docs",
+      "!**/.css"
+    ]
   },
   "overrides": [
     {

@@ -1,0 +1,12 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "./signature-pad.mdx";
+
+const headings = [
+  { depth: 2, slug: "code", text: "Code" },
+];
+---
+
+<DocsLayout title="Signature Pad" description="Signature pad example using cereb" headings={headings}>
+  <Content />
+</DocsLayout>
