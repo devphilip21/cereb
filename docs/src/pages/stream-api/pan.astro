@@ -1,0 +1,18 @@
+---
+import DocsLayout from "@/layouts/docs-layout.astro";
+import Content from "@/content/stream-api/pan.mdx";
+
+const headings = [
+  { depth: 2, slug: "basic-usage", text: "Basic Usage" },
+  { depth: 2, slug: "signature", text: "Signature" },
+  { depth: 2, slug: "options", text: "Options" },
+  { depth: 2, slug: "signal-value", text: "Signal Value" },
+  { depth: 2, slug: "phase-lifecycle", text: "Phase Lifecycle" },
+  { depth: 2, slug: "operators", text: "Operators" },
+  { depth: 2, slug: "advanced-panrecognizer", text: "Advanced: panRecognizer" },
+];
+---
+
+<DocsLayout title="pan" description="Pan gesture recognition for pointer interactions" headings={headings}>
+  <Content />
+</DocsLayout>

@@ -1,0 +1,111 @@
+# Pan
+
+Pan gesture recognition for pointer interactions. Tracks drag movements with velocity, direction, and distance.
+
+```bash
+npm install @cereb/pan
+```
+
+## Basic Usage
+
+```typescript
+import { pan } from "@cereb/pan";
+
+pan(element).on((signal) => {
+  const { phase, deltaX, deltaY } = signal.value;
+
+  if (phase === "move") {
+    element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+  }
+});
+```
+
+## Signature
+
+```typescript
+function pan(target: EventTarget, options?: PanOptions): Stream<PanSignal>
+```
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `threshold` | `number` | `10` | Minimum movement (px) before gesture starts |
+| `direction` | `"horizontal" \| "vertical" \| "all"` | `"all"` | Direction constraint for threshold |
+
+### Direction Modes
+
+```typescript
+// Only recognize horizontal pans
+pan(element, { direction: "horizontal" })
+
+// Only recognize vertical pans
+pan(element, { direction: "vertical" })
+
+// Recognize any direction (default)
+pan(element, { direction: "all" })
+```
+
+## Signal Value
+
+The `signal.value` contains:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `phase` | `"start" \| "move" \| "end" \| "cancel"` | Current gesture phase |
+| `deltaX` | `number` | X displacement from start (px) |
+| `deltaY` | `number` | Y displacement from start (px) |
+| `distance` | `number` | Total cumulative distance (px) |
+| `direction` | `"up" \| "down" \| "left" \| "right" \| "none"` | Current movement direction |
+| `velocityX` | `number` | X velocity (px/ms) |
+| `velocityY` | `number` | Y velocity (px/ms) |
+| `x` | `number` | Current clientX |
+| `y` | `number` | Current clientY |
+| `pageX` | `number` | Current pageX |
+| `pageY` | `number` | Current pageY |
+
+## Phase Lifecycle
+
+```
+pointer down → (threshold met) → "start" → "move"* → "end" or "cancel"
+```
+
+- **start**: Emitted once when threshold is met
+- **move**: Emitted repeatedly during drag
+- **end**: Pointer released normally
+- **cancel**: Gesture interrupted (e.g., system event)
+
+## Operators
+
+### axisLock
+
+Locks the pan to the initially detected axis.
+
+```typescript
+import { pan } from "@cereb/pan";
+import { axisLock } from "@cereb/pan/operators";
+
+pan(element)
+  .pipe(axisLock())
+  .on((signal) => {
+    // One of deltaX/deltaY will be 0 after axis is determined
+    element.style.transform = `translate(${signal.value.deltaX}px, ${signal.value.deltaY}px)`;
+  });
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `lockThreshold` | `number` | `0` | Movement needed to determine axis |
+
+## Advanced: panRecognizer
+
+Use as an operator with custom pointer sources:
+
+```typescript
+import { singlePointer } from "cereb";
+import { panRecognizer } from "@cereb/pan";
+
+singlePointer(element)
+  .pipe(panRecognizer({ threshold: 10 }))
+  .on((signal) => { /* ... */ });
+```

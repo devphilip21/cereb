@@ -40,8 +40,13 @@
       ]
     },
     {
-      "label": "API Reference",
-      "items": []
+      "label": "Stream API",
+      "items": [
+        {
+          "label": "Pan",
+          "slug": "stream-api/pan"
+        }
+      ]
     }
   ]
 }
