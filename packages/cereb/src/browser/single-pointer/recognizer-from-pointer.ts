@@ -18,11 +18,11 @@ export function createPointerRecognizer(
   function processer(
     domEventSignal: DomEventSignal<PointerEvent>,
     signal: SinglePointerSignal,
-  ): void {
+  ): boolean {
     const e = domEventSignal.value;
 
     if (!e.isPrimary) {
-      return;
+      return false;
     }
 
     let phase: SinglePointerPhase;
@@ -55,6 +55,7 @@ export function createPointerRecognizer(
     v.pointerType = normalizePointerType(e.pointerType);
     v.button = button;
     v.pressure = e.pressure;
+    return true;
   }
 
   return createSinglePointerRecognizer(processer, options);

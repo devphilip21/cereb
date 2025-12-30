@@ -6,14 +6,14 @@ import {
 import type { SinglePointerOptions } from "./types.js";
 
 export interface SinglePointerRecognizer<InputSignal extends Signal> {
-  process(event: InputSignal): SinglePointerSignal;
+  process(event: InputSignal): SinglePointerSignal | null;
   readonly isActive: boolean;
   reset(): void;
   dispose(): void;
 }
 
 export function createSinglePointerRecognizer<InputSignal extends Signal>(
-  processor: (inputSignal: InputSignal, pointerSignal: SinglePointerSignal) => void,
+  processor: (inputSignal: InputSignal, pointerSignal: SinglePointerSignal) => boolean,
   _options: SinglePointerOptions = {},
 ): SinglePointerRecognizer<InputSignal> {
   let current: SinglePointerSignal | null = null;
@@ -21,7 +21,10 @@ export function createSinglePointerRecognizer<InputSignal extends Signal>(
   return {
     process: (inputSignal) => {
       const signal = createDefaultSinglePointerSignal();
-      processor(inputSignal, signal);
+      const isValid = processor(inputSignal, signal);
+      if (!isValid) {
+        return null;
+      }
       current = signal;
       return signal;
     },

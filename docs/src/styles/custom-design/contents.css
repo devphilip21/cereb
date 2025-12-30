@@ -48,6 +48,17 @@ code {
   @apply after:border-none;
 }
 
+blockquote {
+  @apply my-6 py-3 px-4 rounded-lg border-l-4;
+  background: var(--sl-color-gray-6);
+  border-left-color: var(--sl-color-gray-4);
+}
+
+:root[data-theme="light"] blockquote {
+  background: #f0f1f3;
+  border-left-color: #c8cdd6;
+}
+
 blockquote > p {
   @apply my-0!;
 }

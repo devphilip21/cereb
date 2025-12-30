@@ -5,10 +5,10 @@
 /* Demo Box - Main interactive area */
 ._demo-box {
   position: relative;
+  width: 100%;
   aspect-ratio: 3 / 2;
   min-height: 180px;
   max-height: 400px;
-  margin: 0 auto;
   background: var(--sl-color-gray-6, #1c1c1c);
   border: 1px solid var(--sl-color-gray-5, #2a2a2a);
   border-radius: 12px;

@@ -17,7 +17,7 @@ export function createMouseRecognizer(
   function processer(
     domEventSignal: DomEventSignal<MouseEvent>,
     signal: SinglePointerSignal,
-  ): void {
+  ): boolean {
     const e = domEventSignal.value;
     let phase: SinglePointerPhase;
     let button: SinglePointerButton;
@@ -45,6 +45,7 @@ export function createMouseRecognizer(
     v.pointerType = "mouse";
     v.button = button;
     v.pressure = phase === "move" && e.buttons === 0 ? 0 : 0.5;
+    return true;
   }
 
   return createSinglePointerRecognizer(processer, options);
@@ -60,7 +61,9 @@ export function singlePointerFromMouse(
       const unsub = source.on({
         next(event) {
           const pointer = recognizer.process(event);
-          observer.next(pointer);
+          if (pointer) {
+            observer.next(pointer);
+          }
         },
         error(err) {
           observer.error?.(err);

@@ -9,11 +9,11 @@ import type { SinglePointerOptions, SinglePointerPhase } from "./types.js";
 export function createTouchRecognizer(
   options: SinglePointerOptions = {},
 ): SinglePointerRecognizer<DomEventSignal<TouchEvent>> {
-  function processer(event: DomEventSignal<TouchEvent>, signal: SinglePointerSignal): void {
+  function processer(event: DomEventSignal<TouchEvent>, signal: SinglePointerSignal): boolean {
     const e = event.value;
     const touch = e.touches[0] ?? e.changedTouches[0];
     if (!touch) {
-      return;
+      return false;
     }
 
     let phase: SinglePointerPhase;
@@ -40,6 +40,7 @@ export function createTouchRecognizer(
     v.pointerType = "touch";
     v.button = "none";
     v.pressure = touch.force || 0.5;
+    return true;
   }
 
   return createSinglePointerRecognizer(processer, options);
