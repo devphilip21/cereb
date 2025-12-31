@@ -10,6 +10,10 @@
         {
           "label": "[rocket] Quick Start",
           "slug": "getting-started/quick-start"
+        },
+        {
+          "label": "[seti:vite] Developing with AI",
+          "slug": "getting-started/developing-with-ai"
         }
       ]
     },
@@ -40,15 +44,6 @@
         {
           "label": "The Problems Solves",
           "slug": "core-concepts/the-problem-solves"
-        }
-      ]
-    },
-    {
-      "label": "Resources",
-      "items": [
-        {
-          "label": "Developing with AI",
-          "slug": "resources/developing-with-ai"
         }
       ]
     },
