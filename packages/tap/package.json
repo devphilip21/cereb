@@ -1,25 +1,25 @@
 {
-  "name": "@cereb/pinch",
-  "description": "Pinch gesture recognition, designed to work seamlessly with reactive streams and other gesture interactions.",
-  "version": "0.12.0",
+  "name": "@cereb/tap",
+  "description": "Tap gesture recognition with multi-tap support, designed for reactive streams.",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "devphilip21 <philip21.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/devphilip21/cereb.git",
-    "directory": "packages/pinch"
+    "directory": "packages/tap"
   },
-  "homepage": "https://cereb.dev/stream-api/pinch",
+  "homepage": "https://cereb.dev/stream-api/tap",
   "bugs": {
     "url": "https://github.com/devphilip21/cereb/issues"
   },
   "keywords": [
-    "pinch",
-    "zoom",
+    "tap",
+    "click",
     "gesture",
     "touch",
     "pointer",
-    "multi-touch",
+    "double-tap",
     "cereb"
   ],
   "type": "module",
