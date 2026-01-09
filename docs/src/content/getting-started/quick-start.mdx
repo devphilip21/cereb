@@ -7,110 +7,24 @@ Let's build it step by step.
 
 Cereb is modular—install only what you need.
 
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Package</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><code>cereb</code></td>
-        <td>Stream generators & operators</td>
-      </tr>
-      <tr>
-        <td><code>@cereb/pan</code></td>
-        <td>Pan/drag/swipe gesture</td>
-      </tr>
-      <tr>
-        <td><code>@cereb/pinch</code></td>
-        <td>Pinch/zoom gesture</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+| Package | Description |
+|---------|-------------|
+| `cereb` | Native events & operators |
+| `@cereb/pan` | Pan/drag/swipe gesture |
+| `@cereb/pinch` | Pinch/zoom gesture |
+| `@cereb/tap` | Tap gesture |
 
 For our pinch example:
 
-<div class="tabs">
-  <div class="tab-buttons">
-    <button class="tab-button active" data-tab="npm">npm</button>
-    <button class="tab-button" data-tab="pnpm">pnpm</button>
-    <button class="tab-button" data-tab="yarn">yarn</button>
-  </div>
-  <div class="tab-content active" id="npm">
-    ```bash
-    npm install @cereb/pinch
-    ```
-  </div>
-  <div class="tab-content" id="pnpm">
-    ```bash
-    pnpm add @cereb/pinch
-    ```
-  </div>
-  <div class="tab-content" id="yarn">
-    ```bash
-    yarn add @cereb/pinch
-    ```
-  </div>
-</div>
+```bash
+npm install @cereb/pinch
+```
+
+> Gesture packages include `cereb` core as a dependency.
 
 ## 2. Create a Source Stream
 
-The core `cereb` package provides stream generators for various input types:
-
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Generator</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><code>singlePointer(element)</code></td>
-        <td>Unified pointer input (mouse/touch/pen)</td>
-      </tr>
-      <tr>
-        <td><code>multiPointer(element)</code></td>
-        <td>Multiple simultaneous pointers</td>
-      </tr>
-      <tr>
-        <td><code>keyboard(target)</code></td>
-        <td>Keyboard events</td>
-      </tr>
-      <tr>
-        <td><code>keydown(target)</code></td>
-        <td>Keydown only</td>
-      </tr>
-      <tr>
-        <td><code>keyheld(target, options)</code></td>
-        <td>Key hold state</td>
-      </tr>
-      <tr>
-        <td><code>wheel(element)</code></td>
-        <td>Scroll wheel</td>
-      </tr>
-      <tr>
-        <td><code>domEvent(target, eventName)</code></td>
-        <td>Any DOM event</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-For basic pointer tracking:
-
-```typescript
-import { singlePointer } from "cereb";
-
-const stream = singlePointer(element);
-```
-
-For gestures, use the convenience functions from gesture packages. They set up the required stream pipeline internally:
+Import `pinch` and create a stream from your target element:
 
 ```typescript
 import { pinch } from "@cereb/pinch";
@@ -120,22 +34,19 @@ const stream = pinch(element);
 
 ## 3. Transform with pipe()
 
-Streams can be transformed by chaining operators with `.pipe()`:
+Chain operators to add constraints like scale limits:
 
 ```typescript
 import { zoom } from "cereb/operators";
-import { pinch } from "@cereb/pinch";
 
 const stream = pinch(element).pipe(
   zoom({ minScale: 0.5, maxScale: 3 }),
 );
 ```
 
-Operators like `filter`, `offset`, `zoom`, `extend`, and more are available from `cereb/operators`.
-
 ## 4. Subscribe with on()
 
-Nothing happens until you subscribe. Call `.on()` to start receiving signals:
+Nothing happens until you subscribe:
 
 ```typescript
 stream.on((signal) => {
@@ -146,13 +57,4 @@ stream.on((signal) => {
     applyZoom(scale, cx, cy);
   }
 });
-```
-
-To stop listening:
-
-```typescript
-const off = stream.on(handler);
-
-// later:
-off();
 ```
