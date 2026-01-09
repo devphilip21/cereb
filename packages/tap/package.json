@@ -1,7 +1,7 @@
 {
   "name": "@cereb/tap",
   "description": "Tap gesture recognition with multi-tap support, designed for reactive streams.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "devphilip21 <philip21.dev@gmail.com>",
   "repository": {
