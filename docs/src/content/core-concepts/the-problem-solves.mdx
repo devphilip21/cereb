@@ -2,9 +2,9 @@
 
 > **Note:** These are the problems Cereb solves.
 
-## 1. Event-Driven Code Becomes Spaghetti
+## 1. No Abstraction for Event Flow
 
-Traditional event handlers create scattered logic, shared mutable state, and duplicated code. Consider a multi-input zoom implementation:
+DOM events are just callbacks—there's no structure for managing state, expressing dependencies between events, or composing multiple inputs. Consider a multi-input zoom implementation:
 
 ```typescript
 // Before: Scattered handlers, shared state, duplicated logic
@@ -39,7 +39,7 @@ box.addEventListener('touchend', () => { /* cleanup */ });
 Cereb models events as streams, creating readable and composable pipelines:
 
 ```typescript
-// After: Clear flow, no shared state, composable
+// After: Stream abstraction—composable, stateless, explicit
 import { keydown, keyheld, wheel } from "cereb";
 import { zoom, when, extend, spy } from "cereb/operators";
 import { pinch } from "@cereb/pinch";
