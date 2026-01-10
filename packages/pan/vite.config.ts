@@ -6,7 +6,6 @@ export default ({ dirname }: { dirname: string }): UserConfig => ({
     lib: {
       entry: {
         index: resolve(dirname, "src/index.ts"),
-        "operators/index": resolve(dirname, "src/operators/index.ts"),
       },
       formats: ["es", "cjs"],
       fileName: (format, entryName) => {
