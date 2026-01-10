@@ -1,45 +1,24 @@
-# [Cereb](https://cereb.dev)
-
-**User input handling and orchestration** library,
-From low-level events (keyboard, wheel, pointer, touch, ...) to high-level gestures (pan, pinch, ...)
+<h1 align="center"><img width="50" height="50" alt="Cereb logo" src="https://cereb.dev/logo-square-light.svg" /><br/>Cereb</h1>
+<h3 align="center">An open source interaction library<br />for composable gesture and event streams</h3>
+<p align="center">
+  <a href="https://www.npmjs.com/package/cereb" rel="noopener noreferrer nofollow" ><img src="https://img.shields.io/npm/v/cereb?color=0368FF&label=version" alt="npm version"></a>
+  <img alt="NPM License" src="https://img.shields.io/npm/l/cereb?color=FF2B6E">
+</p>
 
 ```bash
 npm install --save cereb
 ```
 
-## Getting started
+[Learn how to use Cereb in your project](https://cereb.dev).
 
-The example below moves an element by tracking pointer position:
+## Table of Contents
 
-```typescript
-import { singlePointer } from "cereb";
+1. [Why Cereb?](#why-cereb)
+3. [Examples](#-examples)
+5. [License](#license)
+6. [Contribute](#contributing)
 
-// Create a stream from pointer events
-singlePointer(canvas)
-  // Listen to stream events
-  .on((signal) => {
-    // Receive signals from the stream
-    const { phase, cursor } = signal.value;
-    const [x, y] = cursor;
-    switch (phase){
-      case "move":
-        element.style.transform = `translate(${x}px, ${y}px)`;
-        break;
-    }
-  });
-```
-
-## High-level gestures packages
-
-For advanced gestures like pan or pinch, install dedicated packages that build on top of Cereb's core:
-
-| Package | Description |
-|---------|-------------|
-| [@cereb/pan](./packages/pan) | Pan/drag gestures with velocity and direction tracking |
-| [@cereb/pinch](./packages/pinch) | Pinch-to-zoom with distance and scale calculations |
-| [@cereb/tap](./packages/tap) | Tap gesture recognition |
-
-### Pinch example
+### Examples
 
 ```bash
 npm install --save cereb @cereb/pinch
@@ -62,37 +41,29 @@ pinch(element)
   });
 ```
 
-## Documentation
+[See all Examples and Demo →](https://cereb.dev/examples/space-adventure)
 
-### Stream API
-
-Create streams from various input sources:
-
-| API | Description |
-|-----|-------------|
-| [pan](https://cereb.dev/stream-api/pan) | Pan gesture with velocity and direction |
-| [pinch](https://cereb.dev/stream-api/pinch) | Pinch gesture with distance and center |
-| [singlePointer](https://cereb.dev/stream-api/single-pointer) | Unified pointer (mouse/touch/pen) |
-| [multiPointer](https://cereb.dev/stream-api/multi-pointer) | Multi-touch tracking |
-| [keyboard](https://cereb.dev/stream-api/keyboard) | Keyboard events (keydown + keyup) |
-| [keydown](https://cereb.dev/stream-api/keydown) | Keydown events only |
-| [keyheld](https://cereb.dev/stream-api/keyheld) | Track if a key is held |
-| [wheel](https://cereb.dev/stream-api/wheel) | Wheel/scroll events |
-| [domEvent](https://cereb.dev/stream-api/dom-event) | Any DOM event |
-
-### Operator API
-
-Transform and compose streams with operators like `filter`, `map`, `merge`, `throttle`, `debounce`, and more.
-
-[See all operators →](https://cereb.dev/operator-api/compose)
-
-## The Problems Cereb Solves
+## Why Cereb?
 
 - **No Abstraction for Event Flow** — DOM events lack structure for state, dependencies, and composition
 - **Lightweight Bundle** — ~77% smaller than Hammer.js (1.73 KB gzipped for pan gesture)
 - **Resource Efficiency** — Event listener reuse, single-responsibility operators
 
 [See detailed examples →](https://cereb.dev/core-concepts/the-problem-solves)
+
+## Documentation
+
+You can find the Cereb documentation [on the website](https://cereb.dev).
+
+- **Core Concepts**
+    - [Key Models](https://cereb.dev/core-concepts/key-models/)
+    - [Behavior & Event](https://cereb.dev/core-concepts/behavior-and-event/)
+    - [Creating Operators](https://cereb.dev/core-concepts/creating-operators/)
+    - [High-Order Operators](https://cereb.dev/core-concepts/higher-order-operators/)
+    - [The Problem Solves](https://cereb.dev/core-concepts/the-problem-solves/)
+- **API Reference**
+    - [Stream](https://cereb.dev/stream-api/pan/)
+    - [Operators](https://cereb.dev/operator-api/compose/)
 
 ## Contributing
 
