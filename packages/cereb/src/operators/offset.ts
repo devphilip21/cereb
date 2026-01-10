@@ -1,7 +1,7 @@
 import type { ExtendSignalValue, Signal, SignalWith } from "../core/signal.js";
 import type { Operator, Stream } from "../core/stream.js";
 import { createStream } from "../core/stream.js";
-import type { Vector } from "../geometry/types.js";
+import type { Point, Vector } from "../geometry/types.js";
 
 export interface OffsetOptions {
   target: Element;
@@ -23,7 +23,7 @@ export interface OffsetOptions {
 }
 
 export interface PointerValue {
-  cursor: readonly [number, number];
+  cursor: Point;
 }
 
 export interface OffsetValue {

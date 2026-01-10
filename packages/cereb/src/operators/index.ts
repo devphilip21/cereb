@@ -8,6 +8,7 @@ export { filter } from "./filter.js";
 export { flatMap, mergeMap } from "./flat-map.js";
 export { map } from "./map.js";
 export { merge, mergeWith } from "./merge.js";
+export type { OffsetOptions, OffsetValue, PointerValue } from "./offset.js";
 export { offset } from "./offset.js";
 export { reduce } from "./reduce.js";
 export { multiPointersSession, session, singlePointerSession } from "./session.js";

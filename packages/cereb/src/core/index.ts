@@ -1,5 +1,5 @@
 export { setCerebDeviceId } from "./meta.js";
-export { createSignal, type ExtendSignalValue, type Signal } from "./signal.js";
+export { createSignal, type ExtendSignalValue, type Signal, type SignalWith } from "./signal.js";
 export {
   createStream,
   type Observer,

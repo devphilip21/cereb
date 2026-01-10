@@ -52,10 +52,10 @@ import "./signature-pad.css";
 
 <script>
 import { singlePointer, type ExtendSignalValue, type SinglePointerSignal } from "cereb";
-import { offset, singlePointerSession } from "cereb/operators";
+import { offset, singlePointerSession, type OffsetValue } from "cereb/operators";
 
 type Point = { x: number; y: number };
-type CanvasSignal = ExtendSignalValue<SinglePointerSignal, { offset: [number, number] }>;
+type CanvasSignal = ExtendSignalValue<SinglePointerSignal, OffsetValue>;
 
 class CanvasManager {
   private ctx: CanvasRenderingContext2D;
@@ -288,7 +288,7 @@ function initSignaturePad() {
     .pipe(
       singlePointerSession(),
       offset({ target: boxEl })
-    ).on(signal => {
+    ).on((signal) => {
       eventHandler.handlePointer(signal);
     });
 
