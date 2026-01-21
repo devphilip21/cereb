@@ -8,8 +8,6 @@ export { filter } from "./filter.js";
 export { flatMap, mergeMap } from "./flat-map.js";
 export { map } from "./map.js";
 export { merge, mergeWith } from "./merge.js";
-export type { MomentumInput, MomentumOptions, MomentumValue } from "./momentum.js";
-export { momentum } from "./momentum.js";
 export type { OffsetOptions, OffsetValue, PointerValue } from "./offset.js";
 export { offset } from "./offset.js";
 export { reduce } from "./reduce.js";

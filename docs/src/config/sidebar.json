@@ -136,10 +136,6 @@
           "slug": "operator-api/merge"
         },
         {
-          "label": "momentum",
-          "slug": "operator-api/momentum"
-        },
-        {
           "label": "offset",
           "slug": "operator-api/offset"
         },
