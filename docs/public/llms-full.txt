@@ -575,37 +575,6 @@ pan(element)
   });
 ```
 
-### momentum
-
-Add physics-based inertia after gesture ends. Generates synthetic signals with decelerating velocity.
-
-```typescript
-function momentum<T extends SignalWith<{ velocity: Vector; phase?: string }>>(options?: {
-  friction?: number;     // default 0.95, velocity retention per frame
-  minVelocity?: number;  // default 0.1
-  maxDuration?: number;  // default 2000ms
-}): Operator<T, T & { momentumDelta: Vector; isMomentum: boolean }>
-```
-
-**Output:**
-- `momentumDelta`: Synthetic delta from momentum physics
-- `isMomentum`: `true` for synthetic momentum signals, `false` for direct input
-
-```typescript
-pan(element)
-  .pipe(
-    rotate3d({ sensitivityX: 0.5 }),
-    momentum({ friction: 0.95 })
-  )
-  .on((s) => {
-    if (s.value.isMomentum) {
-      rotationManager.addDelta(...s.value.momentumDelta);
-    } else {
-      rotationManager.addDelta(...s.value.rotation);
-    }
-  });
-```
-
 ### when
 
 Gate signals based on another stream's state.
@@ -772,27 +741,6 @@ keydown(window, { code: ["Equal", "Minus"] })
     const multiplier = s.value.code === "Equal" ? 1.2 : 1 / 1.2;
     scale = clamp(scale * multiplier, MIN_SCALE, MAX_SCALE);
     element.style.transform = `scale(${scale})`;
-  });
-```
-
-### 3D Rotation with Momentum
-
-```typescript
-import { pan } from "cereb";
-import { rotate3d, momentum } from "cereb/operators";
-
-let rotation = [0, 0, 0];
-
-pan(element)
-  .pipe(
-    rotate3d({ sensitivityX: 0.5, sensitivityY: 0.5 }),
-    momentum({ friction: 0.95, minVelocity: 0.01 })
-  )
-  .on((s) => {
-    const delta = s.value.isMomentum ? s.value.momentumDelta : s.value.rotation;
-    rotation[0] += delta[0];
-    rotation[1] += delta[1];
-    element.style.transform = `rotateX(${rotation[0]}rad) rotateY(${rotation[1]}rad)`;
   });
 ```
 

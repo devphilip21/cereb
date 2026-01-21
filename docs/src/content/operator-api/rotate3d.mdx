@@ -68,28 +68,6 @@ pan(canvas)
   });
 ```
 
-### With Momentum
-
-Combine with `momentum` for inertial rotation after gesture ends:
-
-```typescript
-import { pan } from "cereb";
-import { rotate3d, momentum } from "cereb/operators";
-
-pan(element)
-  .pipe(
-    rotate3d({ sensitivityX: 0.5, sensitivityY: 0.5 }),
-    momentum({ friction: 0.95, minVelocity: 0.01 })
-  )
-  .on((signal) => {
-    if (signal.value.isMomentum) {
-      rotationManager.addDelta(...signal.value.momentumDelta);
-    } else {
-      rotationManager.addDelta(...signal.value.rotation);
-    }
-  });
-```
-
 ## Session Handling
 
 The operator resets its internal state when `phase` is `"end"` or `"cancel"`, making it ready for the next gesture session.

@@ -40,7 +40,6 @@
 - [zoom](https://cereb.dev/operator-api/zoom): Convert ratio to scale delta
 - [rotate3d](https://cereb.dev/operator-api/rotate3d): Convert pan to 3D rotation delta
 - [translate](https://cereb.dev/operator-api/translate): Convert pan to 2D translation
-- [momentum](https://cereb.dev/operator-api/momentum): Add physics-based inertia after gesture
 - [when](https://cereb.dev/operator-api/when): Gate by another stream's state
 - [throttle](https://cereb.dev/operator-api/throttle): Rate limiting
 - [debounce](https://cereb.dev/operator-api/debounce): Wait for silence
